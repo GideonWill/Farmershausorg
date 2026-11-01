@@ -297,6 +297,14 @@ def process_hubtel_webhook(*, raw_body, payload, headers):
                     to_status=order.status,
                     note="Payment verified by Hubtel webhook.",
                 )
+                AuditEvent.objects.create(
+                    branch=order.branch,
+                    action="order.status_changed",
+                    resource_type="CustomerOrder",
+                    resource_id=str(order.pk),
+                    before_data={"status": previous},
+                    after_data={"status": order.status, "source": "payment_webhook"},
+                )
                 consume_order_reservations(order)
                 from apps.notifications.tasks import notify_order_status
 
@@ -407,6 +415,15 @@ def request_admin_refund(order, actor, reason):
         to_status=order.status,
         actor=actor,
         note=f"Cancelled by Super Admin; refund {refund.idempotency_key} requested.",
+    )
+    AuditEvent.objects.create(
+        actor=actor,
+        branch=order.branch,
+        action="order.admin_cancelled",
+        resource_type="CustomerOrder",
+        resource_id=str(order.pk),
+        before_data={"status": old_status},
+        after_data={"status": order.status, "refund_id": str(refund.pk)},
     )
     order._refund_request = refund
     order._refund_error = provider_error

@@ -2,7 +2,7 @@ import csv
 import io
 import zipfile
 from datetime import date, timedelta
-from xml.etree.ElementTree import Element, SubElement, tostring
+from xml.etree.ElementTree import Element, SubElement, register_namespace, tostring
 
 from django.db.models import Count, Sum
 from django.http import HttpResponse
@@ -151,13 +151,19 @@ def _xlsx_workbook(sheets):
     relationships = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
     package_relationships = "http://schemas.openxmlformats.org/package/2006/relationships"
     content_types = "http://schemas.openxmlformats.org/package/2006/content-types"
+    register_namespace("", spreadsheet)
+    register_namespace("r", relationships)
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as workbook:
         types = Element(f"{{{content_types}}}Types")
         SubElement(types, f"{{{content_types}}}Default", {"Extension": "rels", "ContentType": "application/vnd.openxmlformats-package.relationships+xml"})
         SubElement(types, f"{{{content_types}}}Default", {"Extension": "xml", "ContentType": "application/xml"})
         SubElement(types, f"{{{content_types}}}Override", {"PartName": "/xl/workbook.xml", "ContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"})
-        SubElement(types, f"{{{content_types}}}Override", {"PartName": "/xl/worksheets/sheet1.xml", "ContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"})
+        for index in range(1, len(sheets) + 1):
+            SubElement(types, f"{{{content_types}}}Override", {
+                "PartName": f"/xl/worksheets/sheet{index}.xml",
+                "ContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml",
+            })
         workbook.writestr("[Content_Types].xml", tostring(types, encoding="utf-8", xml_declaration=True))
 
         root_rels = Element(f"{{{package_relationships}}}Relationships")
@@ -168,38 +174,44 @@ def _xlsx_workbook(sheets):
         })
         workbook.writestr("_rels/.rels", tostring(root_rels, encoding="utf-8", xml_declaration=True))
 
-        book = Element(f"{{{spreadsheet}}}workbook", {"xmlns:r": relationships})
+        book = Element(f"{{{spreadsheet}}}workbook")
         sheet_list = SubElement(book, f"{{{spreadsheet}}}sheets")
-        SubElement(sheet_list, f"{{{spreadsheet}}}sheet", {
-            "name": "Daily Sales", "sheetId": "1", f"{{{relationships}}}id": "rId1",
-        })
+        for index, (name, _) in enumerate(sheets, start=1):
+            SubElement(sheet_list, f"{{{spreadsheet}}}sheet", {
+                "name": name, "sheetId": str(index), f"{{{relationships}}}id": f"rId{index}",
+            })
         workbook.writestr("xl/workbook.xml", tostring(book, encoding="utf-8", xml_declaration=True))
         book_rels = Element(f"{{{package_relationships}}}Relationships")
-        SubElement(book_rels, f"{{{package_relationships}}}Relationship", {
-            "Id": "rId1",
-            "Type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
-            "Target": "worksheets/sheet1.xml",
-        })
+        for index, _ in enumerate(sheets, start=1):
+            SubElement(book_rels, f"{{{package_relationships}}}Relationship", {
+                "Id": f"rId{index}",
+                "Type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
+                "Target": f"worksheets/sheet{index}.xml",
+            })
         workbook.writestr("xl/_rels/workbook.xml.rels", tostring(book_rels, encoding="utf-8", xml_declaration=True))
 
-        sheet = Element(f"{{{spreadsheet}}}worksheet")
-        data = SubElement(sheet, f"{{{spreadsheet}}}sheetData")
-        for row_index, row in enumerate(sheets, start=1):
-            xml_row = SubElement(data, f"{{{spreadsheet}}}row", {"r": str(row_index)})
-            for column_index, value in enumerate(row, start=1):
-                column = ""
-                number = column_index
-                while number:
-                    number, remainder = divmod(number - 1, 26)
-                    column = chr(65 + remainder) + column
-                cell = SubElement(xml_row, f"{{{spreadsheet}}}c", {"r": f"{column}{row_index}"})
-                if isinstance(value, (int, float)):
-                    SubElement(cell, f"{{{spreadsheet}}}v").text = str(value)
-                else:
-                    cell.set("t", "inlineStr")
-                    inline = SubElement(cell, f"{{{spreadsheet}}}is")
-                    SubElement(inline, f"{{{spreadsheet}}}t").text = str(value)
-        workbook.writestr("xl/worksheets/sheet1.xml", tostring(sheet, encoding="utf-8", xml_declaration=True))
+        for sheet_index, (_, rows) in enumerate(sheets, start=1):
+            sheet = Element(f"{{{spreadsheet}}}worksheet")
+            data = SubElement(sheet, f"{{{spreadsheet}}}sheetData")
+            for row_index, row in enumerate(rows, start=1):
+                xml_row = SubElement(data, f"{{{spreadsheet}}}row", {"r": str(row_index)})
+                for column_index, value in enumerate(row, start=1):
+                    column = ""
+                    number = column_index
+                    while number:
+                        number, remainder = divmod(number - 1, 26)
+                        column = chr(65 + remainder) + column
+                    cell = SubElement(xml_row, f"{{{spreadsheet}}}c", {"r": f"{column}{row_index}"})
+                    if isinstance(value, (int, float)):
+                        SubElement(cell, f"{{{spreadsheet}}}v").text = str(value)
+                    else:
+                        cell.set("t", "inlineStr")
+                        inline = SubElement(cell, f"{{{spreadsheet}}}is")
+                        SubElement(inline, f"{{{spreadsheet}}}t").text = str(value)
+            workbook.writestr(
+                f"xl/worksheets/sheet{sheet_index}.xml",
+                tostring(sheet, encoding="utf-8", xml_declaration=True),
+            )
     return output.getvalue()
 
 
@@ -210,14 +222,28 @@ class StaffReportExportView(APIView):
         branch_id, start_date, end_date = _report_filters(request)
         report = _report_data(branch_id, start_date, end_date)
         export_format = request.query_params.get("file_format", "csv").lower()
-        rows = [["Date", "Branch", "Orders", "Gross paid (minor)", "Adjusted total (minor)", "Refund review (minor)"]]
-        rows.extend([
+        sheets = [
+            ("Daily Sales", [["Date", "Branch", "Orders", "Gross paid (minor)", "Adjusted total (minor)", "Refund review (minor)"]]),
+            ("Best Sellers", [["Product", "Quantity", "Sales (minor)"]]),
+            ("Payment Status", [["Status", "Payments", "Amount (minor)"]]),
+            ("Voucher Usage", [["Code", "Redemptions", "Amount saved (minor)"]]),
+        ]
+        sheets[0][1].extend([
             item["date"], item["branch"], item["order_count"], item["gross_paid_minor"],
             item["adjusted_total_minor"], item["refund_review_minor"],
         ] for item in report["daily_sales"])
+        sheets[1][1].extend([
+            item["product"], item["quantity"], item["sales_minor"],
+        ] for item in report["best_sellers"])
+        sheets[2][1].extend([
+            item["status"], item["count"], item["amount_minor"],
+        ] for item in report["payment_statuses"])
+        sheets[3][1].extend([
+            item["code"], item["redemptions"], item["amount_saved_minor"],
+        ] for item in report["voucher_usage"])
         if export_format == "xlsx":
             response = HttpResponse(
-                _xlsx_workbook(rows),
+                _xlsx_workbook(sheets),
                 content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             )
             response["Content-Disposition"] = 'attachment; filename="farmershaus-sales-report.xlsx"'
@@ -226,7 +252,10 @@ class StaffReportExportView(APIView):
             raise ValidationError({"format": "Choose csv or xlsx."})
         buffer = io.StringIO()
         writer = csv.writer(buffer)
-        writer.writerows(rows)
+        for name, rows in sheets:
+            writer.writerow([name])
+            writer.writerows(rows)
+            writer.writerow([])
         response = HttpResponse(buffer.getvalue(), content_type="text/csv; charset=utf-8")
         response["Content-Disposition"] = 'attachment; filename="farmershaus-sales-report.csv"'
         return response

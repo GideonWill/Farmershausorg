@@ -111,6 +111,10 @@ class OrderPermissionTests(TestCase):
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(self.order.status, CustomerOrder.Status.PICKING)
         self.assertIsNotNone(self.order.picking_at)
+        self.assertTrue(AuditEvent.objects.filter(
+            action="order.status_changed",
+            resource_id=str(self.order.pk),
+        ).exists())
 
     def create_paid_order_payment(self):
         account = BranchPaymentAccount.objects.create(

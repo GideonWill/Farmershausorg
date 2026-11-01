@@ -30,6 +30,7 @@ class StaffReportApiTests(TestCase):
         self.assertEqual(report.data["branch"], str(self.branch.pk))
         self.assertEqual(export.status_code, 200, export.content[:500])
         self.assertEqual(export["Content-Type"], "text/csv; charset=utf-8")
+        self.assertIn(b"Best Sellers", export.content)
 
     def test_staff_cannot_read_other_branch_reports_or_audit_events(self):
         reports = self.client.get(f"/api/v1/staff/reports/?branch={self.other_branch.pk}")
@@ -45,6 +46,9 @@ class StaffReportApiTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(zipfile.is_zipfile(BytesIO(response.content)))
+        with zipfile.ZipFile(BytesIO(response.content)) as workbook:
+            self.assertIn("xl/worksheets/sheet4.xml", workbook.namelist())
+            self.assertIn(b"Voucher Usage", workbook.read("xl/workbook.xml"))
         self.assertEqual(
             response["Content-Type"],
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

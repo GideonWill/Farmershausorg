@@ -7,6 +7,7 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
+from apps.audit.models import AuditEvent
 from apps.baskets.models import BasketComponent
 from apps.cart.models import Cart, CartItem
 from apps.content.models import SiteSettings
@@ -364,6 +365,14 @@ def create_order(*, cart_id, user, branch_id, fulfillment_method, address_id=Non
         actor=user,
         note="Order created; stock reserved pending payment.",
     )
+    AuditEvent.objects.create(
+        actor=user,
+        branch=order.branch,
+        action="order.created",
+        resource_type="CustomerOrder",
+        resource_id=str(order.pk),
+        after_data={"status": order.status, "order_number": order.order_number},
+    )
     return order
 
 
@@ -407,6 +416,15 @@ def transition_order(order, *, to_status, actor=None, note=""):
         actor=actor,
         note=note,
     )
+    AuditEvent.objects.create(
+        actor=actor,
+        branch=order.branch,
+        action="order.status_changed",
+        resource_type="CustomerOrder",
+        resource_id=str(order.pk),
+        before_data={"status": previous},
+        after_data={"status": to_status, "note": note},
+    )
     return order
 
 
@@ -449,6 +467,15 @@ def release_order_reservations(order, *, final_status, actor=None, note=""):
         to_status=final_status,
         actor=actor,
         note=note,
+    )
+    AuditEvent.objects.create(
+        actor=actor,
+        branch=order.branch,
+        action="order.status_changed",
+        resource_type="CustomerOrder",
+        resource_id=str(order.pk),
+        before_data={"status": previous},
+        after_data={"status": final_status, "note": note},
     )
     return order
 
