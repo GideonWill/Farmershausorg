@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import { api, money, type Product } from '../lib/api'
 import { categoryImage } from '../lib/images'
 import { useStore } from '../stores/store'
-import { addToCart, requestBranchPicker, switchToBranch } from '../lib/shopping'
+import { addToCart, switchToBranch } from '../lib/shopping'
 import { notify } from '../lib/notifications'
 import { Icon, LazyImage } from '../components/ui'
 import { useProducts } from '../hooks/useStoreData'
@@ -51,15 +51,32 @@ export function ProductPage() {
           {product.branch_availability.is_available ? (
             <button className="button button-primary mt-7 w-full justify-center sm:w-auto" onClick={() => addToCart(product, branch, cartSessionKey, queryClient, setCartDrawerOpen)}>Add to basket <Icon name="plus" /></button>
           ) : (
-            <div className="mt-7 rounded-2xl bg-brand-cream p-4">
-              <p className="font-semibold text-brand-tomato">Unavailable at {branch?.name}</p>
-              <p className="mt-1 text-sm text-brand-ink/60">This item may be available at another branch.</p>
-              {otherBranches.map((alternative) => (
-                <button key={alternative.id} className="mt-3 block text-sm font-bold text-brand-green underline" onClick={() => void switchToBranch(alternative.slug).catch((issue: unknown) => notify(issue instanceof Error ? issue.message : 'Branch switch failed.', 'error'))}>
-                  Switch to {alternative.name} · {money(alternative.price_minor)}
-                </button>
-              ))}
-              {!otherBranches.length && <button className="mt-3 text-sm font-bold text-brand-green underline" onClick={requestBranchPicker}>Choose another branch</button>}
+            <div className="mt-7 rounded-2xl border border-brand-green/15 bg-brand-cream/80 p-5">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-brand-tomato" />
+                <p className="font-bold text-brand-tomato">Out of stock at {branch?.name ?? 'your selected branch'}</p>
+              </div>
+              <p className="mt-2 text-xs leading-5 text-brand-ink/70">
+                Each FarmersHaus order is prepared and dispatched fresh from a single local branch. We do not split orders across branches to ensure produce arrives crisp and delivery riders aren't delayed.
+              </p>
+              {otherBranches.length > 0 ? (
+                <div className="mt-4 border-t border-brand-green/10 pt-3">
+                  <p className="text-xs font-semibold text-brand-ink/65">Available for in-store pickup at:</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {otherBranches.map((alternative) => (
+                      <button
+                        key={alternative.id}
+                        className="button button-small button-outline text-xs"
+                        onClick={() => void switchToBranch(alternative.slug).catch((issue: unknown) => notify(issue instanceof Error ? issue.message : 'Branch switch failed.', 'error'))}
+                      >
+                        <Icon name="pin" /> {alternative.name} · {money(alternative.price_minor)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-3 text-xs text-brand-ink/50">Fresh stock is replenished regularly from our partnered farms.</p>
+              )}
             </div>
           )}
           {product.origin && <p className="mt-5 text-sm"><strong>Origin:</strong> {product.origin}</p>}

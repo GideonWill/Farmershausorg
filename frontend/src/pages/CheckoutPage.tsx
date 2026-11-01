@@ -250,6 +250,17 @@ export function CheckoutPage() {
 
         <aside className="checkout-summary">
           <h2 className="font-brand-heading text-2xl font-bold text-brand-green">Order summary</h2>
+          <div className="mt-3 rounded-2xl border border-brand-green/15 bg-brand-cream/80 p-3 text-xs text-brand-ink/75">
+            <p className="font-bold text-brand-green flex items-center gap-1.5">
+              <Icon name="pin" className="h-3.5 w-3.5 shrink-0" /> Single-origin fulfillment
+            </p>
+            <p className="mt-1 font-semibold text-brand-ink">Prepared by FarmersHaus {branch.name}</p>
+            <p className="mt-0.5 text-[11px] text-brand-ink/60">
+              {fulfillment === 'delivery'
+                ? 'Direct courier delivery to your address'
+                : `In-store collection at ${branch.address || branch.name}`}
+            </p>
+          </div>
           <div className="my-4 space-y-3">{cart.items.map((item) => {
             const price = item.product?.unit_price_minor ?? basketPrices.get(item.basket_package?.id ?? '') ?? 0
             return <div className="flex justify-between gap-3 text-sm" key={item.id}><span>{item.product?.name ?? item.basket_package?.name} × {item.quantity}</span><strong>{money(price * item.quantity)}</strong></div>

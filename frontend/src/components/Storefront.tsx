@@ -556,7 +556,15 @@ function CartDrawer() {
             </div>
           ) : (
             <>
-              <p className="px-6 pt-4 text-xs text-brand-ink/50">Prepared by {branch.name}</p>
+              <div className="mx-5 mt-4 rounded-xl border border-brand-green/15 bg-brand-cream/70 px-3.5 py-2">
+                <p className="flex items-center gap-1.5 text-xs font-bold text-brand-green">
+                  <Icon name="pin" className="h-3.5 w-3.5 shrink-0" />
+                  <span>Direct delivery from FarmersHaus {branch.name}</span>
+                </p>
+                <p className="mt-0.5 text-[10px] text-brand-ink/60">
+                  All items packed &amp; dispatched together from this single local market.
+                </p>
+              </div>
               <div className="flex-1 space-y-3 overflow-y-auto p-5">
                 {cart.items.map((item) => {
                   const name = item.product?.name ?? item.basket_package?.name ?? 'Item'

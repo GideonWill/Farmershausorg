@@ -29,7 +29,19 @@ export function CartPage() {
   if (!branch) return <div className="section-wrap"><h1 className="section-title">Choose your branch</h1><p className="mt-2">Your cart is connected to a FarmersHaus location.</p></div>
   return (
     <div className="section-wrap min-h-[65vh]">
-      <div className="mb-8"><p className="eyebrow">Shopping from {branch.name}</p><h1 className="section-title">Your cart</h1></div>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p className="eyebrow">Shopping from {branch.name}</p>
+          <h1 className="section-title">Your cart</h1>
+        </div>
+        <div className="flex items-center gap-2.5 rounded-2xl border border-brand-green/15 bg-brand-cream/80 px-4 py-2.5 shadow-xs">
+          <Icon name="pin" className="h-5 w-5 shrink-0 text-brand-green" />
+          <div>
+            <p className="text-xs font-bold text-brand-green">Single-origin direct delivery</p>
+            <p className="text-[11px] text-brand-ink/65">All items prepared &amp; dispatched together by {branch.name}</p>
+          </div>
+        </div>
+      </div>
       {isLoading ? <div className="skeleton h-32" /> : !cart?.items.length ? (
         <div className="rounded-[2rem] bg-brand-cream px-6 py-14 text-center"><div className="mx-auto text-5xl">🧺</div><h2 className="mt-4 font-brand-heading text-3xl font-bold text-brand-green">Your cart is taking a breather</h2><p className="mt-2 text-brand-ink/60">Find fresh favorites and add them here.</p><Link className="button button-primary mt-6" to="/shop">Start shopping</Link></div>
       ) : (
@@ -52,7 +64,12 @@ export function CartPage() {
                 </article>
               )
             })}
-            <p className="rounded-xl bg-brand-cream p-4 text-sm text-brand-ink/65">Changing branches keeps this cart saved to {branch.name}. The new branch has a separate cart and may have different availability.</p>
+            <div className="rounded-2xl border border-brand-green/15 bg-brand-cream/80 p-4 text-xs leading-5 text-brand-ink/70">
+              <p className="font-bold text-brand-green">Single-market guarantee:</p>
+              <p className="mt-1">
+                Your order is prepared 100% by FarmersHaus {branch.name}. To guarantee freshness and fast delivery, we never split orders across multiple branches.
+              </p>
+            </div>
           </div>
           <aside className="rounded-[1.7rem] bg-brand-cream p-6">
             <h2 className="font-brand-heading text-2xl font-bold text-brand-green">Order summary</h2>

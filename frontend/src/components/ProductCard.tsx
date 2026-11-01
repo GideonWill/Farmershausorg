@@ -1,4 +1,4 @@
-import { useState } from 'react'
+
 import { useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { useStore } from '../stores/store'
@@ -17,7 +17,7 @@ export function ProductCard({ product }: { product: Product }) {
   const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen)
   const queryClient = useQueryClient()
   const { data: branches = [] } = useBranches()
-  const [alternativesOpen, setAlternativesOpen] = useState(false)
+
   const isFavorite = favorites.includes(product.id)
   const available = product.branch_availability?.is_available
   const selectedOther = product.available_at_other_branches?.[0]
@@ -65,44 +65,27 @@ export function ProductCard({ product }: { product: Product }) {
             <button onClick={quickAdd} className="button button-small button-primary w-full sm:w-auto text-xs py-1.5 px-3"><Icon name="plus" /> Quick add</button>
           </div>
         ) : (
-          <div className="mt-2.5 sm:mt-3 rounded-xl bg-brand-cream p-2.5">
-            <p className="flex items-start gap-1.5 text-[11px] font-semibold leading-4 text-brand-tomato">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-tomato" aria-hidden="true" />
-              <span>Unavailable at {branch?.name ?? 'this branch'}</span>
+          <div className="mt-2.5 sm:mt-3 rounded-xl border border-brand-green/10 bg-brand-cream/80 p-2.5">
+            <p className="flex items-center gap-1.5 text-[11px] font-semibold text-brand-tomato">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-tomato" aria-hidden="true" />
+              <span>Out of stock at {branch?.name ?? 'this branch'}</span>
             </p>
             {selectedOther ? (
-              <button
-                onClick={() => void switchToBranch(selectedOther.slug).catch((error: unknown) => notify(error instanceof Error ? error.message : 'Branch switch failed.', 'error'))}
-                className="mt-2.5 flex w-full min-w-0 items-center gap-2 text-left text-brand-green transition-colors hover:text-brand-spinach focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-green"
-                aria-label={`Switch to ${selectedOther.name}, where this product is available`}
-              >
-                <Icon name="pin" className="h-4 w-4 shrink-0" />
-                <span className="min-w-0 flex-1">
-                  <span className="block text-[9px] font-semibold uppercase leading-3 tracking-wider text-brand-ink/55">Available at</span>
-                  <span className="block truncate text-xs font-bold leading-4">{selectedOther.name}</span>
-                </span>
-                <span className="flex shrink-0 items-center gap-1 text-[10px] font-bold uppercase tracking-wide">
-                  Switch <Icon name="arrow" className="h-3.5 w-3.5" />
-                </span>
-              </button>
-            ) : (
-              <button className="mt-2.5 text-left text-xs font-bold text-brand-green hover:text-brand-spinach" onClick={() => setAlternativesOpen((open) => !open)}>
-                Check other branches
-              </button>
-            )}
-            {alternativesOpen && (
-              <div className="mt-2 space-y-1 border-t border-brand-green/10 pt-2">
-                {(product.available_at_other_branches ?? []).map((alternative) => (
-                  <button
-                    key={alternative.id}
-                    className="block w-full text-left text-xs font-semibold text-brand-green hover:underline"
-                    onClick={() => void switchToBranch(alternative.slug).catch((error: unknown) => notify(error instanceof Error ? error.message : 'Branch switch failed.', 'error'))}
-                  >
-                    {alternative.name} · {money(alternative.price_minor)}
-                  </button>
-                ))}
-                {!product.available_at_other_branches?.length && <span className="text-xs text-brand-ink/55">No other branch currently has this item.</span>}
+              <div className="mt-2 border-t border-brand-green/10 pt-2">
+                <p className="text-[10px] leading-tight text-brand-ink/65">
+                  Available for in-store pickup at <span className="font-bold text-brand-green">{selectedOther.name}</span>.
+                </p>
+                <button
+                  onClick={() => void switchToBranch(selectedOther.slug).catch((error: unknown) => notify(error instanceof Error ? error.message : 'Branch switch failed.', 'error'))}
+                  className="mt-1.5 flex items-center gap-1 text-[10px] font-bold tracking-wide text-brand-green hover:underline uppercase"
+                  aria-label={`Switch to ${selectedOther.name} for pickup`}
+                >
+                  <Icon name="pin" className="h-3 w-3 shrink-0" />
+                  <span>Shop at {selectedOther.name} instead</span>
+                </button>
               </div>
+            ) : (
+              <p className="mt-1.5 text-[10px] text-brand-ink/50">Sold out across neighborhood branches.</p>
             )}
           </div>
         )}
