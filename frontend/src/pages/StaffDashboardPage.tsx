@@ -124,8 +124,9 @@ export function StaffDashboardPage() {
   const [reportFrom, setReportFrom] = useState(() => new Date(Date.now() - 29 * 86400000).toISOString().slice(0, 10))
   const [reportTo, setReportTo] = useState(todayString)
   const [replacementIds, setReplacementIds] = useState<Record<string, string>>({})
-  const seenOrderIds = useRef<Set<string> | null>(null)
+  const seenPaidState = useRef<Map<string, boolean> | null>(null)
   const seenOrderBranch = useRef('')
+  const [downloadError, setDownloadError] = useState('')
 
   useEffect(() => {
     const updateAuth = () => setAuthenticated(Boolean(getAuthTokens()))
@@ -188,10 +189,10 @@ export function StaffDashboardPage() {
 
   useEffect(() => {
     if (!ordersQuery.data) return
-    const currentIds = new Set(ordersQuery.data.map((order) => order.id))
-    if (seenOrderIds.current && seenOrderBranch.current === activeBranchId) {
+    const currentPaidState = new Map(ordersQuery.data.map((order) => [order.id, Boolean(order.paid_at)]))
+    if (seenPaidState.current && seenOrderBranch.current === activeBranchId) {
       const newPaidOrders = ordersQuery.data.filter((order) =>
-        !seenOrderIds.current?.has(order.id) && order.status === 'confirmed',
+        Boolean(order.paid_at) && !seenPaidState.current?.get(order.id),
       )
       if (newPaidOrders.length) {
         playOrderChime()
@@ -202,7 +203,7 @@ export function StaffDashboardPage() {
         }
       }
     }
-    seenOrderIds.current = currentIds
+    seenPaidState.current = currentPaidState
     seenOrderBranch.current = activeBranchId
   }, [activeBranchId, ordersQuery.data, permittedBranches])
 
@@ -327,6 +328,15 @@ export function StaffDashboardPage() {
     },
   })
 
+  async function downloadDashboardFile(path: string, filename: string) {
+    try {
+      setDownloadError('')
+      await downloadFile(path, filename)
+    } catch (error) {
+      setDownloadError(errorText(error))
+    }
+  }
+
   async function enableNotifications() {
     if (!window.hasOwnProperty('Notification')) {
       window.alert('This browser does not support desktop notifications. The order board will continue checking for new orders.')
@@ -341,7 +351,7 @@ export function StaffDashboardPage() {
     setAuthenticated(false)
     setBranchId('')
     setSelectedOrderId('')
-    seenOrderIds.current = null
+    seenPaidState.current = null
     seenOrderBranch.current = ''
     void queryClient.clear()
   }
@@ -431,9 +441,11 @@ export function StaffDashboardPage() {
             <button key={value} className={tab === value ? 'is-active' : ''} onClick={() => setTab(value)}>{label}</button>
           ))}
         </nav>
+        {downloadError && <p className="staff-error" role="alert">{downloadError}</p>}
 
         {tab === 'orders' && (
           <section aria-label="Live paid orders">
+            {(updateStatus.isError || assignRider.isError || adjustLine.isError || cancelOrder.isError) && <p className="staff-error" role="alert">{errorText(updateStatus.error ?? assignRider.error ?? adjustLine.error ?? cancelOrder.error)}</p>}
             <div className="staff-section-heading">
               <div><h2 className="font-brand-heading text-xl font-bold text-brand-green">Paid orders</h2><p className="mt-1 text-xs text-brand-ink/55">Updates automatically every 10 seconds · {orders.length} active order{orders.length === 1 ? '' : 's'}</p></div>
               <div className="flex flex-wrap items-center gap-2">
@@ -496,7 +508,7 @@ export function StaffDashboardPage() {
               setReplacementIds={setReplacementIds}
               isSaving={assignRider.isPending || adjustLine.isPending}
               onPrint={() => window.print()}
-              onReceipt={() => void downloadFile(`/orders/${encodeURIComponent(selectedOrder.order_number)}/receipt.pdf`, `farmershaus-${selectedOrder.order_number}-receipt.pdf`)}
+              onReceipt={() => void downloadDashboardFile(`/orders/${encodeURIComponent(selectedOrder.order_number)}/receipt.pdf`, `farmershaus-${selectedOrder.order_number}-receipt.pdf`)}
               admin={profile.is_super_admin}
               onCancel={() => {
                 if (window.confirm(`Cancel ${selectedOrder.order_number} and request a full refund?`)) cancelOrder.mutate(selectedOrder)
@@ -510,7 +522,7 @@ export function StaffDashboardPage() {
             <div className="staff-section-heading">
               <div><h2 className="font-brand-heading text-xl font-bold text-brand-green">Branch inventory</h2><p className="mt-1 text-xs text-brand-ink/55">Quantities and availability are scoped to your selected branch.</p></div>
               <div className="flex flex-wrap gap-2">
-                <button className="button button-outline button-small" onClick={() => void downloadFile(`/branches/${activeBranchId}/inventory/export.csv`, 'farmershaus-inventory.csv')}>Export CSV</button>
+                <button className="button button-outline button-small" onClick={() => void downloadDashboardFile(`/branches/${activeBranchId}/inventory/export.csv`, 'farmershaus-inventory.csv')}>Export CSV</button>
                 <label className="button button-outline button-small cursor-pointer">Import CSV<input className="sr-only" type="file" accept=".csv,text/csv" onChange={(event) => { const file = event.target.files?.[0]; if (file) importInventory.mutate(file); event.currentTarget.value = '' }} /></label>
               </div>
             </div>
@@ -546,8 +558,8 @@ export function StaffDashboardPage() {
               <div className="staff-report-filters">
                 <label>From<input type="date" value={reportFrom} onChange={(event) => setReportFrom(event.target.value)} /></label>
                 <label>To<input type="date" value={reportTo} onChange={(event) => setReportTo(event.target.value)} /></label>
-                <button className="button button-outline button-small" onClick={() => void downloadFile(`/staff/reports/export/?branch=${activeBranchId}&from=${reportFrom}&to=${reportTo}&file_format=csv`, `farmershaus-report-${reportFrom}-${reportTo}.csv`)}>CSV</button>
-                <button className="button button-outline button-small" onClick={() => void downloadFile(`/staff/reports/export/?branch=${activeBranchId}&from=${reportFrom}&to=${reportTo}&file_format=xlsx`, `farmershaus-report-${reportFrom}-${reportTo}.xlsx`)}>Excel</button>
+                <button className="button button-outline button-small" onClick={() => void downloadDashboardFile(`/staff/reports/export/?branch=${activeBranchId}&from=${reportFrom}&to=${reportTo}&file_format=csv`, `farmershaus-report-${reportFrom}-${reportTo}.csv`)}>CSV</button>
+                <button className="button button-outline button-small" onClick={() => void downloadDashboardFile(`/staff/reports/export/?branch=${activeBranchId}&from=${reportFrom}&to=${reportTo}&file_format=xlsx`, `farmershaus-report-${reportFrom}-${reportTo}.xlsx`)}>Excel</button>
               </div>
             </div>
             {reportQuery.isError && <p className="staff-error">{errorText(reportQuery.error)}</p>}
