@@ -13,13 +13,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.109",
+    "@ai-sdk/openai": "^4.0.106",
+    "@ai-sdk/react": "^4.0.163",
     "@tanstack/react-query": "^5.83.0",
+    "ai": "^7.0.159",
     "framer-motion": "^12.23.0",
     "leaflet": "^1.9.4",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.8.0",
+    "zod": "^4.6.7",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
