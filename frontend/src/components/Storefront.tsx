@@ -9,6 +9,7 @@ import { notify } from '../lib/notifications'
 import { useBaskets, useBranches, useCart, useSiteSettings } from '../hooks/useStoreData'
 import { useStore } from '../stores/store'
 import { Drawer, Icon, Modal } from './ui'
+import { SplashScreen } from './SplashScreen'
 
 const COPYRIGHT_YEAR = new Date().getFullYear()
 
@@ -173,6 +174,39 @@ function BranchPicker({
   )
 }
 
+function ScrollManager() {
+  const { pathname, hash } = useLocation()
+
+  useEffect(() => {
+    if (hash) {
+      const targetId = hash.replace(/^#/, '')
+      const tryScroll = () => {
+        const element = document.getElementById(targetId)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          return true
+        }
+        return false
+      }
+
+      if (!tryScroll()) {
+        const t1 = setTimeout(tryScroll, 100)
+        const t2 = setTimeout(tryScroll, 300)
+        const t3 = setTimeout(tryScroll, 600)
+        return () => {
+          clearTimeout(t1)
+          clearTimeout(t2)
+          clearTimeout(t3)
+        }
+      }
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }
+  }, [pathname, hash])
+
+  return null
+}
+
 function Header() {
   const branch = useStore((state) => state.branch)
   const setBranch = useStore((state) => state.setBranch)
@@ -189,19 +223,18 @@ function Header() {
   const cartCount = cart?.items.reduce((count, item) => count + item.quantity, 0) ?? 0
   const { data: site } = useSiteSettings()
   useEffect(() => {
-    if (branch || branchesLoading || autoLocationAttempted.current || branches.length === 0) return
-    autoLocationAttempted.current = true
+    if (branchesLoading || branches.length === 0) return
 
-    const selectFallbackBranch = () => {
-      if (useStore.getState().branch) return
+    const currentBranchValid = branch && branches.some((item) => item.id === branch.id && item.is_active)
+    if (!currentBranchValid) {
       const fallbackBranch = branches.find((item) => item.is_active) ?? branches[0]
       if (fallbackBranch) setBranch(fallbackBranch)
     }
 
-    if (!navigator.geolocation) {
-      selectFallbackBranch()
-      return
-    }
+    if (autoLocationAttempted.current) return
+    autoLocationAttempted.current = true
+
+    if (!navigator.geolocation) return
 
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
@@ -210,12 +243,14 @@ function Header() {
           longitude: String(coords.longitude),
         }))
           .then(({ branch: nearestBranch }) => {
-            if (!useStore.getState().branch) setBranch(nearestBranch)
+            if (nearestBranch && (!useStore.getState().branch || useStore.getState().branch?.id !== nearestBranch.id)) {
+              setBranch(nearestBranch)
+            }
           })
-          .catch(selectFallbackBranch)
+          .catch(() => {})
       },
-      selectFallbackBranch,
-      { enableHighAccuracy: false, maximumAge: 300000, timeout: 10000 },
+      () => {},
+      { enableHighAccuracy: false, maximumAge: 300000, timeout: 5000 },
     )
   }, [branch, branches, branchesLoading, setBranch])
 
@@ -260,7 +295,16 @@ function Header() {
       <header data-storefront-nav className="sticky top-0 z-50 border-b border-brand-green/10 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1440px] flex-wrap items-center gap-1.5 px-4 py-2 sm:gap-3 sm:px-6 sm:py-3 md:flex-nowrap lg:gap-6 lg:px-10">
           <button className="icon-button lg:hidden" aria-label="Open menu" onClick={() => setMobileOpen(true)}><Icon name="menu" /></button>
-          <Link to="/" className="shrink-0" aria-label="FarmersHaus home">
+          <Link
+            to="/"
+            className="shrink-0"
+            aria-label="FarmersHaus home"
+            onClick={(event) => {
+              if (event.shiftKey) {
+                window.dispatchEvent(new CustomEvent('farmershaus:replay-splash'))
+              }
+            }}
+          >
             <img className="h-11 w-auto sm:h-14" src="/brand/farmershaus-logo.png" alt="FarmersHaus" />
           </Link>
           <nav className="hidden items-center gap-5 lg:flex">
@@ -268,7 +312,7 @@ function Header() {
             <NavLink className="nav-link" to="/baskets">Food baskets</NavLink>
             <NavLink className="nav-link" to="/recipes">Recipes</NavLink>
             <NavLink className="nav-link" to="/find-us">Find us</NavLink>
-            <a className="nav-link" href="/#our-story">Our story</a>
+            <Link className="nav-link" to="/#our-story">Our story</Link>
           </nav>
           <div className="relative order-last w-full md:order-none md:ml-auto md:min-w-48 md:max-w-md md:flex-1">
             <form onSubmit={submitSearch} className="relative">
@@ -310,19 +354,80 @@ function Header() {
         </div>
       </header>
       <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} title="Menu">
-        <nav className="flex flex-col gap-1 px-5 py-4">
-          <button onClick={() => { setBranchOpen(true); setMobileOpen(false) }} className="button button-outline mb-3 justify-start"><Icon name="pin" />{branch?.name ?? 'Choose your branch'}</button>
-          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/shop">Shop produce</NavLink>
-          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/baskets">Food baskets</NavLink>
-          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/recipes">Recipes</NavLink>
-          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/find-us">Find a branch</NavLink>
-          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/contact">Contact us</NavLink>
-          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/account">My account</NavLink>
-          <form onSubmit={submitSearch} className="mt-4 flex gap-2">
-            <input value={search} onChange={(event) => void searchProducts(event.target.value)} className="field min-w-0 flex-1" placeholder="Search products" />
-            <button className="icon-button" aria-label="Search"><Icon name="search" /></button>
-          </form>
-        </nav>
+        <div className="flex h-full flex-col justify-between px-5 py-4">
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-brand-green/15 bg-brand-cream/60 p-3.5">
+              <div className="flex items-center justify-between text-xs font-semibold text-brand-ink/60">
+                <span className="flex items-center gap-1.5"><Icon name="pin" className="text-brand-green" /> Selected branch</span>
+                <span className="rounded-full bg-brand-green/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand-green">Active</span>
+              </div>
+              <div className="mt-1.5 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="truncate font-brand-heading text-base font-bold text-brand-green">{branch?.name ?? 'Choose branch'}</p>
+                  <p className="truncate text-xs text-brand-ink/65">{branch?.address ?? 'Pick a branch for accurate stock'}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setBranchOpen(true); setMobileOpen(false) }}
+                  className="button button-small button-outline shrink-0 px-2.5 py-1 text-xs"
+                >
+                  Change
+                </button>
+              </div>
+            </div>
+
+            <nav className="flex flex-col space-y-1">
+              <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/shop">
+                <span>Shop produce</span>
+                <Icon name="arrow" className="h-4 w-4 opacity-50" />
+              </NavLink>
+              <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/baskets">
+                <span>Food baskets</span>
+                <Icon name="arrow" className="h-4 w-4 opacity-50" />
+              </NavLink>
+              <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/recipes">
+                <span>Recipes & ideas</span>
+                <Icon name="arrow" className="h-4 w-4 opacity-50" />
+              </NavLink>
+              <Link onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/#our-story">
+                <span>Our story</span>
+                <Icon name="arrow" className="h-4 w-4 opacity-50" />
+              </Link>
+              <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/find-us">
+                <span>Find our branches</span>
+                <Icon name="arrow" className="h-4 w-4 opacity-50" />
+              </NavLink>
+              <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/contact">
+                <span>Contact & support</span>
+                <Icon name="arrow" className="h-4 w-4 opacity-50" />
+              </NavLink>
+              <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/account">
+                <span>My account</span>
+                <Icon name="arrow" className="h-4 w-4 opacity-50" />
+              </NavLink>
+            </nav>
+          </div>
+
+          <div className="mt-6 border-t border-brand-green/10 pt-4">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-brand-ink/50">Need quick assistance?</p>
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href="https://wa.me/233554208446"
+                target="_blank"
+                rel="noreferrer"
+                className="button button-small button-outline justify-center gap-1.5 text-xs"
+              >
+                <Icon name="whatsapp" className="text-brand-green" /> WhatsApp
+              </a>
+              <a
+                href="tel:+233554208446"
+                className="button button-small button-outline justify-center gap-1.5 text-xs"
+              >
+                <Icon name="pin" className="text-brand-green" /> Call us
+              </a>
+            </div>
+          </div>
+        </div>
       </Drawer>
       <BranchPicker open={branchOpen} onClose={() => setBranchOpen(false)} />
     </>
@@ -490,8 +595,21 @@ export function Storefront() {
   const { data: cart } = useCart()
   const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen)
   const location = useLocation()
+  const [showSplash, setShowSplash] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.location.pathname === '/' || window.location.pathname === ''
+  })
+
+  useEffect(() => {
+    const replayHandler = () => setShowSplash(true)
+    window.addEventListener('farmershaus:replay-splash', replayHandler)
+    return () => window.removeEventListener('farmershaus:replay-splash', replayHandler)
+  }, [])
+
   return (
     <>
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+      <ScrollManager />
       <Header />
       <main>
         <Suspense fallback={<div className="section-wrap"><div className="skeleton min-h-64" aria-label="Loading page" /></div>}>

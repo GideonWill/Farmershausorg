@@ -39,7 +39,7 @@ export function CartPage() {
               const name = item.product?.name ?? item.basket_package?.name ?? 'Item'
               const price = item.product?.unit_price_minor ?? basketPrices.get(item.basket_package?.id ?? '') ?? 0
               return (
-                <article key={item.id} className="flex flex-wrap items-center gap-4 bg-white p-4 sm:flex-nowrap">
+                <article key={item.id} className="flex flex-wrap items-center gap-4 rounded-2xl border border-brand-green/10 bg-white p-4 shadow-xs sm:flex-nowrap">
                   <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-xl bg-brand-cream text-3xl"><LazyImage src={item.product?.image_url} alt={name} className="h-full w-full" /></div>
                   <div className="min-w-[130px] flex-1"><h2 className="font-semibold">{name}</h2><p className="mt-1 text-sm text-brand-ink/55">{item.product?.unit ?? 'FarmersHaus food basket'}</p><p className="mt-1 text-sm font-bold text-brand-green">{money(price)}</p></div>
                   <div className="flex items-center gap-2">

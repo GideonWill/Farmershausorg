@@ -30,7 +30,7 @@ export function HomePage() {
               <Link to={`/shop/category/${category.slug}`} className="category-tile group">
                 <LazyImage src={categoryImage(category.slug)} alt={category.name} className="aspect-[0.9] transition-transform duration-700 group-hover:scale-105" />
                 <span className="absolute inset-0 bg-gradient-to-t from-brand-ink/70 via-transparent to-transparent" />
-                <span className="absolute bottom-4 left-4 right-4 font-brand-heading text-xl font-bold text-white sm:bottom-5 sm:left-5 sm:text-2xl">{category.name}</span>
+                <span className="absolute bottom-3 left-3 right-3 font-brand-heading text-base font-bold text-white sm:bottom-5 sm:left-5 sm:right-5 sm:text-2xl">{category.name}</span>
                 <span className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-brand-green opacity-0 transition group-hover:opacity-100"><Icon name="arrow" /></span>
               </Link>
             </motion.div>
@@ -53,7 +53,7 @@ export function HomePage() {
             <p className="mt-5 max-w-lg text-base leading-7 text-brand-ink/70">Discover vibrant, carefully chosen fruit and vegetables for the meals, moments, and people you love.</p>
             <Link to="/shop" className="button button-primary mt-7">Find your fresh <Icon name="arrow" /></Link>
           </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="story-visual">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="story-visual rounded-3xl shadow-xl overflow-hidden">
             <img
               src="/brand/farmershaus-healthy-life-poster.png"
               alt="Healthy life, live it well: a colorful composition of fresh fruit and vegetables"

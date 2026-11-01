@@ -10,6 +10,8 @@ export const imageMap = {
     vegetables: foodPhoto('photo-1566385101042-1a0aa0c1268c'),
     groceries: foodPhoto('photo-1542838132-92c53300491e'),
     herbs: foodPhoto('photo-1615485290382-441e4d049cb5'),
+    roots: foodPhoto('photo-1518977676601-b53f82aba655'),
+    beverages: foodPhoto('photo-1551024709-8f23befc6f87'),
     default: foodPhoto('photo-1542838132-92c53300491e'),
   },
   product: foodPhoto('photo-1542838132-92c53300491e'),
@@ -17,9 +19,14 @@ export const imageMap = {
 
 export function categoryImage(slug?: string): string {
   if (!slug) return imageMap.categories.default
-  if (slug.includes('fruit')) return imageMap.categories.fruits
-  if (slug.includes('vegetable')) return imageMap.categories.vegetables
-  if (slug.includes('herb')) return imageMap.categories.herbs
-  if (slug.includes('grocery') || slug.includes('pantry')) return imageMap.categories.groceries
+  const lower = slug.toLowerCase()
+  if (lower.includes('fruit')) return imageMap.categories.fruits
+  if (lower.includes('vegetable')) return imageMap.categories.vegetables
+  if (lower.includes('herb')) return imageMap.categories.herbs
+  if (lower.includes('root')) return imageMap.categories.roots
+  if (lower.includes('beverage') || lower.includes('drink')) return imageMap.categories.beverages
+  if (lower.includes('grocery') || lower.includes('pantry') || lower.includes('grain') || lower.includes('dairy')) {
+    return imageMap.categories.groceries
+  }
   return imageMap.categories.default
 }

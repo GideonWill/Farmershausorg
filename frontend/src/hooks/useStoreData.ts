@@ -10,6 +10,15 @@ export function useBranches() {
   })
 }
 
+export function useResolvedBranch(): Branch | null {
+  const branch = useStore((state) => state.branch)
+  const { data: branches = [] } = useBranches()
+  if (branch && branches.some((b) => b.id === branch.id && b.is_active)) {
+    return branch
+  }
+  return branches.find((b) => b.is_active) ?? branches[0] ?? null
+}
+
 export function useSiteSettings() {
   return useQuery({
     queryKey: ['site-settings'],
@@ -35,7 +44,7 @@ export function useProducts(filters: {
   min_price?: number
   max_price?: number
 } = {}) {
-  const branch = useStore((state) => state.branch)
+  const branch = useResolvedBranch()
   const params = new URLSearchParams()
   params.set('page_size', '100')
   if (branch) params.set('branch', branch.id)
@@ -58,7 +67,7 @@ export function useProducts(filters: {
 }
 
 export function useBaskets() {
-  const branch = useStore((state) => state.branch)
+  const branch = useResolvedBranch()
   return useQuery({
     queryKey: ['baskets', branch?.id],
     queryFn: async () => getList(await api<BasketPackage[] | { results: BasketPackage[] }>(
@@ -70,7 +79,7 @@ export function useBaskets() {
 }
 
 export function useCart() {
-  const branch = useStore((state) => state.branch)
+  const branch = useResolvedBranch()
   const cartSessionKey = useStore((state) => state.cartSessionKey)
   return useQuery({
     queryKey: ['cart', branch?.id, cartSessionKey],

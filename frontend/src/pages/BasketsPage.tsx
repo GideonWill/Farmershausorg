@@ -170,8 +170,26 @@ export function BasketsPage() {
           <h1 className="font-brand-heading text-5xl font-bold leading-[1.04] sm:text-6xl lg:text-7xl">A good basket<br />starts here.</h1>
           <p className="mt-5 max-w-xl text-sm leading-7 text-white/80 sm:text-base">Choose a ready-made basket for an easy win, or build a personal mix from the fresh produce available at your branch.</p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <button type="button" className={`button ${mode === 'ready' ? 'button-yellow' : 'basket-hero__secondary'}`} onClick={() => setMode('ready')}>Choose a basket</button>
-            <button type="button" className={`button ${mode === 'custom' ? 'button-yellow' : 'basket-hero__secondary'}`} onClick={() => setMode('custom')}>Build your own <Icon name="arrow" /></button>
+            <button
+              type="button"
+              className={`button ${mode === 'ready' ? 'button-yellow' : 'basket-hero__secondary'}`}
+              onClick={() => {
+                setMode('ready')
+                builderTarget.current?.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              Choose a basket
+            </button>
+            <button
+              type="button"
+              className={`button ${mode === 'custom' ? 'button-yellow' : 'basket-hero__secondary'}`}
+              onClick={() => {
+                setMode('custom')
+                builderTarget.current?.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              Build your own <Icon name="arrow" />
+            </button>
           </div>
           <p className="mt-5 text-xs text-white/60">{branch ? `Shopping from ${branch.name}` : 'Choose a branch to see local availability and prices.'}</p>
         </div>
@@ -194,8 +212,40 @@ export function BasketsPage() {
             </p>
           </div>
           <div className="basket-mode-switch" role="group" aria-label="Basket options">
-            <button className={mode === 'ready' ? 'is-selected' : ''} onClick={() => setMode('ready')}>Ready-made</button>
-            <button className={mode === 'custom' ? 'is-selected' : ''} onClick={() => setMode('custom')}>Customise</button>
+            <button
+              type="button"
+              className={`basket-mode-switch__button ${mode === 'ready' ? 'is-selected' : ''}`}
+              onClick={() => {
+                setMode('ready')
+                builderTarget.current?.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              {mode === 'ready' && (
+                <motion.div
+                  layoutId="basket-mode-glass-pill"
+                  className="basket-mode-switch__thumb"
+                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-1.5">Ready-made</span>
+            </button>
+            <button
+              type="button"
+              className={`basket-mode-switch__button ${mode === 'custom' ? 'is-selected' : ''}`}
+              onClick={() => {
+                setMode('custom')
+                builderTarget.current?.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              {mode === 'custom' && (
+                <motion.div
+                  layoutId="basket-mode-glass-pill"
+                  className="basket-mode-switch__thumb"
+                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-1.5">Customise</span>
+            </button>
           </div>
         </div>
 

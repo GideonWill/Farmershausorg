@@ -1,6 +1,7 @@
 from django.db.models import F, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Coalesce
 from rest_framework import filters, serializers, viewsets
+from rest_framework.fields import empty
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,12 +15,16 @@ from apps.catalogue.serializers import CategorySerializer, ProductSerializer
 from apps.inventory.models import ProductBranch
 
 
+class OptionalBooleanField(serializers.BooleanField):
+    default_empty_html = empty
+
+
 class ProductQuerySerializer(serializers.Serializer):
     branch = serializers.UUIDField()
     category = serializers.SlugField(required=False)
     tag = serializers.CharField(required=False)
-    organic = serializers.BooleanField(required=False)
-    in_season = serializers.BooleanField(required=False)
+    organic = OptionalBooleanField(required=False)
+    in_season = OptionalBooleanField(required=False)
     min_price = serializers.IntegerField(required=False, min_value=0)
     max_price = serializers.IntegerField(required=False, min_value=0)
     ordering = serializers.ChoiceField(
@@ -94,14 +99,16 @@ class PublicProductViewSet(viewsets.ReadOnlyModelViewSet):
             tags = [slug.strip() for slug in params["tag"].split(",") if slug.strip()]
             if tags:
                 products = products.filter(tags__slug__in=tags).distinct()
-        if params.get("organic") is True:
-            products = products.filter(tags__slug="organic")
-        elif params.get("organic") is False:
-            products = products.exclude(tags__slug="organic")
-        if params.get("in_season") is True:
-            products = products.filter(tags__slug="in-season")
-        elif params.get("in_season") is False:
-            products = products.exclude(tags__slug="in-season")
+        if "organic" in params:
+            if params["organic"] is True:
+                products = products.filter(tags__slug="organic")
+            elif params["organic"] is False:
+                products = products.exclude(tags__slug="organic")
+        if "in_season" in params:
+            if params["in_season"] is True:
+                products = products.filter(tags__slug="in-season")
+            elif params["in_season"] is False:
+                products = products.exclude(tags__slug="in-season")
         if "min_price" in params:
             products = products.filter(branch_price__gte=params["min_price"])
         if "max_price" in params:

@@ -90,3 +90,60 @@ class ProductApiTests(APITestCase):
         self.assertEqual(filtered.data["results"][0]["tags"], ["organic"])
         self.assertEqual(suggestions.status_code, 200)
         self.assertEqual(suggestions.data["results"][0]["slug"], "carrots")
+
+    def test_catalogue_loads_all_products_when_boolean_filters_omitted(self):
+        organic = ProductTag.objects.create(slug="organic", name="Organic")
+        in_season = ProductTag.objects.create(slug="in-season", name="In season")
+
+        organic_product = Product.objects.create(
+            sku="PINEAPPLE-001",
+            slug="pineapple",
+            category=self.product.category,
+            name="Pineapple",
+            unit="each",
+            base_price_minor=1200,
+        )
+        organic_product.tags.add(organic, in_season)
+
+        season_product = Product.objects.create(
+            sku="TOMATO-001",
+            slug="tomatoes",
+            category=self.product.category,
+            name="Tomatoes",
+            unit="kg",
+            base_price_minor=1600,
+        )
+        season_product.tags.add(in_season)
+
+        for prod in (self.product, organic_product, season_product):
+            ProductBranch.objects.create(
+                branch=self.branch,
+                product=prod,
+                stock_on_hand=5,
+            )
+
+        # Default query without organic/in_season filters must return all products
+        response = self.client.get(f"/api/v1/products/?branch={self.branch.pk}")
+        self.assertEqual(response.status_code, 200)
+        returned_slugs = {p["slug"] for p in response.data["results"]}
+        self.assertEqual(returned_slugs, {"carrots", "pineapple", "tomatoes"})
+
+        # Filtering by organic=true must include organic products (even if in-season)
+        res_org = self.client.get(f"/api/v1/products/?branch={self.branch.pk}&organic=true")
+        self.assertEqual(res_org.status_code, 200)
+        self.assertEqual({p["slug"] for p in res_org.data["results"]}, {"pineapple"})
+
+        # Filtering by in_season=true must include in-season products (even if organic)
+        res_season = self.client.get(f"/api/v1/products/?branch={self.branch.pk}&in_season=true")
+        self.assertEqual(res_season.status_code, 200)
+        self.assertEqual({p["slug"] for p in res_season.data["results"]}, {"pineapple", "tomatoes"})
+
+        # Filtering by organic=false excludes organic products
+        res_no_org = self.client.get(f"/api/v1/products/?branch={self.branch.pk}&organic=false")
+        self.assertEqual(res_no_org.status_code, 200)
+        self.assertEqual({p["slug"] for p in res_no_org.data["results"]}, {"carrots", "tomatoes"})
+
+        # Filtering by in_season=false excludes in-season products
+        res_no_season = self.client.get(f"/api/v1/products/?branch={self.branch.pk}&in_season=false")
+        self.assertEqual(res_no_season.status_code, 200)
+        self.assertEqual({p["slug"] for p in res_no_season.data["results"]}, {"carrots"})

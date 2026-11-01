@@ -32,38 +32,40 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <article className="product-card group">
+    <article className="product-card group flex flex-col h-full">
       <div className="relative">
-        <Link to={`/product/${product.slug}`} className="block overflow-hidden">
+        <Link to={`/product/${product.slug}`} className="block overflow-hidden rounded-2xl bg-brand-cream/60">
           <LazyImage src={product.image_url || categoryImage(product.category)} alt={product.name} className="aspect-[1/1.05] transition-transform duration-500 group-hover:scale-[1.02]" />
         </Link>
         <button
-          className={`absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-white/95 shadow-md transition hover:scale-105 ${isFavorite ? 'text-brand-tomato' : 'text-brand-ink/70'}`}
+          className={`absolute right-3 top-3 grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-full bg-white/85 backdrop-blur-md border border-white/90 shadow-md transition hover:scale-110 active:scale-95 ${isFavorite ? 'text-brand-tomato' : 'text-brand-ink/70'}`}
           aria-label={isFavorite ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
           aria-pressed={isFavorite}
           onClick={() => toggleFavorite(product.id)}
         >
           <Icon name="heart" className={isFavorite ? 'fill-brand-tomato' : ''} />
         </button>
-        {product.tags?.includes('in-season') && <span className="absolute left-3 top-3 rounded-full bg-brand-yellow px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-green">In season</span>}
-        {product.tags?.includes('organic') && <span className="absolute bottom-3 left-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-green">Organic</span>}
-        {available && product.branch_availability.available_quantity <= 5 && <span className="absolute bottom-3 right-3 rounded-full bg-brand-tomato px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">Low stock</span>}
+        {product.tags?.includes('in-season') && <span className="absolute left-2.5 top-2.5 sm:left-3 sm:top-3 rounded-full bg-brand-yellow px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-brand-green">In season</span>}
+        {product.tags?.includes('organic') && <span className="absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 rounded-full bg-white/95 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-brand-green shadow-xs">Organic</span>}
+        {available && product.branch_availability.available_quantity <= 5 && <span className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 rounded-full bg-brand-tomato px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-white">Low stock</span>}
       </div>
-      <div className="px-1 pt-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <Link to={`/product/${product.slug}`} className="line-clamp-1 font-semibold text-brand-ink hover:text-brand-green">{product.name}</Link>
-            <p className="mt-1 text-xs text-brand-ink/55">{product.unit}</p>
+      <div className="px-1 pt-2.5 sm:pt-3 flex flex-col flex-1 justify-between">
+        <div>
+          <div className="flex items-start justify-between gap-1.5 sm:gap-2">
+            <div className="min-w-0 flex-1">
+              <Link to={`/product/${product.slug}`} className="line-clamp-1 font-semibold text-sm sm:text-base text-brand-ink hover:text-brand-green">{product.name}</Link>
+              <p className="mt-0.5 text-[11px] sm:text-xs text-brand-ink/55">{product.unit}</p>
+            </div>
+            <span className="shrink-0 text-xs sm:text-sm font-bold text-brand-green">{money(product.branch_availability?.price_minor ?? product.base_price_minor)}</span>
           </div>
-          <span className="shrink-0 text-sm font-bold text-brand-green">{money(product.branch_availability?.price_minor ?? product.base_price_minor)}</span>
         </div>
         {available ? (
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-            <span className="flex items-center gap-1 text-[11px] text-brand-green"><span className="h-1.5 w-1.5 rounded-full bg-brand-green" />Available</span>
-            <button onClick={quickAdd} className="button button-small button-primary"><Icon name="plus" /> Quick add</button>
+          <div className="mt-2.5 sm:mt-3 flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
+            <span className="flex items-center gap-1 text-[11px] font-medium text-brand-green"><span className="h-1.5 w-1.5 rounded-full bg-brand-green" />Available</span>
+            <button onClick={quickAdd} className="button button-small button-primary w-full sm:w-auto text-xs py-1.5 px-3"><Icon name="plus" /> Quick add</button>
           </div>
         ) : (
-          <div className="mt-3 bg-brand-cream p-2.5">
+          <div className="mt-2.5 sm:mt-3 rounded-xl bg-brand-cream p-2.5">
             <p className="flex items-start gap-1.5 text-[11px] font-semibold leading-4 text-brand-tomato">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-tomato" aria-hidden="true" />
               <span>Unavailable at {branch?.name ?? 'this branch'}</span>

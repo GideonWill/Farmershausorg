@@ -27,6 +27,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     branch_availability = serializers.SerializerMethodField()
     available_at_other_branches = serializers.SerializerMethodField()
+    category = serializers.SlugRelatedField(read_only=True, slug_field="slug")
     tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field="slug")
 
     class Meta:

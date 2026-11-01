@@ -13,7 +13,7 @@ export function FeaturedProductShowcase({
 }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
-  const featured = products.slice(0, 7)
+  const featured = products
 
   useEffect(() => {
     const track = trackRef.current
