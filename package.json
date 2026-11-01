@@ -1,0 +1,28 @@
+{
+  "name": "farmershaus",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "setup": "npm install && npm run backend:setup",
+    "dev": "concurrently --kill-others-on-fail --names api,web \"npm:backend:dev\" \"npm:frontend:dev\"",
+    "frontend:dev": "npm run dev --workspace farmershaus-storefront",
+    "frontend:build": "npm run build --workspace farmershaus-storefront",
+    "frontend:lint": "npm run lint --workspace farmershaus-storefront",
+    "backend:setup": "node scripts/backend.mjs setup",
+    "backend:check": "node scripts/backend.mjs check",
+    "backend:makemigrations": "node scripts/backend.mjs makemigrations",
+    "backend:migrate": "node scripts/backend.mjs migrate",
+    "backend:test": "node scripts/backend.mjs test",
+    "backend:seed": "node scripts/backend.mjs seed_demo_data",
+    "backend:schema": "node scripts/backend.mjs spectacular --validate",
+    "backend:dev": "node scripts/backend.mjs runserver"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

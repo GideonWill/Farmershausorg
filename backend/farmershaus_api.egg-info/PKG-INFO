@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: farmershaus-api
+Version: 0.1.0
+Summary: FarmersHaus Django REST API
+Requires-Python: <3.15,>=3.12
+Requires-Dist: Django<6.0,>=5.2
+Requires-Dist: djangorestframework<3.18,>=3.16
+Requires-Dist: djangorestframework-simplejwt<6,>=5.5
+Requires-Dist: drf-spectacular<1,>=0.28
+Requires-Dist: django-cors-headers<5,>=4.7
+Requires-Dist: python-dotenv<2,>=1.1
+Requires-Dist: psycopg[binary]<4,>=3.2
+Requires-Dist: celery[redis]<6,>=5.5
+Requires-Dist: reportlab<5,>=4.2

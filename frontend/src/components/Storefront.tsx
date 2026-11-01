@@ -1,0 +1,510 @@
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { motion } from 'framer-motion'
+import { useLocation } from 'react-router-dom'
+import { Suspense } from 'react'
+import { api, money, type Branch, type CartValidation, type Product } from '../lib/api'
+import { notify } from '../lib/notifications'
+import { useBaskets, useBranches, useCart, useSiteSettings } from '../hooks/useStoreData'
+import { useStore } from '../stores/store'
+import { Drawer, Icon, Modal } from './ui'
+
+const COPYRIGHT_YEAR = new Date().getFullYear()
+
+function BranchPicker({
+  open,
+  onClose,
+}: {
+  open: boolean
+  onClose: () => void
+}) {
+  const { data: branches = [], isLoading, error } = useBranches()
+  const branch = useStore((state) => state.branch)
+  const setBranch = useStore((state) => state.setBranch)
+  const cartSessionKey = useStore((state) => state.cartSessionKey)
+  const { data: cart } = useCart()
+  const [candidate, setCandidate] = useState<Branch | null>(null)
+  const [validation, setValidation] = useState<CartValidation | null>(null)
+  const [checking, setChecking] = useState(false)
+  const [locationError, setLocationError] = useState('')
+  const queryClient = useQueryClient()
+  const selected = candidate ?? branch
+  const mapUrl = selected?.latitude && selected.longitude
+    ? `https://www.openstreetmap.org/export/embed.html?bbox=${Number(selected.longitude) - 0.035}%2C${Number(selected.latitude) - 0.025}%2C${Number(selected.longitude) + 0.035}%2C${Number(selected.latitude) + 0.025}&layer=mapnik&marker=${selected.latitude}%2C${selected.longitude}`
+    : null
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const nextBranch = (event as CustomEvent<Branch>).detail
+      if (nextBranch) void selectBranch(nextBranch)
+    }
+    window.addEventListener('farmershaus:branch-candidate', handler)
+    return () => window.removeEventListener('farmershaus:branch-candidate', handler)
+  })
+
+  async function selectBranch(nextBranch: Branch) {
+    if (!branch || nextBranch.id === branch.id || !cart?.items.length) {
+      setBranch(nextBranch)
+      setCandidate(null)
+      setValidation(null)
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
+      onClose()
+      return
+    }
+    setCandidate(nextBranch)
+    setChecking(true)
+    setValidation(null)
+    try {
+      const result = await api<CartValidation>('/cart/validate/', {
+        method: 'POST',
+        cartSessionKey,
+        body: JSON.stringify({ cart_id: cart.id, branch_id: nextBranch.id }),
+      })
+      setValidation(result)
+    } catch (error) {
+      notify(error instanceof Error ? error.message : 'We could not check this cart.', 'error')
+    } finally {
+      setChecking(false)
+    }
+  }
+
+  function confirmBranch() {
+    if (!candidate) return
+    setBranch(candidate)
+    setCandidate(null)
+    setValidation(null)
+    queryClient.invalidateQueries({ queryKey: ['cart'] })
+    onClose()
+    notify('Branch updated. Your previous cart is still saved to its original branch.', 'info')
+  }
+
+  function useLocation() {
+    setLocationError('')
+    if (!navigator.geolocation) {
+      setLocationError('Location is not available in this browser.')
+      return
+    }
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        try {
+          const result = await api<{ branch: Branch }>('/branches/nearest/?' + new URLSearchParams({
+            latitude: String(coords.latitude),
+            longitude: String(coords.longitude),
+          }))
+          await selectBranch(result.branch)
+        } catch (error) {
+          setLocationError(error instanceof Error ? error.message : 'We could not find a nearby branch.')
+        }
+      },
+      () => setLocationError('Location permission was not granted. Choose a branch from the list instead.'),
+      { enableHighAccuracy: false, timeout: 10000 },
+    )
+  }
+
+  return (
+    <Modal open={open} onClose={onClose} title={branch ? 'Choose your FarmersHaus' : 'Where should we shop for you?'} size="large">
+      <p className="mb-5 text-sm leading-6 text-brand-ink/70">
+        Pick the branch that will prepare your order. Products and availability are tailored to your choice.
+      </p>
+      <button className="button button-outline mb-3 w-full justify-center sm:w-auto" onClick={useLocation}>
+        <Icon name="pin" /> Use my location
+      </button>
+      {locationError && <p className="mb-3 text-sm text-brand-tomato" role="status">{locationError}</p>}
+      {isLoading && <div className="skeleton h-24" aria-label="Loading branches" />}
+      {error && <p className="rounded-xl bg-red-50 p-4 text-sm text-brand-tomato">Branches could not be loaded: {error.message}</p>}
+      {!isLoading && !error && (
+        <div className="grid gap-4 lg:grid-cols-[1fr_1.1fr]">
+          <div className="space-y-2">
+            {branches.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => void selectBranch(item)}
+                className={`w-full rounded-2xl border p-4 text-left transition hover:border-brand-green hover:bg-brand-green/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-green ${selected?.id === item.id ? 'border-brand-green bg-brand-green/5' : 'border-brand-green/15'}`}
+              >
+                <span className="flex items-center justify-between gap-2 font-semibold text-brand-ink">
+                  {item.name}
+                  {selected?.id === item.id && <Icon name="check" className="text-brand-green" />}
+                </span>
+                <span className="mt-1 block text-sm text-brand-ink/65">{item.address}</span>
+                <span className="mt-3 flex items-center gap-1.5 text-xs font-semibold">
+                  <span className={`h-2 w-2 rounded-full ${item.is_open ? 'bg-brand-green' : 'bg-brand-tomato'}`} />
+                  {item.is_open ? 'Open now' : 'Closed'}
+                  {item.hours_are_placeholder && <span className="font-normal text-brand-ink/45">· hours being confirmed</span>}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div className="overflow-hidden rounded-2xl bg-brand-cream">
+            {mapUrl ? (
+              <iframe
+                title={`Map showing ${selected?.name}`}
+                src={mapUrl}
+                className="h-72 w-full border-0 lg:h-full lg:min-h-[25rem]"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="grid min-h-64 place-items-center p-8 text-center text-sm text-brand-ink/60">
+                Choose a branch to see its map.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      {checking && <p className="mt-4 text-sm text-brand-ink/65">Checking cart availability at the selected branch…</p>}
+      {validation && candidate && (
+        <div className="mt-5 rounded-2xl bg-brand-yellow/20 p-4">
+          <h3 className="font-semibold text-brand-ink">Review your cart before switching</h3>
+          {validation.unavailable_items.length > 0 ? (
+            <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-brand-ink/75">
+              {validation.unavailable_items.map((item) => (
+                <li key={item.cart_item_id}>{item.product_name}: will need checking at {candidate.name}.</li>
+              ))}
+            </ul>
+          ) : <p className="mt-2 text-sm text-brand-ink/75">Your cart items can be checked at this branch.</p>}
+          <p className="mt-2 text-xs leading-5 text-brand-ink/65">
+            The current API keeps carts branch-specific. Your existing items remain saved at {branch?.name}; switching will show this branch’s own cart.
+          </p>
+          <button className="button button-primary mt-4" onClick={confirmBranch}>Use {candidate.name}</button>
+        </div>
+      )}
+    </Modal>
+  )
+}
+
+function Header() {
+  const branch = useStore((state) => state.branch)
+  const setBranch = useStore((state) => state.setBranch)
+  const { data: branches = [], isLoading: branchesLoading } = useBranches()
+  const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen)
+  const [branchOpen, setBranchOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const [suggestions, setSuggestions] = useState<Product[]>([])
+  const [searching, setSearching] = useState(false)
+  const autoLocationAttempted = useRef(false)
+  const navigate = useNavigate()
+  const { data: cart } = useCart()
+  const cartCount = cart?.items.reduce((count, item) => count + item.quantity, 0) ?? 0
+  const { data: site } = useSiteSettings()
+  useEffect(() => {
+    if (branch || branchesLoading || autoLocationAttempted.current || branches.length === 0) return
+    autoLocationAttempted.current = true
+
+    const selectFallbackBranch = () => {
+      if (useStore.getState().branch) return
+      const fallbackBranch = branches.find((item) => item.is_active) ?? branches[0]
+      if (fallbackBranch) setBranch(fallbackBranch)
+    }
+
+    if (!navigator.geolocation) {
+      selectFallbackBranch()
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        void api<{ branch: Branch }>('/branches/nearest/?' + new URLSearchParams({
+          latitude: String(coords.latitude),
+          longitude: String(coords.longitude),
+        }))
+          .then(({ branch: nearestBranch }) => {
+            if (!useStore.getState().branch) setBranch(nearestBranch)
+          })
+          .catch(selectFallbackBranch)
+      },
+      selectFallbackBranch,
+      { enableHighAccuracy: false, maximumAge: 300000, timeout: 10000 },
+    )
+  }, [branch, branches, branchesLoading, setBranch])
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      setBranchOpen(true)
+      const nextBranch = (event as CustomEvent<Branch>).detail
+      if (nextBranch) window.dispatchEvent(new CustomEvent('farmershaus:branch-candidate', { detail: nextBranch }))
+    }
+    window.addEventListener('farmershaus:choose-branch', handler)
+    return () => window.removeEventListener('farmershaus:choose-branch', handler)
+  }, [])
+
+  async function searchProducts(value: string) {
+    setSearch(value)
+    if (!branch || value.trim().length < 2) {
+      setSuggestions([])
+      return
+    }
+    setSearching(true)
+    try {
+      const result = await api<{ results: Product[] }>(`/search/suggestions/?${new URLSearchParams({ branch: branch.id, q: value })}`)
+      setSuggestions(result.results)
+    } catch (error) {
+      notify(error instanceof Error ? error.message : 'Search is unavailable.', 'error')
+    } finally {
+      setSearching(false)
+    }
+  }
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (search.trim()) navigate(`/shop?search=${encodeURIComponent(search.trim())}`)
+    setSuggestions([])
+  }
+
+  return (
+    <>
+      <div className="bg-brand-green px-4 py-2 text-center text-xs font-semibold tracking-wide text-white sm:text-sm">
+        {site?.contact.announcement_bar_text || 'Fresh from our farmers to your family — order online today.'}
+      </div>
+      <header data-storefront-nav className="sticky top-0 z-50 border-b border-brand-green/10 bg-white/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center gap-1.5 px-4 py-2 sm:gap-3 sm:px-6 sm:py-3 md:flex-nowrap lg:gap-6 lg:px-10">
+          <button className="icon-button lg:hidden" aria-label="Open menu" onClick={() => setMobileOpen(true)}><Icon name="menu" /></button>
+          <Link to="/" className="shrink-0" aria-label="FarmersHaus home">
+            <img className="h-11 w-auto sm:h-14" src="/brand/farmershaus-logo.png" alt="FarmersHaus" />
+          </Link>
+          <nav className="hidden items-center gap-5 lg:flex">
+            <NavLink className="nav-link" to="/shop">Shop</NavLink>
+            <NavLink className="nav-link" to="/baskets">Food baskets</NavLink>
+            <NavLink className="nav-link" to="/recipes">Recipes</NavLink>
+            <NavLink className="nav-link" to="/find-us">Find us</NavLink>
+            <a className="nav-link" href="/#our-story">Our story</a>
+          </nav>
+          <div className="relative order-last w-full md:order-none md:ml-auto md:min-w-48 md:max-w-md md:flex-1">
+            <form onSubmit={submitSearch} className="relative">
+              <Icon name="search" className="search-field__icon pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand-green/65" />
+              <input
+                aria-label="Search products"
+                value={search}
+                onChange={(event) => void searchProducts(event.target.value)}
+                onFocus={() => search.length >= 2 && void searchProducts(search)}
+                placeholder="Search fresh produce…"
+                className="field search-field w-full"
+              />
+            </form>
+            {(suggestions.length > 0 || searching) && (
+              <div className="absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-brand-green/10 bg-white p-2 shadow-xl">
+                {searching && <p className="p-3 text-sm text-brand-ink/55">Searching…</p>}
+                {suggestions.map((product) => (
+                  <button
+                    key={product.id}
+                    className="block w-full rounded-xl px-3 py-2 text-left text-sm hover:bg-brand-green/5"
+                    onClick={() => { navigate(`/product/${product.slug}`); setSuggestions([]); setSearch('') }}
+                  >
+                    <span className="font-semibold">{product.name}</span>
+                    <span className="ml-2 text-brand-ink/50">{product.unit}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <button className="branch-chip flex min-w-0 max-w-[6.5rem] px-2 sm:max-w-none sm:px-3" onClick={() => setBranchOpen(true)}>
+            <Icon name="pin" className="shrink-0" />
+            <span className="max-w-[4rem] truncate sm:max-w-36">{branch?.name ?? 'Choose branch'}</span>
+          </button>
+          <Link className="icon-button" to="/account" aria-label="Your account"><Icon name="user" /></Link>
+          <button className="relative icon-button" onClick={() => setCartDrawerOpen(true)} aria-label={`Open cart, ${cartCount} items`}>
+            <Icon name="cart" />
+            <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand-yellow px-1 text-[10px] font-bold text-brand-green">{cartCount}</span>
+          </button>
+        </div>
+      </header>
+      <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} title="Menu">
+        <nav className="flex flex-col gap-1 px-5 py-4">
+          <button onClick={() => { setBranchOpen(true); setMobileOpen(false) }} className="button button-outline mb-3 justify-start"><Icon name="pin" />{branch?.name ?? 'Choose your branch'}</button>
+          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/shop">Shop produce</NavLink>
+          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/baskets">Food baskets</NavLink>
+          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/recipes">Recipes</NavLink>
+          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/find-us">Find a branch</NavLink>
+          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/contact">Contact us</NavLink>
+          <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link" to="/account">My account</NavLink>
+          <form onSubmit={submitSearch} className="mt-4 flex gap-2">
+            <input value={search} onChange={(event) => void searchProducts(event.target.value)} className="field min-w-0 flex-1" placeholder="Search products" />
+            <button className="icon-button" aria-label="Search"><Icon name="search" /></button>
+          </form>
+        </nav>
+      </Drawer>
+      <BranchPicker open={branchOpen} onClose={() => setBranchOpen(false)} />
+    </>
+  )
+}
+
+function Footer() {
+  const { data: site } = useSiteSettings()
+  const { data: branches = [] } = useBranches()
+  const selectedBranch = useStore((state) => state.branch)
+  const branch = selectedBranch ?? branches.find((item) => item.is_active) ?? null
+  const contact = site?.contact
+  const numbers = [contact?.primary_phone || '+233 55 420 8446', contact?.secondary_phone || '+233 55 048 8906']
+  const openingHours = branch ? Object.entries(branch.opening_hours).filter(([, hours]) => hours) : []
+  const directionsUrl = branch?.latitude && branch.longitude
+    ? `https://www.google.com/maps/dir/?api=1&destination=${branch.latitude},${branch.longitude}`
+    : branch?.address
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.address)}`
+      : '/find-us'
+  return (
+    <footer className="store-footer">
+      <div className="store-footer__hero">
+        <div className="store-footer__hero-content">
+          <img className="store-footer__logo" src="/brand/farmershaus-logo.png" alt="FarmersHaus" />
+          <p className="store-footer__eyebrow">Everyday fruits and veggies</p>
+          <h2>FRESH FOOD.<br />HAPPIER DAYS.</h2>
+          <p className="store-footer__tagline">{site?.site.tagline ?? 'Everyday Fruits and Veggies — a healthy happy life.'}</p>
+          <Link className="store-footer__cta" to="/find-us">FIND YOUR FARMERSHAUS <Icon name="arrow" /></Link>
+        </div>
+        <div className="store-footer__details">
+          <section>
+            <h3>OPENING HOURS</h3>
+            <p className="store-footer__branch">{branch?.name ?? 'Our branches'}</p>
+            {openingHours.length ? openingHours.map(([day, hours]) => (
+              <p key={day}>{day}: {hours ? `${hours.open} – ${hours.close}` : 'Closed'}</p>
+            )) : <p>{branch?.hours_are_placeholder ? 'Please contact the branch to confirm today’s hours.' : 'Hours vary by branch. Please contact us to confirm.'}</p>}
+            <Link to="/find-us" className="store-footer__text-link">View all branches <Icon name="arrow" /></Link>
+          </section>
+          <section>
+            <h3>LOCATION</h3>
+            <p className="store-footer__branch">{branch?.name ?? 'Serving Accra, Ghana'}</p>
+            <p>{branch?.address ?? 'Choose a nearby FarmersHaus branch for your order.'}</p>
+            <a className="store-footer__text-link" href={directionsUrl} target={directionsUrl.startsWith('http') ? '_blank' : undefined} rel={directionsUrl.startsWith('http') ? 'noreferrer' : undefined}>GET DIRECTIONS <Icon name="arrow" /></a>
+          </section>
+          <section>
+            <h3>EXPLORE</h3>
+            <div className="store-footer__menu">
+              <Link to="/shop">Shop produce</Link><Link to="/baskets">Food baskets</Link><Link to="/recipes">Recipes</Link><Link to="/about">Our story</Link>
+            </div>
+            <div className="store-footer__contact">
+              {numbers.map((number) => <a key={number} href={`tel:${number.replace(/\s/g, '')}`}>{number}</a>)}
+              <a href={`mailto:${contact?.email ?? 'info@farmershausgh.com'}`}>{contact?.email ?? 'info@farmershausgh.com'}</a>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div className="store-footer__bottom">
+        <span>© {COPYRIGHT_YEAR} FarmersHaus. Freshness for every day.</span>
+        <div className="store-footer__legal"><Link to="/faqs">FAQs</Link><Link to="/delivery-info">Delivery</Link><Link to="/terms">Terms</Link><Link to="/privacy">Privacy</Link><Link to="/refund-policy">Refund policy</Link></div>
+        {contact?.social_links && Object.entries(contact.social_links).length > 0 && <div className="store-footer__social">{Object.entries(contact.social_links).map(([name, url]) => <a key={name} href={url} target="_blank" rel="noreferrer" className="capitalize">{name}</a>)}</div>}
+      </div>
+    </footer>
+  )
+}
+
+function WhatsAppButton() {
+  const { data: site } = useSiteSettings()
+  const [open, setOpen] = useState(false)
+  const numbers = site?.contact.whatsapp_numbers ?? []
+  if (!numbers.length) return null
+  return (
+    <div className="fixed right-0 top-1/2 z-40 -translate-y-1/2 group">
+      <div className={`absolute right-full top-1/2 mr-3 w-64 max-w-[calc(100vw-4.5rem)] -translate-y-1/2 rounded-2xl bg-white p-4 shadow-xl transition ${open ? 'pointer-events-auto translate-x-0 opacity-100' : 'pointer-events-none translate-x-2 opacity-0 group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-x-0 group-focus-within:opacity-100'}`}>
+        <p className="mb-2 text-sm font-bold text-brand-green">Chat with FarmersHaus</p>
+        {numbers.map((number) => (
+          <a key={number} className="block rounded-lg px-2 py-2 text-sm hover:bg-brand-green/5" href={`https://wa.me/${number.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">{number}</a>
+        ))}
+      </div>
+      <button onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-haspopup="true" className="whatsapp-tab" aria-label="Chat with us on WhatsApp">
+        <Icon name="whatsapp" className="h-7 w-7" />
+        <span>WhatsApp</span>
+      </button>
+    </div>
+  )
+}
+
+function CartDrawer() {
+  const open = useStore((state) => state.cartDrawerOpen)
+  const setOpen = useStore((state) => state.setCartDrawerOpen)
+  const branch = useStore((state) => state.branch)
+  const cartSessionKey = useStore((state) => state.cartSessionKey)
+  const { data: cart, isLoading } = useCart()
+  const queryClient = useQueryClient()
+  const { data: baskets = [] } = useBaskets()
+  const mutation = useMutation({
+    mutationFn: async ({ itemId, quantity }: { itemId: string; quantity?: number }) => {
+      if (quantity === undefined) {
+        return api(`/cart/items/${itemId}/`, { method: 'DELETE', cartSessionKey })
+      }
+      return api(`/cart/items/${itemId}/`, {
+        method: 'PATCH',
+        cartSessionKey,
+        body: JSON.stringify({ quantity }),
+      })
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
+    onError: (error) => notify(error instanceof Error ? error.message : 'Cart update failed.', 'error'),
+  })
+
+  const basketPrices = new Map(baskets.map((basket) => [basket.id, basket.base_price_minor]))
+  const subtotal = cart?.items.reduce((sum, item) => {
+    const price = item.product?.unit_price_minor ?? basketPrices.get(item.basket_package?.id ?? '') ?? 0
+    return sum + price * item.quantity
+  }, 0) ?? 0
+
+  return (
+    <Drawer open={open} onClose={() => setOpen(false)} title="Your basket">
+      {!branch ? <p className="p-6 text-sm text-brand-ink/60">Choose a branch to start shopping.</p>
+        : isLoading ? <div className="space-y-3 p-6">{[1, 2, 3].map((item) => <div key={item} className="skeleton h-20" />)}</div>
+          : !cart?.items.length ? (
+            <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
+              <span className="mb-4 text-5xl" aria-hidden="true">🧺</span>
+              <h3 className="font-brand-heading text-2xl font-bold text-brand-green">Your basket is waiting</h3>
+              <p className="mt-2 text-sm text-brand-ink/60">Add something fresh and lovely to get started.</p>
+              <Link to="/shop" onClick={() => setOpen(false)} className="button button-primary mt-5">Shop produce</Link>
+            </div>
+          ) : (
+            <>
+              <p className="px-6 pt-4 text-xs text-brand-ink/50">Prepared by {branch.name}</p>
+              <div className="flex-1 space-y-3 overflow-y-auto p-5">
+                {cart.items.map((item) => {
+                  const name = item.product?.name ?? item.basket_package?.name ?? 'Item'
+                  const price = item.product?.unit_price_minor ?? basketPrices.get(item.basket_package?.id ?? '') ?? 0
+                  return (
+                    <div className="flex gap-3 rounded-2xl border border-brand-green/10 p-3" key={item.id}>
+                      <div className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-brand-cream text-2xl">🥑</div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold">{name}</p>
+                        <p className="mt-1 text-xs text-brand-ink/55">{money(price)} × {item.quantity}</p>
+                        <div className="mt-2 flex items-center gap-2">
+                          <button aria-label={`Decrease ${name} quantity`} className="quantity-button" onClick={() => mutation.mutate({ itemId: item.id, quantity: Math.max(1, item.quantity - 1) })}><Icon name="minus" /></button>
+                          <span className="min-w-4 text-center text-xs">{item.quantity}</span>
+                          <button aria-label={`Increase ${name} quantity`} className="quantity-button" onClick={() => mutation.mutate({ itemId: item.id, quantity: item.quantity + 1 })}><Icon name="plus" /></button>
+                          <button className="ml-auto text-xs font-semibold text-brand-tomato hover:underline" onClick={() => mutation.mutate({ itemId: item.id })}>Remove</button>
+                        </div>
+                      </div>
+                      <span className="text-sm font-bold">{money(price * item.quantity)}</span>
+                    </div>
+                  )
+                })}
+              </div>
+              <div className="border-t border-brand-green/10 p-5">
+                <div className="mb-4 flex justify-between text-sm"><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
+                <Link to="/cart" onClick={() => setOpen(false)} className="button button-primary w-full justify-center">View full cart <Icon name="arrow" /></Link>
+                <p className="mt-3 text-center text-xs text-brand-ink/45">Delivery fees are calculated at checkout.</p>
+              </div>
+            </>
+          )}
+    </Drawer>
+  )
+}
+
+export function Storefront() {
+  const { data: site } = useSiteSettings()
+  const { data: cart } = useCart()
+  const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen)
+  const location = useLocation()
+  return (
+    <>
+      <Header />
+      <main>
+        <Suspense fallback={<div className="section-wrap"><div className="skeleton min-h-64" aria-label="Loading page" /></div>}>
+          <motion.div key={location.pathname} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
+            <Outlet />
+          </motion.div>
+        </Suspense>
+      </main>
+      <Footer />
+      <WhatsAppButton />
+      <CartDrawer />
+      <button className="sr-only" onClick={() => setCartDrawerOpen(true)}>Open cart {cart?.items.length ?? 0}</button>
+      <div className="sr-only" aria-live="polite">{site?.contact.announcement_bar_text}</div>
+    </>
+  )
+}
