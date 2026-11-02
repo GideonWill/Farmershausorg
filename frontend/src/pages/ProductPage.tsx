@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
-import { api, money, type Product } from '../lib/api'
+import { money } from '../lib/api'
 import { categoryImage } from '../lib/images'
 import { useStore } from '../stores/store'
 import { addToCart, switchToBranch } from '../lib/shopping'
 import { notify } from '../lib/notifications'
 import { Icon, LazyImage } from '../components/ui'
-import { useProducts } from '../hooks/useStoreData'
+import { useProduct, useProducts } from '../hooks/useStoreData'
 import { ProductCard } from '../components/ProductCard'
 
 export function ProductPage() {
@@ -17,11 +17,7 @@ export function ProductPage() {
   const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen)
   const queryClient = useQueryClient()
   const [imageIndex, setImageIndex] = useState(0)
-  const { data: product, isLoading, error } = useQuery({
-    queryKey: ['product', branch?.id, slug],
-    queryFn: () => api<Product>(`/products/${slug}/?branch=${branch?.id}`),
-    enabled: Boolean(branch && slug),
-  })
+  const { data: product, isLoading, error } = useProduct(slug)
   const { data: products = [] } = useProducts()
   const relatedProducts = products.filter((item) => item.category === product?.category && item.id !== product?.id)
   if (isLoading) return <div className="section-wrap"><div className="grid gap-8 md:grid-cols-2"><div className="skeleton aspect-square rounded-3xl" /><div className="space-y-4"><div className="skeleton h-8 w-2/3" /><div className="skeleton h-5 w-1/3" /></div></div></div>

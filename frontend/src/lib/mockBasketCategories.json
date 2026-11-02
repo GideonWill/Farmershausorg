@@ -1,0 +1,32 @@
+[
+  {
+    "id": "94658106-396d-4c8e-a30d-148f7ec4df14",
+    "slug": "fresh-fruit",
+    "name": "Fresh Fruit",
+    "display_order": 0
+  },
+  {
+    "id": "71a87019-32ed-4887-91c2-d68c74dd5c85",
+    "slug": "everyday-vegetables",
+    "name": "Everyday Vegetables",
+    "display_order": 1
+  },
+  {
+    "id": "c17f930a-e60c-4ed8-85c8-0d36fb78af82",
+    "slug": "family-market",
+    "name": "Family Market",
+    "display_order": 2
+  },
+  {
+    "id": "442be69a-a5e2-41bf-8c6d-672a243f0b62",
+    "slug": "crunchy-salad",
+    "name": "Crunchy Salad",
+    "display_order": 3
+  },
+  {
+    "id": "b38ea0b0-13d4-48ce-88c5-2e983adae365",
+    "slug": "soup-starters",
+    "name": "Soup Starters",
+    "display_order": 4
+  }
+]

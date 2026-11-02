@@ -1,0 +1,314 @@
+[
+  {
+    "id": "ebfa22db-016d-4081-89c2-ef8ff4549a4d",
+    "sku": "FH-DEMO-BASKET-SALAD",
+    "slug": "crunchy-salad-basket",
+    "name": "Crunchy Salad Basket",
+    "category": "crunchy-salad",
+    "category_name": "Crunchy Salad",
+    "description": "Crisp, colorful produce for a fresh salad at home.",
+    "base_price_minor": 7200,
+    "image_url": "",
+    "is_placeholder": false,
+    "gift_message_allowed": false,
+    "components": [
+      {
+        "product": "da3ab0f7-09fe-41c8-9d73-1dfd1eaaafb9",
+        "product_name": "Carrots",
+        "product_unit": "kg",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "015572f9-3113-4254-a817-cf7c59f1838f",
+        "product_name": "Cucumber",
+        "product_unit": "each",
+        "quantity": 2.0,
+        "is_optional": false
+      },
+      {
+        "product": "be29471f-c687-43fd-a6f3-7f1442359cf3",
+        "product_name": "Lemon",
+        "product_unit": "each",
+        "quantity": 2.0,
+        "is_optional": false
+      },
+      {
+        "product": "79c3c272-c012-4b24-a585-1c86c6874fe4",
+        "product_name": "Lettuce",
+        "product_unit": "each",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "5ef52b1d-8611-45a1-ba4f-03898ddcbd06",
+        "product_name": "Spring onion",
+        "product_unit": "bunch",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "2c972fa8-2c3b-44ad-b296-ad29cbada81a",
+        "product_name": "Tomatoes",
+        "product_unit": "kg",
+        "quantity": 1.0,
+        "is_optional": false
+      }
+    ],
+    "branch_availability": {
+      "is_available": true,
+      "price_minor": 7200
+    }
+  },
+  {
+    "id": "3e6f2bd8-4d33-4221-8e8a-a9d2ee05f726",
+    "sku": "FH-DEMO-BASKET-VEGGIE",
+    "slug": "everyday-veggie-basket",
+    "name": "Everyday Veggie Basket",
+    "category": "everyday-vegetables",
+    "category_name": "Everyday Vegetables",
+    "description": "Everyday vegetables for fresh, home-cooked meals.",
+    "base_price_minor": 9200,
+    "image_url": "",
+    "is_placeholder": false,
+    "gift_message_allowed": false,
+    "components": [
+      {
+        "product": "9bfc1361-6cb8-40db-a624-78b7fd168353",
+        "product_name": "Cabbage",
+        "product_unit": "each",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "da3ab0f7-09fe-41c8-9d73-1dfd1eaaafb9",
+        "product_name": "Carrots",
+        "product_unit": "kg",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "53ed321b-4c6d-44ea-af88-0312f306dd6d",
+        "product_name": "Fresh pepper",
+        "product_unit": "250 g pack",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "79c3c272-c012-4b24-a585-1c86c6874fe4",
+        "product_name": "Lettuce",
+        "product_unit": "each",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "dd1ad89a-4a8b-4cb2-bd24-7a342d3551cc",
+        "product_name": "Onions",
+        "product_unit": "kg",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "2c972fa8-2c3b-44ad-b296-ad29cbada81a",
+        "product_name": "Tomatoes",
+        "product_unit": "kg",
+        "quantity": 2.0,
+        "is_optional": false
+      }
+    ],
+    "branch_availability": {
+      "is_available": true,
+      "price_minor": 9200
+    }
+  },
+  {
+    "id": "e097ecda-0046-4cb1-af0a-62a7cafc702b",
+    "sku": "FH-DEMO-BASKET-FAMILY",
+    "slug": "family-market-basket",
+    "name": "Family Market Basket",
+    "category": "family-market",
+    "category_name": "Family Market",
+    "description": "A generous mix of fresh produce and everyday staples.",
+    "base_price_minor": 15800,
+    "image_url": "",
+    "is_placeholder": false,
+    "gift_message_allowed": false,
+    "components": [
+      {
+        "product": "0eae6e12-56ce-4222-a3a2-67690d55a04b",
+        "product_name": "Banana",
+        "product_unit": "kg",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "c9e79a4c-4c50-4378-b1e3-c321f5020a8b",
+        "product_name": "Farm eggs",
+        "product_unit": "tray",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "95833dd8-2d05-4c03-9473-866b023229e4",
+        "product_name": "Local rice",
+        "product_unit": "1 kg pack",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "dd1ad89a-4a8b-4cb2-bd24-7a342d3551cc",
+        "product_name": "Onions",
+        "product_unit": "kg",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "b3916235-423f-42a9-971c-c568cb7545d8",
+        "product_name": "Pineapple",
+        "product_unit": "each",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "2a8766ec-0e0d-4061-8a74-cbe3641dc555",
+        "product_name": "Sweet potato",
+        "product_unit": "kg",
+        "quantity": 2.0,
+        "is_optional": false
+      },
+      {
+        "product": "2c972fa8-2c3b-44ad-b296-ad29cbada81a",
+        "product_name": "Tomatoes",
+        "product_unit": "kg",
+        "quantity": 2.0,
+        "is_optional": false
+      }
+    ],
+    "branch_availability": {
+      "is_available": true,
+      "price_minor": 15800
+    }
+  },
+  {
+    "id": "9118c067-b459-4eaa-bfca-8197f5fb65ca",
+    "sku": "FH-DEMO-BASKET-FRUIT",
+    "slug": "fresh-fruit-basket",
+    "name": "Fresh Fruit Basket",
+    "category": "fresh-fruit",
+    "category_name": "Fresh Fruit",
+    "description": "A colorful fruit selection for sharing at home.",
+    "base_price_minor": 7500,
+    "image_url": "",
+    "is_placeholder": false,
+    "gift_message_allowed": false,
+    "components": [
+      {
+        "product": "df999d48-5d0a-4788-9c7f-525c4b1e4b79",
+        "product_name": "Apple",
+        "product_unit": "each",
+        "quantity": 2.0,
+        "is_optional": false
+      },
+      {
+        "product": "9117d5cb-a9aa-4869-aad9-1a4e9c97a2b2",
+        "product_name": "Avocado",
+        "product_unit": "each",
+        "quantity": 2.0,
+        "is_optional": false
+      },
+      {
+        "product": "0eae6e12-56ce-4222-a3a2-67690d55a04b",
+        "product_name": "Banana",
+        "product_unit": "kg",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "c2830ac0-9b8f-4e51-a34a-f6d8b73182c5",
+        "product_name": "Orange",
+        "product_unit": "kg",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "b3916235-423f-42a9-971c-c568cb7545d8",
+        "product_name": "Pineapple",
+        "product_unit": "each",
+        "quantity": 1.0,
+        "is_optional": false
+      }
+    ],
+    "branch_availability": {
+      "is_available": true,
+      "price_minor": 7500
+    }
+  },
+  {
+    "id": "ca9f6709-0faf-4fcf-a8c3-3b34f80b31d5",
+    "sku": "FH-DEMO-BASKET-SOUP",
+    "slug": "ghanaian-soup-starter-basket",
+    "name": "Ghanaian Soup Starter Basket",
+    "category": "soup-starters",
+    "category_name": "Soup Starters",
+    "description": "Fresh local staples to get a comforting soup started.",
+    "base_price_minor": 11400,
+    "image_url": "",
+    "is_placeholder": false,
+    "gift_message_allowed": false,
+    "components": [
+      {
+        "product": "53ed321b-4c6d-44ea-af88-0312f306dd6d",
+        "product_name": "Fresh pepper",
+        "product_unit": "250 g pack",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "ac50f0af-e3d8-4789-8af8-3788ce661867",
+        "product_name": "Garden eggs",
+        "product_unit": "kg",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "961b747f-9d8d-4cdc-b433-ed7859964e7d",
+        "product_name": "Ginger",
+        "product_unit": "250 g pack",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "70081c78-379d-4ed0-878e-e5c59e08ed24",
+        "product_name": "Kontomire",
+        "product_unit": "bunch",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "cf0a14db-8b3a-4f75-bb02-93477811b3f3",
+        "product_name": "Okra",
+        "product_unit": "500 g pack",
+        "quantity": 1.0,
+        "is_optional": false
+      },
+      {
+        "product": "dd1ad89a-4a8b-4cb2-bd24-7a342d3551cc",
+        "product_name": "Onions",
+        "product_unit": "kg",
+        "quantity": 2.0,
+        "is_optional": false
+      },
+      {
+        "product": "2c972fa8-2c3b-44ad-b296-ad29cbada81a",
+        "product_name": "Tomatoes",
+        "product_unit": "kg",
+        "quantity": 2.0,
+        "is_optional": false
+      }
+    ],
+    "branch_availability": {
+      "is_available": true,
+      "price_minor": 11400
+    }
+  }
+]

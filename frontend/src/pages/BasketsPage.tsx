@@ -1,15 +1,14 @@
 import { useMemo, useRef, useState, type MouseEvent } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { api, getList, money, type BasketPackage, type Product } from '../lib/api'
-import { useBaskets, useProducts } from '../hooks/useStoreData'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { api, money, type BasketPackage, type Product } from '../lib/api'
+import { useBasketCategories, useBaskets, useProducts } from '../hooks/useStoreData'
 import { useStore } from '../stores/store'
 import { notify } from '../lib/notifications'
 import { playAddToBasketSound, prepareAddToBasketSound } from '../lib/addToBasketSound'
 import { Icon, LazyImage } from '../components/ui'
 import { flyToCart } from '../lib/cartFlyEffect'
 
-type BasketCategory = { id: string; slug: string; name: string; display_order: number }
 type BasketFlight = { id: number; image: string; left: number; top: number; x: number; y: number }
 
 const TOTE_IMAGE = '/brand/farmershaus-produce-tote.png'
@@ -31,11 +30,7 @@ export function BasketsPage() {
   const [selectedItems, setSelectedItems] = useState<Record<string, number>>({})
   const [flight, setFlight] = useState<BasketFlight | null>(null)
   const [basketPulse, setBasketPulse] = useState(0)
-  const { data: categories = [], error: categoriesError } = useQuery({
-    queryKey: ['basket-categories'],
-    queryFn: async () => getList(await api<BasketCategory[] | { results: BasketCategory[] }>('/basket-categories/')),
-    staleTime: 5 * 60 * 1000,
-  })
+  const { data: categories = [] } = useBasketCategories()
 
   const visibleBaskets = category ? baskets.filter((basket) => basket.category === category) : baskets
   const visibleProducts = useMemo(() => {
@@ -267,7 +262,6 @@ export function BasketsPage() {
               <button onClick={() => setCategory('')} className={`filter-chip ${!category ? 'filter-chip-active' : ''}`}>All baskets</button>
               {categories.map((item) => <button key={item.id} onClick={() => setCategory(item.id)} className={`filter-chip ${category === item.id ? 'filter-chip-active' : ''}`}>{item.name}</button>)}
             </div>
-            {categoriesError && <p className="mb-5 bg-red-50 p-4 text-sm text-brand-tomato">Basket categories could not be loaded: {categoriesError.message}</p>}
             {isLoading ? <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[1, 2, 3].map((item) => <div key={item} className="skeleton aspect-[1.2]" />)}</div>
               : error ? <p className="bg-red-50 p-5 text-brand-tomato">{error.message}</p>
                 : visibleBaskets.length ? (

@@ -4,10 +4,16 @@ import { getAuthTokens } from '../lib/auth'
 import { api, getList, type BasketPackage, type Branch, type Cart, type Category, type Product, type SiteSettings } from '../lib/api'
 import { useStore } from '../stores/store'
 import mockStoreData from '../lib/mockStoreData.json'
+import mockBasketsData from '../lib/mockBaskets.json'
+import mockBasketCategoriesData from '../lib/mockBasketCategories.json'
+
+export type BasketCategory = { id: string; slug: string; name: string; display_order: number }
 
 const FALLBACK_BRANCHES: Branch[] = mockStoreData.branches as Branch[]
 const FALLBACK_CATEGORIES: Category[] = mockStoreData.categories as Category[]
 const FALLBACK_PRODUCTS: Product[] = mockStoreData.products as unknown as Product[]
+const FALLBACK_BASKETS: BasketPackage[] = mockBasketsData as unknown as BasketPackage[]
+const FALLBACK_BASKET_CATEGORIES: BasketCategory[] = mockBasketCategoriesData as unknown as BasketCategory[]
 
 export function useBranches() {
   return useQuery({
@@ -140,6 +146,25 @@ export function useProducts(filters: {
   })
 }
 
+export function useProduct(slug: string) {
+  const branch = useResolvedBranch()
+  const fallbackProduct = FALLBACK_PRODUCTS.find((p) => p.slug === slug || p.id === slug) ?? null
+  return useQuery({
+    queryKey: ['product', branch?.id, slug],
+    queryFn: async () => {
+      try {
+        return await api<Product>(`/products/${slug}/?branch=${branch?.id}`)
+      } catch {
+        if (fallbackProduct) return fallbackProduct
+        throw new Error('Product not found')
+      }
+    },
+    enabled: Boolean(slug),
+    initialData: fallbackProduct ?? undefined,
+    staleTime: 3 * 60 * 1000,
+  })
+}
+
 export function useBaskets() {
   const branch = useResolvedBranch()
   return useQuery({
@@ -149,12 +174,31 @@ export function useBaskets() {
         const res = await api<BasketPackage[] | { results: BasketPackage[] }>(
           `/basket-packages/?branch=${branch?.id}`,
         )
-        return getList(res)
+        const list = getList(res)
+        return list.length > 0 ? list : FALLBACK_BASKETS
       } catch {
-        return []
+        return FALLBACK_BASKETS
       }
     },
     staleTime: 3 * 60 * 1000,
+    initialData: FALLBACK_BASKETS,
+  })
+}
+
+export function useBasketCategories() {
+  return useQuery({
+    queryKey: ['basket-categories'],
+    queryFn: async () => {
+      try {
+        const res = await api<BasketCategory[] | { results: BasketCategory[] }>('/basket-categories/')
+        const list = getList(res)
+        return list.length > 0 ? list : FALLBACK_BASKET_CATEGORIES
+      } catch {
+        return FALLBACK_BASKET_CATEGORIES
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+    initialData: FALLBACK_BASKET_CATEGORIES,
   })
 }
 
