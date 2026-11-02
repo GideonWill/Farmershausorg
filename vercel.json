@@ -1,62 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "backend": {
-      "root": "backend",
-      "framework": "django"
-    },
-    "frontend": {
-      "root": "frontend",
-      "framework": "vite",
-      "buildCommand": "vite build",
-      "outputDirectory": "dist",
-      "bindings": [
-        {
-          "type": "service",
-          "service": "backend",
-          "format": "url",
-          "env": "BACKEND_INTERNAL_URL"
-        }
-      ],
-      "rewrites": [
-        {
-          "source": "/(.*)",
-          "destination": "/index.html"
-        }
-      ]
-    }
-  },
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
+  "installCommand": "cd frontend && npm install",
   "rewrites": [
     {
-      "source": "/api/chat",
-      "destination": {
-        "service": "frontend"
-      }
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/admin/(.*)",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/static/(.*)",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
       "source": "/(.*)",
-      "destination": {
-        "service": "frontend"
-      }
+      "destination": "/index.html"
     }
   ]
 }
-
