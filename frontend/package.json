@@ -37,14 +37,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "oxlint": "^1.89.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "~7.0.2",
+    "typescript": "^6.0.3",
     "vite": "^8.3.5"
-  },
-  "optionalDependencies": {
-    "@typescript/typescript-linux-x64": "7.0.2",
-    "@typescript/typescript-linux-arm64": "7.0.2",
-    "@typescript/typescript-darwin-x64": "7.0.2",
-    "@typescript/typescript-darwin-arm64": "7.0.2",
-    "@typescript/typescript-win32-x64": "7.0.2"
   }
 }
