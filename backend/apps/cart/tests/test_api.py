@@ -168,3 +168,20 @@ class CartApiTests(APITestCase):
         guest_cart = Cart.objects.get(guest_session_key=self.guest_key)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(guest_cart.items.get(product=self.product).quantity, 500)
+
+    def test_clear_cart_removes_all_items(self):
+        self.add_product(quantity=2)
+        self.add_product(product=self.other_product, quantity=3)
+        read = self.client.get(
+            f"/api/v1/cart/?branch={self.branch.pk}",
+            HTTP_X_CART_SESSION=self.guest_key,
+        )
+        self.assertEqual(len(read.data["cart"]["items"]), 2)
+
+        # Clear via DELETE /api/v1/cart/?branch=...
+        clear_response = self.client.delete(
+            f"/api/v1/cart/?branch={self.branch.pk}",
+            HTTP_X_CART_SESSION=self.guest_key,
+        )
+        self.assertEqual(clear_response.status_code, 200)
+        self.assertEqual(len(clear_response.data["cart"]["items"]), 0)

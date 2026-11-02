@@ -7,6 +7,7 @@ import { useStore } from '../stores/store'
 import { notify } from '../lib/notifications'
 import { playAddToBasketSound, prepareAddToBasketSound } from '../lib/addToBasketSound'
 import { Icon, LazyImage } from '../components/ui'
+import { flyToCart } from '../lib/cartFlyEffect'
 
 type BasketCategory = { id: string; slug: string; name: string; display_order: number }
 type BasketFlight = { id: number; image: string; left: number; top: number; x: number; y: number }
@@ -92,6 +93,7 @@ export function BasketsPage() {
   const addBasketMutation = useMutation({
     mutationFn: (basket: BasketPackage) => {
       if (!branch) throw new Error('Choose a branch before adding a basket.')
+      flyToCart(null, basket.image_url)
       return api('/cart/items/', {
         method: 'POST',
         cartSessionKey,
@@ -101,7 +103,7 @@ export function BasketsPage() {
     onSuccess: () => {
       playAddToBasketSound()
       void queryClient.invalidateQueries({ queryKey: ['cart'] })
-      setCartDrawerOpen(true)
+      setTimeout(() => setCartDrawerOpen(true), 400)
       notify('Basket added to your cart.', 'success')
     },
     onError: (issue) => notify(issue instanceof Error ? issue.message : 'Could not add this basket.', 'error'),
@@ -115,20 +117,35 @@ export function BasketsPage() {
         product,
         quantity: selectedItems[product.id],
       }))
-      const results = await Promise.allSettled(selections.map(({ product, quantity }) => api('/cart/items/', {
-        method: 'POST',
-        cartSessionKey,
-        body: JSON.stringify({ branch_id: branch.id, product_id: product.id, quantity }),
-      })))
-      const addedIds = selections.filter((_, index) => results[index].status === 'fulfilled').map(({ product }) => product.id)
-      const failedNames = selections.filter((_, index) => results[index].status === 'rejected').map(({ product }) => product.name)
+
+      flyToCart(null, TOTE_IMAGE)
+
+      const addedIds: string[] = []
+      const failedNames: string[] = []
+
+      // Sequential addition to prevent database locks on SQLite
+      for (const { product, quantity } of selections) {
+        try {
+          await api('/cart/items/', {
+            method: 'POST',
+            cartSessionKey,
+            body: JSON.stringify({ branch_id: branch.id, product_id: product.id, quantity }),
+          })
+          addedIds.push(product.id)
+        } catch {
+          failedNames.push(product.name)
+        }
+      }
+
       return { addedIds, failedNames }
     },
     onSuccess: async ({ addedIds, failedNames }) => {
       if (addedIds.length) playAddToBasketSound()
       await queryClient.invalidateQueries({ queryKey: ['cart'] })
       setSelectedItems((current) => Object.fromEntries(Object.entries(current).filter(([id]) => !addedIds.includes(id))))
-      if (addedIds.length) setCartDrawerOpen(true)
+      if (addedIds.length) {
+        setTimeout(() => setCartDrawerOpen(true), 400)
+      }
       if (failedNames.length) {
         notify(`${addedIds.length} item type(s) added. Could not add: ${failedNames.join(', ')}. Your selections remain so you can retry.`, 'error')
       } else {

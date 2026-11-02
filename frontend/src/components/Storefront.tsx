@@ -10,6 +10,8 @@ import { useBaskets, useBranches, useCart, useSiteSettings } from '../hooks/useS
 import { useStore } from '../stores/store'
 import { Drawer, Icon, Modal } from './ui'
 import { SplashScreen } from './SplashScreen'
+import { ShoppingAssistant } from './ShoppingAssistant'
+import { getProduceIcon } from '../lib/images'
 
 const COPYRIGHT_YEAR = new Date().getFullYear()
 
@@ -210,6 +212,7 @@ function ScrollManager() {
 function Header() {
   const branch = useStore((state) => state.branch)
   const setBranch = useStore((state) => state.setBranch)
+  const favorites = useStore((state) => state.favorites)
   const { data: branches = [], isLoading: branchesLoading } = useBranches()
   const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen)
   const [branchOpen, setBranchOpen] = useState(false)
@@ -346,8 +349,21 @@ function Header() {
             <Icon name="pin" className="shrink-0" />
             <span className="max-w-[4rem] truncate sm:max-w-36">{branch?.name ?? 'Choose branch'}</span>
           </button>
+          <Link
+            className="relative icon-button"
+            to="/account#wishlist"
+            aria-label={`Wishlist, ${favorites.length} saved items`}
+            title="Wishlist / Saved Items"
+          >
+            <Icon name="heart" className={favorites.length > 0 ? 'fill-brand-tomato text-brand-tomato' : ''} />
+            {favorites.length > 0 && (
+              <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand-tomato px-1 text-[10px] font-bold text-white shadow-xs">
+                {favorites.length}
+              </span>
+            )}
+          </Link>
           <Link className="icon-button" to="/account" aria-label="Your account"><Icon name="user" /></Link>
-          <button className="relative icon-button" onClick={() => setCartDrawerOpen(true)} aria-label={`Open cart, ${cartCount} items`}>
+          <button id="header-cart-button" className="relative icon-button" onClick={() => setCartDrawerOpen(true)} aria-label={`Open cart, ${cartCount} items`}>
             <Icon name="cart" />
             <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand-yellow px-1 text-[10px] font-bold text-brand-green">{cartCount}</span>
           </button>
@@ -400,6 +416,15 @@ function Header() {
               <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/contact">
                 <span>Contact & support</span>
                 <Icon name="arrow" className="h-4 w-4 opacity-50" />
+              </NavLink>
+              <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/account#wishlist">
+                <span className="flex items-center gap-2">
+                  <Icon name="heart" className={favorites.length > 0 ? "text-brand-tomato fill-brand-tomato h-4 w-4" : "h-4 w-4"} />
+                  <span>Wishlist / Saved Items</span>
+                </span>
+                <span className="rounded-full bg-brand-tomato/10 px-2 py-0.5 text-xs font-bold text-brand-tomato">
+                  {favorites.length}
+                </span>
               </NavLink>
               <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/account">
                 <span>My account</span>
@@ -568,10 +593,14 @@ function CartDrawer() {
               <div className="flex-1 space-y-3 overflow-y-auto p-5">
                 {cart.items.map((item) => {
                   const name = item.product?.name ?? item.basket_package?.name ?? 'Item'
+                  const slug = item.product?.slug ?? item.basket_package?.slug ?? name
+                  const icon = getProduceIcon(slug)
                   const price = item.product?.unit_price_minor ?? basketPrices.get(item.basket_package?.id ?? '') ?? 0
                   return (
                     <div className="flex gap-3 rounded-2xl border border-brand-green/10 p-3" key={item.id}>
-                      <div className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-brand-cream text-2xl">🥑</div>
+                      <div className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-brand-cream text-2xl select-none" aria-label={name} title={name}>
+                        {icon}
+                      </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold">{name}</p>
                         <p className="mt-1 text-xs text-brand-ink/55">{money(price)} × {item.quantity}</p>
@@ -628,6 +657,7 @@ export function Storefront() {
       </main>
       <Footer />
       <WhatsAppButton />
+      <ShoppingAssistant />
       <CartDrawer />
       <button className="sr-only" onClick={() => setCartDrawerOpen(true)}>Open cart {cart?.items.length ?? 0}</button>
       <div className="sr-only" aria-live="polite">{site?.contact.announcement_bar_text}</div>

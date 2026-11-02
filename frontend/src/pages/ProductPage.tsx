@@ -49,7 +49,7 @@ export function ProductPage() {
           <p className="mt-5 leading-7 text-brand-ink/70">{product.description || `Fresh ${product.name.toLowerCase()}, selected for your table.`}</p>
           {product.tags?.length > 0 && <div className="mt-5 flex flex-wrap gap-2">{product.tags.map((tag) => <span key={tag} className="rounded-full bg-brand-cream px-3 py-1 text-xs font-semibold capitalize text-brand-green">{tag.replaceAll('-', ' ')}</span>)}</div>}
           {product.branch_availability.is_available ? (
-            <button className="button button-primary mt-7 w-full justify-center sm:w-auto" onClick={() => addToCart(product, branch, cartSessionKey, queryClient, setCartDrawerOpen)}>Add to basket <Icon name="plus" /></button>
+            <button className="button button-primary mt-7 w-full justify-center sm:w-auto" onClick={(e) => addToCart(product, branch, cartSessionKey, queryClient, setCartDrawerOpen, e)}>Add to basket <Icon name="plus" /></button>
           ) : (
             <div className="mt-7 rounded-2xl border border-brand-green/15 bg-brand-cream/80 p-5">
               <div className="flex items-center gap-2">

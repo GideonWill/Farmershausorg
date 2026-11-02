@@ -23,12 +23,12 @@ export function ProductCard({ product }: { product: Product }) {
   const selectedOther = product.available_at_other_branches?.[0]
   const selectedInventory = selectedOther && branches.find((item) => item.id === selectedOther.id)
 
-  function quickAdd() {
+  function quickAdd(e?: React.MouseEvent) {
     if (!available) {
       notify(`Unavailable at ${branch?.name ?? 'your branch'}. Check other branches for availability.`, 'info')
       return
     }
-    addToCart(product, branch, cartSessionKey, queryClient, setCartDrawerOpen)
+    addToCart(product, branch, cartSessionKey, queryClient, setCartDrawerOpen, e)
   }
 
   return (
@@ -62,7 +62,7 @@ export function ProductCard({ product }: { product: Product }) {
         {available ? (
           <div className="mt-2.5 sm:mt-3 flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
             <span className="flex items-center gap-1 text-[11px] font-medium text-brand-green"><span className="h-1.5 w-1.5 rounded-full bg-brand-green" />Available</span>
-            <button onClick={quickAdd} className="button button-small button-primary w-full sm:w-auto text-xs py-1.5 px-3"><Icon name="plus" /> Quick add</button>
+            <button onClick={(e) => quickAdd(e)} className="button button-small button-primary w-full sm:w-auto text-xs py-1.5 px-3"><Icon name="plus" /> Quick add</button>
           </div>
         ) : (
           <div className="mt-2.5 sm:mt-3 rounded-xl border border-brand-green/10 bg-brand-cream/80 p-2.5">

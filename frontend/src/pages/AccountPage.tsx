@@ -1,12 +1,14 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { api, getList, type Address, type Cart, type CustomerOrder, type CustomerProfile, type Product } from '../lib/api'
+import { api, getList, money, type Address, type Cart, type CustomerOrder, type CustomerProfile, type Product } from '../lib/api'
 import { useProducts } from '../hooks/useStoreData'
 import { clearAuthTokens, getAuthTokens, saveAuthTokens } from '../lib/auth'
 import { notify } from '../lib/notifications'
 import { useStore } from '../stores/store'
 import { Icon } from '../components/ui'
+import { categoryImage } from '../lib/images'
+import { addToCart } from '../lib/shopping'
 
 type AddressDraft = Omit<Address, 'id' | 'created_at' | 'updated_at'>
 const emptyAddress: AddressDraft = {
@@ -46,6 +48,15 @@ export function AccountPage() {
     const updateAuth = () => setAuthenticated(Boolean(getAuthTokens()))
     window.addEventListener('farmershaus:auth-changed', updateAuth)
     return () => window.removeEventListener('farmershaus:auth-changed', updateAuth)
+  }, [])
+
+  useEffect(() => {
+    if (window.location.hash === '#wishlist') {
+      const el = document.getElementById('wishlist')
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 120)
+      }
+    }
   }, [])
 
   const profileQuery = useQuery({
@@ -357,13 +368,82 @@ export function AccountPage() {
         <p className="mt-3 text-xs leading-5 text-brand-ink/50">Reorder matches the original item names to products currently available at your selected branch. Basket packages and items without a current match are not recreated.</p>
       </section>
 
-      <section aria-labelledby="wishlist-title">
-        <h2 className="mb-4 font-brand-heading text-2xl font-bold text-brand-green" id="wishlist-title">Wishlist</h2>
-        {favorites.length ? <div><p className="mb-3 text-sm text-brand-ink/65">{favorites.length} saved item{favorites.length === 1 ? '' : 's'} are stored on this device.</p><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{favorites.map((id) => {
-          const product = products.find((item) => item.id === id)
-          return <article className="account-address" key={id}><div className="min-w-0 flex-1">{product ? <><Link className="font-bold text-brand-green" to={`/product/${product.slug}`}>{product.name}</Link><p className="mt-1 text-xs text-brand-ink/55">{product.branch_availability.is_available ? 'Available at selected branch' : 'Check another branch for availability'}</p></> : <p className="text-sm text-brand-ink/60">This saved product is no longer in the current catalogue.</p>}</div><button className="icon-button text-brand-tomato" aria-label={`Remove ${product?.name ?? 'saved product'} from wishlist`} onClick={() => toggleFavorite(id)}><Icon name="close" /></button></article>
-        })}</div></div>
-          : <p className="bg-brand-cream p-5 text-sm text-brand-ink/65">Tap the heart on a product to save it to your wishlist.</p>}
+      <section id="wishlist" aria-labelledby="wishlist-title" className="scroll-mt-24">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-brand-heading text-2xl font-bold text-brand-green" id="wishlist-title">Wishlist</h2>
+          {favorites.length > 0 && (
+            <span className="rounded-full bg-brand-green/10 px-3 py-1 text-xs font-bold text-brand-green">
+              {favorites.length} saved item{favorites.length === 1 ? '' : 's'}
+            </span>
+          )}
+        </div>
+        {favorites.length ? (
+          <div>
+            <p className="mb-4 text-sm text-brand-ink/65">
+              Saved items are stored on this device. Click on any item to view details or add directly to your basket.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {favorites.map((id) => {
+                const product = products.find((item) => item.id === id)
+                return (
+                  <article className="account-address flex items-center gap-3 p-3 rounded-2xl bg-white border border-brand-green/15 shadow-2xs hover:border-brand-green/30 transition" key={id}>
+                    {product ? (
+                      <>
+                        <Link to={`/product/${product.slug}`} className="shrink-0 overflow-hidden rounded-xl bg-brand-cream/60">
+                          <img
+                            src={product.image_url || categoryImage(product.category)}
+                            alt={product.name}
+                            className="h-16 w-16 object-cover"
+                          />
+                        </Link>
+                        <div className="min-w-0 flex-1">
+                          <Link className="font-bold text-brand-green hover:underline text-sm truncate block" to={`/product/${product.slug}`}>
+                            {product.name}
+                          </Link>
+                          <p className="text-xs font-semibold text-brand-ink/80 mt-0.5">
+                            {money(product.branch_availability?.price_minor ?? product.base_price_minor)}
+                            <span className="text-brand-ink/50 font-normal ml-1">/ {product.unit}</span>
+                          </p>
+                          <p className={`mt-0.5 text-[11px] font-medium ${product.branch_availability?.is_available ? 'text-brand-green' : 'text-brand-tomato'}`}>
+                            {product.branch_availability?.is_available ? 'In stock at selected branch' : 'Check other branches'}
+                          </p>
+                          {product.branch_availability?.is_available && (
+                            <button
+                              type="button"
+                              onClick={(e) => addToCart(product, branch, cartSessionKey, queryClient, setCartDrawerOpen, e)}
+                              className="mt-2 button button-small button-primary text-[11px] py-1 px-2.5"
+                            >
+                              Add to basket +
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm text-brand-ink/60">This saved product is no longer in the current catalogue.</p>
+                      </div>
+                    )}
+                    <button
+                      className="icon-button text-brand-tomato shrink-0 self-start"
+                      aria-label={`Remove ${product?.name ?? 'saved product'} from wishlist`}
+                      onClick={() => toggleFavorite(id)}
+                    >
+                      <Icon name="close" />
+                    </button>
+                  </article>
+                )
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-brand-green/20 bg-brand-cream/50 p-6 text-center">
+            <p className="text-sm text-brand-ink/70">You have no items in your wishlist yet.</p>
+            <p className="text-xs text-brand-ink/50 mt-1">Tap the heart on any product card while shopping to save it here for later.</p>
+            <Link to="/shop" className="button button-small button-outline mt-3 inline-flex">
+              Explore Store Shelves
+            </Link>
+          </div>
+        )}
       </section>
     </div>
   )

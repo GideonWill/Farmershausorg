@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { toastEvent } from '../lib/notifications'
+import { getProduceIcon } from '../lib/images'
 
 type ModalProps = {
   open: boolean
@@ -152,7 +153,11 @@ export function LazyImage({
           className={`h-full w-full object-cover transition duration-700 ${loaded ? 'scale-100 blur-0' : 'scale-[1.04] blur-md'}`}
         />
       )}
-      {!image && <div className="grid h-full w-full place-items-center text-5xl" aria-label={alt}>🥬</div>}
+      {!image && (
+        <div className="grid h-full w-full place-items-center text-4xl select-none" aria-label={alt} title={alt}>
+          {getProduceIcon(alt)}
+        </div>
+      )}
     </div>
   )
 }

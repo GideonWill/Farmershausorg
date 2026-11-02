@@ -73,6 +73,23 @@ class CartView(CartAccessMixin, APIView):
         cart = self.cart_queryset(branch_id).get(pk=cart.pk)
         return Response({"cart": CartReadSerializer(cart).data})
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("branch", OpenApiTypes.UUID, OpenApiParameter.QUERY, required=True)
+        ],
+        responses=CartResponseSerializer,
+    )
+    def delete(self, request):
+        branch_id = validate_active_branch_id(request.query_params.get("branch"))
+        cart = self.owner_queryset(request).filter(branch_id=branch_id).first()
+        if cart is None:
+            return Response({"cart": None})
+        with transaction.atomic():
+            cart = Cart.objects.select_for_update().get(pk=cart.pk)
+            cart.items.all().delete()
+        cart = self.cart_queryset(branch_id).get(pk=cart.pk)
+        return Response({"cart": CartReadSerializer(cart).data})
+
 
 class CartItemCollectionView(CartAccessMixin, APIView):
     permission_classes = (AllowAny,)
@@ -155,6 +172,28 @@ class CartItemCollectionView(CartAccessMixin, APIView):
             CartReadSerializer(cart).data,
             status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
         )
+
+    @extend_schema(
+        operation_id="cart_clear",
+        parameters=[
+            OpenApiParameter("branch", OpenApiTypes.UUID, OpenApiParameter.QUERY, required=False)
+        ],
+        responses=CartReadSerializer,
+    )
+    def delete(self, request):
+        branch_param = request.query_params.get("branch") or request.data.get("branch_id")
+        branch_id = validate_active_branch_id(branch_param) if branch_param else None
+        carts = self.owner_queryset(request)
+        if branch_id:
+            carts = carts.filter(branch_id=branch_id)
+        cart = carts.first()
+        if cart is None:
+            return Response({"items": []})
+        with transaction.atomic():
+            cart = Cart.objects.select_for_update().get(pk=cart.pk)
+            cart.items.all().delete()
+        cart = self.cart_queryset(cart.branch_id).get(pk=cart.pk)
+        return Response(CartReadSerializer(cart).data)
 
 
 

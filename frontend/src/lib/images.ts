@@ -14,6 +14,56 @@ export const imageMap = {
     beverages: foodPhoto('photo-1551024709-8f23befc6f87'),
     default: foodPhoto('photo-1542838132-92c53300491e'),
   },
+  recipes: {
+    'sunshine-fruit-bowl': foodPhoto('photo-1519996529931-28324d5a630e', 1000),
+    'garden-crunch-salad': foodPhoto('photo-1512621776951-a57141f2eefd', 1000),
+    'mango-banana-smoothie': foodPhoto('photo-1553530666-ba11a7da3888', 1000),
+    'ghanaian-party-jollof': foodPhoto('photo-1563379091339-03b21ab4a4f8', 1000),
+    'kontomire-stew-ampesi': foodPhoto('photo-1546069901-d5bfd2cbfb1f', 1000),
+    'accra-waakye': foodPhoto('photo-1543339308-43e59d6b73a6', 1000),
+    default: foodPhoto('photo-1540420773420-3366772f4999', 1000),
+  },
+  ingredients: {
+    banana: foodPhoto('photo-1571771894821-ce9b6c11b08e', 500),
+    mango: foodPhoto('photo-1553279768-865429fa0078', 500),
+    pineapple: foodPhoto('photo-1550258987-190a2d41a8ba', 500),
+    orange: foodPhoto('photo-1582979512210-99b6a53386f9', 500),
+    lettuce: foodPhoto('photo-1622206151226-18ca2c9ab4a1', 500),
+    tomato: foodPhoto('photo-1592924357228-91a4daadcfea', 500),
+    tomatoes: foodPhoto('photo-1592924357228-91a4daadcfea', 500),
+    cucumber: foodPhoto('photo-1604977042946-1eecc30f269e', 500),
+    avocado: foodPhoto('photo-1523049673857-eb18f1d7b578', 500),
+    yam: foodPhoto('photo-1518977676601-b53f82aba655', 500),
+    'white-yam': foodPhoto('photo-1518977676601-b53f82aba655', 500),
+    kontomire: foodPhoto('photo-1576045057995-568f588f82fb', 500),
+    rice: foodPhoto('photo-1586201375761-83865001e31c', 500),
+    'local-rice': foodPhoto('photo-1586201375761-83865001e31c', 500),
+    'brown-rice': foodPhoto('photo-1586201375761-83865001e31c', 500),
+    beans: foodPhoto('photo-1551462147-37885acc36f1', 500),
+    'black-eyed-peas': foodPhoto('photo-1551462147-37885acc36f1', 500),
+    egg: foodPhoto('photo-1506976785307-8732e854ad03', 500),
+    eggs: foodPhoto('photo-1506976785307-8732e854ad03', 500),
+    'farm-eggs': foodPhoto('photo-1506976785307-8732e854ad03', 500),
+    pepper: foodPhoto('photo-1588252303782-cb80119abd6d', 500),
+    'fresh-pepper': foodPhoto('photo-1588252303782-cb80119abd6d', 500),
+    onion: foodPhoto('photo-1618512496248-a07fe83aa8cb', 500),
+    onions: foodPhoto('photo-1618512496248-a07fe83aa8cb', 500),
+    ginger: foodPhoto('photo-1615485290382-441e4d049cb5', 500),
+    garlic: foodPhoto('photo-1540148426945-6cf22a6b2383', 500),
+    cabbage: foodPhoto('photo-1598030343246-e583c27e0258', 500),
+    carrots: foodPhoto('photo-1598170845058-32b9d6a5c317', 500),
+    carrot: foodPhoto('photo-1598170845058-32b9d6a5c317', 500),
+    oil: foodPhoto('photo-1474979266404-7eaacbcd87c5', 500),
+    'red-palm-oil': foodPhoto('photo-1474979266404-7eaacbcd87c5', 500),
+    'sweet-potato': foodPhoto('photo-1596560548464-f010549b84d7', 500),
+    cassava: foodPhoto('photo-1518977676601-b53f82aba655', 500),
+    cocoyam: foodPhoto('photo-1518977676601-b53f82aba655', 500),
+    watermelon: foodPhoto('photo-1587049352846-4a222e784d38', 500),
+    strawberry: foodPhoto('photo-1464965911861-746a04b4bca6', 500),
+    apple: foodPhoto('photo-1560806887-1e4cd0b6cbd6', 500),
+    honey: foodPhoto('photo-1587049352846-4a222e784d38', 500),
+    milk: foodPhoto('photo-1550583724-b2692b85b150', 500),
+  },
   product: foodPhoto('photo-1542838132-92c53300491e'),
 } as const
 
@@ -29,4 +79,167 @@ export function categoryImage(slug?: string): string {
     return imageMap.categories.groceries
   }
   return imageMap.categories.default
+}
+
+export function recipeImage(slug?: string): string {
+  if (!slug) return imageMap.recipes.default
+  const map = imageMap.recipes as Record<string, string>
+  return map[slug] || imageMap.recipes.default
+}
+
+export function ingredientImage(nameOrSlug?: string): string {
+  if (!nameOrSlug) return imageMap.categories.vegetables
+  const clean = nameOrSlug.toLowerCase().trim().replace(/[^a-z0-9-]/g, '')
+  const map = imageMap.ingredients as Record<string, string>
+
+  if (map[clean]) return map[clean]
+
+  for (const key of Object.keys(map)) {
+    if (clean.includes(key) || key.includes(clean)) {
+      return map[key]
+    }
+  }
+
+  return categoryImage(nameOrSlug)
+}
+
+
+export const PRODUCE_ICONS: Record<string, string> = {
+  // Fruits
+  banana: '🍌',
+  mango: '🥭',
+  apple: '🍎',
+  pineapple: '🍍',
+  orange: '🍊',
+  pawpaw: '🥭',
+  papaya: '🥭',
+  watermelon: '🍉',
+  avocado: '🥑',
+  pear: '🥑',
+  coconut: '🥥',
+  grapes: '🍇',
+  grape: '🍇',
+  strawberry: '🍓',
+  lemon: '🍋',
+  lime: '🍋',
+  corn: '🌽',
+  'sweet-corn': '🌽',
+
+  // Vegetables & Greens
+  tomato: '🍅',
+  tomatoes: '🍅',
+  onion: '🧅',
+  onions: '🧅',
+  pepper: '🌶️',
+  'fresh-pepper': '🌶️',
+  shito: '🌶️',
+  carrot: '🥕',
+  carrots: '🥕',
+  cabbage: '🥬',
+  lettuce: '🥬',
+  cucumber: '🥒',
+  'garden-eggs': '🍆',
+  eggplant: '🍆',
+  okra: '🫛',
+  broccoli: '🥦',
+  cauliflower: '🥦',
+
+  // Roots & Tubers
+  yam: '🥔',
+  'white-yam': '🥔',
+  cassava: '🥔',
+  cocoyam: '🥔',
+  'sweet-potato': '🍠',
+  'irish-potato': '🥔',
+  potato: '🥔',
+  ginger: '🫚',
+  garlic: '🧄',
+  turmeric: '🫚',
+
+  // Greens & Herbs
+  kontomire: '🌿',
+  spinach: '🥬',
+  'spring-onion': '🧅',
+  parsley: '🌿',
+  coriander: '🌿',
+  mint: '🍃',
+  herb: '🌿',
+
+  // Grains & Legumes
+  rice: '🍚',
+  'local-rice': '🍚',
+  'brown-rice': '🍚',
+  beans: '🫘',
+  'black-eyed-peas': '🫘',
+  'brown-beans': '🫘',
+  peas: '🫘',
+  lentils: '🫘',
+  maize: '🌽',
+  millet: '🌾',
+  sorghum: '🌾',
+  flour: '🌾',
+  'cassava-flour': '🌾',
+
+  // Dairy, Eggs & Pantry
+  egg: '🥚',
+  eggs: '🥚',
+  'farm-eggs': '🥚',
+  milk: '🥛',
+  'fresh-milk': '🥛',
+  cheese: '🧀',
+  'cheddar-cheese': '🧀',
+  yoghurt: '🥣',
+  'plain-yoghurt': '🥣',
+  butter: '🧈',
+  'salted-butter': '🧈',
+  honey: '🍯',
+  'natural-honey': '🍯',
+  sugar: '🧂',
+  'cane-sugar': '🧂',
+  oil: '🫒',
+  'red-palm-oil': '🫒',
+  'groundnut-oil': '🫒',
+  'peanut-butter': '🥜',
+  'tomato-paste': '🥫',
+
+  // Beverages
+  water: '💧',
+  'bottled-water': '💧',
+  'coconut-water': '🥥',
+  juice: '🧃',
+  'fresh-orange-juice': '🧃',
+  sobolo: '🌺',
+  'sobolo-drink': '🌺',
+  cocoa: '☕',
+  'cocoa-drink': '☕',
+
+  // Food Baskets
+  basket: '🧺',
+  hamper: '🧺',
+  tote: '🧺',
+  bundle: '🧺',
+}
+
+export function getProduceIcon(nameOrSlug?: string): string {
+  if (!nameOrSlug) return '🌿'
+  const clean = nameOrSlug.toLowerCase().trim().replace(/[^a-z0-9-]/g, ' ')
+  const hyphenated = clean.replace(/\s+/g, '-')
+
+  if (PRODUCE_ICONS[hyphenated]) return PRODUCE_ICONS[hyphenated]
+  if (PRODUCE_ICONS[clean]) return PRODUCE_ICONS[clean]
+
+  for (const [key, icon] of Object.entries(PRODUCE_ICONS)) {
+    if (clean.includes(key) || hyphenated.includes(key)) {
+      return icon
+    }
+  }
+
+  if (clean.includes('fruit')) return '🍎'
+  if (clean.includes('veg') || clean.includes('green') || clean.includes('leaf')) return '🥬'
+  if (clean.includes('root') || clean.includes('tuber')) return '🥔'
+  if (clean.includes('grain') || clean.includes('cereal')) return '🍚'
+  if (clean.includes('drink') || clean.includes('beverage')) return '🧃'
+  if (clean.includes('gift') || clean.includes('pack')) return '🧺'
+
+  return '🌿'
 }
