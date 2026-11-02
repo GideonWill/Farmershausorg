@@ -40,6 +40,10 @@ export function FindUsPage() {
 
   function chooseBranch(branch: Branch) {
     setSelectedId(branch.id)
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      const mapContainer = document.querySelector('.find-us-map')
+      mapContainer?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
 
   function orderFromBranch(branch: Branch) {
@@ -116,6 +120,9 @@ export function FindUsPage() {
                   <span className="mt-2 block text-xs text-brand-ink/55">{Object.entries(branch.opening_hours).map(([day, hours]) => hours ? `${day}: ${hours.open}–${hours.close}` : `${day}: Closed`).join(' · ') || 'Hours not listed'}</span>
                 </button>
                 <div className="mt-3 flex flex-wrap gap-2">
+                  <button type="button" className="text-xs font-bold text-brand-green inline-flex items-center gap-1 cursor-pointer" onClick={() => chooseBranch(branch)}>
+                    <span>Show on map</span> &uarr;
+                  </button>
                   <a className="text-xs font-bold text-brand-green" href={`tel:${branch.phone.replace(/\s/g, '')}`}>Call branch</a>
                   {branch.latitude && branch.longitude && <a className="text-xs font-bold text-brand-green" href={`https://www.google.com/maps/dir/?api=1&destination=${branch.latitude},${branch.longitude}`} target="_blank" rel="noreferrer">Get directions</a>}
                   <button className="ml-auto text-xs font-bold text-brand-green" onClick={() => orderFromBranch(branch)}>Order here <Icon name="arrow" /></button>

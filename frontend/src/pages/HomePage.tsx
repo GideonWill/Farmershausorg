@@ -93,16 +93,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section-wrap text-center">
-        <p className="eyebrow">A note from our market</p>
-        <h2 className="section-title">Freshness belongs in every home.</h2>
-        <div className="mx-auto mt-8 max-w-3xl rounded-[2rem] border border-brand-green/10 bg-white p-8 shadow-card sm:p-12">
-          <span className="text-4xl text-brand-yellow" aria-hidden="true">“</span>
-          <p className="font-brand-heading text-2xl font-semibold leading-snug text-brand-ink sm:text-3xl">We’re making it easier to bring good food to your table, one neighborhood at a time.</p>
-          <p className="mt-5 text-sm font-bold uppercase tracking-widest text-brand-green">The FarmersHaus promise</p>
-          <p className="mt-2 text-xs text-brand-ink/45">Customer stories coming soon</p>
-        </div>
-      </section>
     </div>
   )
 }

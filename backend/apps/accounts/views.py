@@ -13,7 +13,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 
-from apps.accounts.models import OTPChallenge, User
+from apps.accounts.models import BranchMembership, OTPChallenge, User
 from apps.accounts.serializers import (
     CustomerAddressSerializer,
     IdentifierTokenObtainPairSerializer,
@@ -41,6 +41,22 @@ class PublicTokenRefreshView(TokenRefreshView):
 class RegistrationView(CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegistrationSerializer
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        merge_guest_carts(user, self.request.headers.get("X-Cart-Session"))
+        branch_id = self.request.data.get("branch_id")
+        if branch_id:
+            from apps.branches.models import Branch
+            branch = Branch.objects.filter(id=branch_id).first()
+            if branch:
+                user.is_staff = True
+                user.save(update_fields=["is_staff"])
+                BranchMembership.objects.get_or_create(
+                    user=user,
+                    branch=branch,
+                    defaults={"role": self.request.data.get("role", "staff"), "is_active": True},
+                )
 
 
 class OTPRequestView(APIView):

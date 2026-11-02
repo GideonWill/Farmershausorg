@@ -9,7 +9,10 @@ from apps.cart.serializers import normalize_guest_session_key
 def merge_guest_carts(user, guest_session_key):
     if not guest_session_key:
         return
-    guest_session_key = normalize_guest_session_key(guest_session_key)
+    try:
+        guest_session_key = normalize_guest_session_key(guest_session_key)
+    except ValidationError:
+        return
     guest_carts = list(
         Cart.objects.select_for_update()
         .filter(

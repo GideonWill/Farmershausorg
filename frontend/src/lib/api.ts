@@ -1,4 +1,11 @@
-import { clearAuthTokens, getAuthTokens, saveAuthTokens } from './auth'
+import {
+  clearAuthTokens,
+  clearStaffAuthTokens,
+  getAuthTokens,
+  getStaffAuthTokens,
+  saveAuthTokens,
+  saveStaffAuthTokens,
+} from './auth'
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api/v1'
 
@@ -255,17 +262,40 @@ export type OrderPayment = {
   current_attempt?: PaymentAttempt | null
 }
 
-type ApiOptions = RequestInit & { cartSessionKey?: string }
+export type ApiOptions = RequestInit & { cartSessionKey?: string; staffAuth?: boolean }
+
+function getStoredCartSessionKey(): string | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = localStorage.getItem('farmershaus-store')
+    if (raw) {
+      const parsed = JSON.parse(raw) as { state?: { cartSessionKey?: string } }
+      return parsed?.state?.cartSessionKey ?? null
+    }
+  } catch {
+    // ignore
+  }
+  return null
+}
 
 async function apiRequest(path: string, options: ApiOptions = {}): Promise<Response> {
-  const { cartSessionKey, ...requestOptions } = options
+  const { cartSessionKey, staffAuth, ...requestOptions } = options
   const headers = new Headers(requestOptions.headers)
   if (requestOptions.body && !(requestOptions.body instanceof FormData) && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json')
   }
-  if (cartSessionKey) headers.set('X-Cart-Session', cartSessionKey)
+  const sessionKey = cartSessionKey || getStoredCartSessionKey()
+  if (sessionKey && !headers.has('X-Cart-Session')) {
+    headers.set('X-Cart-Session', sessionKey)
+  }
 
-  const tokens = getAuthTokens()
+  const isStaff = Boolean(
+    staffAuth ||
+    path.startsWith('/staff/') ||
+    path.includes('/staff/') ||
+    path.includes('/inventory/')
+  )
+  const tokens = isStaff ? getStaffAuthTokens() : getAuthTokens()
   if (tokens?.access && !headers.has('Authorization')) {
     headers.set('Authorization', `Bearer ${tokens.access}`)
   }
@@ -279,29 +309,56 @@ async function apiRequest(path: string, options: ApiOptions = {}): Promise<Respo
     })
     if (refreshed.ok) {
       const nextTokens = await refreshed.json() as { access: string; refresh?: string }
-      saveAuthTokens({ access: nextTokens.access, refresh: nextTokens.refresh ?? tokens.refresh })
+      const newTokens = { access: nextTokens.access, refresh: nextTokens.refresh ?? tokens.refresh }
+      if (isStaff) {
+        saveStaffAuthTokens(newTokens)
+      } else {
+        saveAuthTokens(newTokens)
+      }
       headers.set('Authorization', `Bearer ${nextTokens.access}`)
       response = await fetch(`${API_BASE_URL}${path}`, { ...requestOptions, headers })
     } else {
-      clearAuthTokens()
+      if (isStaff) {
+        clearStaffAuthTokens()
+      } else {
+        clearAuthTokens()
+      }
     }
   }
 
   return response
 }
 
+const ERROR_CODE_TRANSLATIONS: Record<string, string> = {
+  voucher_not_found: 'Voucher code was not found or is invalid.',
+  voucher_inactive: 'This voucher is not currently active.',
+  branch_not_applicable: 'This voucher cannot be used at the selected branch.',
+  no_applicable_items: 'No items in your basket qualify for this voucher.',
+  minimum_spend_not_met: 'Basket does not meet the minimum spend for this voucher.',
+  no_discount: 'No discount could be applied with this voucher.',
+  usage_limit_reached: 'This voucher has reached its maximum usage limit.',
+  customer_usage_limit_reached: 'You have already redeemed this voucher the maximum allowed times.',
+}
+
 function extractErrorMessage(data: unknown): string {
   if (!data) return ''
-  if (typeof data === 'string') return data
-  if (Array.isArray(data)) return data.map(extractErrorMessage).filter(Boolean).join(' ')
+  if (typeof data === 'string') {
+    return ERROR_CODE_TRANSLATIONS[data] ?? data
+  }
+  if (Array.isArray(data)) {
+    return data.map(extractErrorMessage).filter(Boolean).join(' ')
+  }
   if (typeof data === 'object') {
     const obj = data as Record<string, unknown>
-    if (typeof obj.detail === 'string') return obj.detail
-    if (typeof obj.message === 'string') return obj.message
-    if (obj.code === 'voucher_not_found') return 'Voucher code was not found or is invalid.'
-    return Object.values(obj).map(extractErrorMessage).filter(Boolean).join(' ')
+    if (typeof obj.detail === 'string') return extractErrorMessage(obj.detail)
+    if (typeof obj.message === 'string') return extractErrorMessage(obj.message)
+    if (typeof obj.code === 'string' && ERROR_CODE_TRANSLATIONS[obj.code]) {
+      return ERROR_CODE_TRANSLATIONS[obj.code]
+    }
+    const parts = Object.values(obj).map(extractErrorMessage).filter(Boolean)
+    if (parts.length > 0) return parts.join(' ')
   }
-  return String(data)
+  return ''
 }
 
 export async function api<T>(path: string, options: ApiOptions = {}): Promise<T> {
@@ -316,8 +373,8 @@ export async function api<T>(path: string, options: ApiOptions = {}): Promise<T>
   return response.json() as Promise<T>
 }
 
-export async function downloadFile(path: string, filename: string): Promise<void> {
-  const response = await apiRequest(path)
+export async function downloadFile(path: string, filename: string, options: ApiOptions = {}): Promise<void> {
+  const response = await apiRequest(path, options)
   if (!response.ok) {
     const body = await response.json().catch(() => null) as { detail?: string } | null
     throw new Error(body?.detail ?? `Download failed (${response.status})`)

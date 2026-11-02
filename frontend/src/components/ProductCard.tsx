@@ -61,31 +61,52 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
         {available ? (
           <div className="mt-2.5 sm:mt-3 flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
-            <span className="flex items-center gap-1 text-[11px] font-medium text-brand-green"><span className="h-1.5 w-1.5 rounded-full bg-brand-green" />Available</span>
-            <button onClick={(e) => quickAdd(e)} className="button button-small button-primary w-full sm:w-auto text-xs py-1.5 px-3"><Icon name="plus" /> Quick add</button>
+            <span className="flex items-center gap-1.5 text-[11px] font-medium text-brand-green">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-brand-green" />
+              <span>Available</span>
+            </span>
+            <button
+              type="button"
+              onClick={(e) => quickAdd(e)}
+              className="button button-small button-primary w-full sm:w-auto text-xs py-1.5 px-3"
+            >
+              <Icon name="plus" /> Quick add
+            </button>
           </div>
         ) : (
-          <div className="mt-2.5 sm:mt-3 rounded-xl border border-brand-green/10 bg-brand-cream/80 p-2.5">
-            <p className="flex items-center gap-1.5 text-[11px] font-semibold text-brand-tomato">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-tomato" aria-hidden="true" />
-              <span>Out of stock at {branch?.name ?? 'this branch'}</span>
-            </p>
+          <div className="mt-2.5 sm:mt-3 flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
+            <span className="flex items-center gap-1.5 text-[11px] font-semibold text-brand-tomato">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-tomato opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-tomato" />
+              </span>
+              <span className="sm:hidden">Out of stock</span>
+              <span className="hidden sm:inline">Out of stock at {branch?.name?.replace('FarmersHaus ', '') ?? 'branch'}</span>
+            </span>
+
             {selectedOther ? (
-              <div className="mt-2 border-t border-brand-green/10 pt-2">
-                <p className="text-[10px] leading-tight text-brand-ink/65">
-                  Available for in-store pickup at <span className="font-bold text-brand-green">{selectedOther.name}</span>.
-                </p>
-                <button
-                  onClick={() => void switchToBranch(selectedOther.slug).catch((error: unknown) => notify(error instanceof Error ? error.message : 'Branch switch failed.', 'error'))}
-                  className="mt-1.5 flex items-center gap-1 text-[10px] font-bold tracking-wide text-brand-green hover:underline uppercase"
-                  aria-label={`Switch to ${selectedOther.name} for pickup`}
-                >
-                  <Icon name="pin" className="h-3 w-3 shrink-0" />
-                  <span>Shop at {selectedOther.name} instead</span>
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  void switchToBranch(selectedOther.slug).catch((error: unknown) =>
+                    notify(error instanceof Error ? error.message : 'Branch switch failed.', 'error'),
+                  )
+                }
+                className="button button-small button-outline w-full sm:w-auto text-xs py-1.5 px-2.5 font-bold text-brand-green justify-center truncate"
+                title={`Available for pickup at ${selectedOther.name}`}
+              >
+                <Icon name="pin" className="h-3 w-3 shrink-0" />
+                <span className="sm:hidden truncate">At {selectedOther.name.replace('FarmersHaus ', '')}</span>
+                <span className="hidden sm:inline truncate">Shop at {selectedOther.name.replace('FarmersHaus ', '')}</span>
+              </button>
             ) : (
-              <p className="mt-1.5 text-[10px] text-brand-ink/50">Sold out across neighborhood branches.</p>
+              <button
+                type="button"
+                disabled
+                className="button button-small w-full sm:w-auto text-xs py-1.5 px-3 rounded-full border border-brand-green/10 bg-brand-cream/80 text-brand-ink/40 cursor-not-allowed justify-center"
+              >
+                Sold out
+              </button>
             )}
           </div>
         )}

@@ -312,45 +312,134 @@ function Header() {
         {site?.contact.announcement_bar_text || 'Fresh from our farmers to your family — order online today.'}
       </div>
       <header data-storefront-nav className="sticky top-0 z-50 border-b border-brand-green/10 bg-white/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center gap-1.5 px-4 py-2 sm:gap-3 sm:px-6 sm:py-3 md:flex-nowrap lg:gap-6 lg:px-10">
-          <button className="icon-button lg:hidden" aria-label="Open menu" onClick={() => setMobileOpen(true)}><Icon name="menu" /></button>
-          <Link
-            to="/"
-            className="shrink-0"
-            aria-label="FarmersHaus home"
-            onClick={(event) => {
-              if (event.shiftKey) {
-                window.dispatchEvent(new CustomEvent('farmershaus:replay-splash'))
-              }
-            }}
-          >
-            <img className="h-11 w-auto sm:h-14" src="/brand/farmershaus-logo.png" alt="FarmersHaus" />
-          </Link>
-          <nav className="hidden items-center gap-5 lg:flex">
-            <NavLink className="nav-link" to="/shop">Shop</NavLink>
-            <NavLink className="nav-link" to="/baskets">Food baskets</NavLink>
-            <NavLink className="nav-link" to="/recipes">Recipes</NavLink>
-            <NavLink className="nav-link" to="/find-us">Find us</NavLink>
-          </nav>
-          <div className="relative order-last w-full md:order-none md:ml-auto md:min-w-48 md:max-w-md md:flex-1">
+        <div className="mx-auto max-w-[1440px] px-3 py-2 sm:px-6 sm:py-3 lg:px-10">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-3 lg:gap-6">
+            {/* Left: Hamburger & Brand Logo */}
+            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+              <button className="icon-button lg:hidden" aria-label="Open menu" onClick={() => setMobileOpen(true)}>
+                <Icon name="menu" />
+              </button>
+              <Link
+                to="/"
+                className="shrink-0"
+                aria-label="FarmersHaus home"
+                onClick={(event) => {
+                  if (event.shiftKey) {
+                    window.dispatchEvent(new CustomEvent('farmershaus:replay-splash'))
+                  }
+                }}
+              >
+                <img className="h-8 w-auto sm:h-12 md:h-14" src="/brand/farmershaus-logo.png" alt="FarmersHaus" />
+              </Link>
+              <nav className="hidden items-center gap-5 lg:flex ml-3">
+                <NavLink className="nav-link" to="/shop">Shop</NavLink>
+                <NavLink className="nav-link" to="/baskets">Food baskets</NavLink>
+                <NavLink className="nav-link" to="/recipes">Recipes</NavLink>
+                <NavLink className="nav-link" to="/find-us">Find us</NavLink>
+              </nav>
+            </div>
+
+            {/* Desktop / Tablet Inline Search Bar */}
+            <div className="relative hidden md:block md:min-w-48 md:max-w-md md:flex-1">
+              <form onSubmit={submitSearch} className="relative">
+                <Icon name="search" className="search-field__icon pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand-green/65" />
+                <input
+                  aria-label="Search products"
+                  value={search}
+                  onChange={(event) => void searchProducts(event.target.value)}
+                  onFocus={() => search.length >= 2 && void searchProducts(search)}
+                  placeholder="Search fresh produce…"
+                  className="field search-field w-full"
+                />
+              </form>
+              {(suggestions.length > 0 || searching) && (
+                <div className="absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-brand-green/10 bg-white p-2 shadow-xl">
+                  {searching && <p className="p-3 text-sm text-brand-ink/55">Searching…</p>}
+                  {suggestions.map((product) => (
+                    <button
+                      key={product.id}
+                      className="block w-full rounded-xl px-3 py-2 text-left text-sm hover:bg-brand-green/5"
+                      onClick={() => { navigate(`/product/${product.slug}`); setSuggestions([]); setSearch('') }}
+                    >
+                      <span className="font-semibold">{product.name}</span>
+                      <span className="ml-2 text-brand-ink/50">{product.unit}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Right: Actions Cluster */}
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+              <button
+                className="branch-chip flex min-w-0 max-w-[5.25rem] px-2 text-[11px] sm:max-w-none sm:px-3 sm:text-xs"
+                onClick={() => setBranchOpen(true)}
+                title={branch?.name ?? 'Choose branch'}
+              >
+                <Icon name="pin" className="shrink-0 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="max-w-[3.5rem] truncate sm:max-w-36">{branch?.name?.replace('FarmersHaus ', '') ?? 'Branch'}</span>
+              </button>
+
+              <Link
+                className="relative icon-button hidden min-[400px]:inline-grid"
+                to="/account#wishlist"
+                aria-label={`Wishlist, ${favorites.length} saved items`}
+                title="Wishlist / Saved Items"
+              >
+                <Icon name="heart" className={favorites.length > 0 ? 'fill-brand-tomato text-brand-tomato' : ''} />
+                {favorites.length > 0 && (
+                  <span className="absolute -right-1 -top-1 grid h-4.5 min-w-4.5 place-items-center rounded-full bg-brand-tomato px-1 text-[9px] font-bold text-white shadow-xs">
+                    {favorites.length}
+                  </span>
+                )}
+              </Link>
+
+              <Link
+                className={`relative icon-button transition ${
+                  authenticated
+                    ? 'border border-brand-green/35 bg-brand-green/10 text-brand-green hover:bg-brand-green/15'
+                    : ''
+                }`}
+                to="/account"
+                aria-label={authenticated ? `Your account (${profile?.display_name || 'Signed in'})` : 'Your account'}
+                title={authenticated ? `Signed in as ${profile?.display_name || 'Customer'}` : 'Sign in / Your account'}
+              >
+                <Icon name="user" />
+                {authenticated && (
+                  <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5" title="Logged in">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-600 ring-2 ring-white" />
+                  </span>
+                )}
+              </Link>
+
+              <button id="header-cart-button" className="relative icon-button" onClick={() => setCartDrawerOpen(true)} aria-label={`Open cart, ${cartCount} items`}>
+                <Icon name="cart" />
+                <span className="absolute -right-1 -top-1 grid h-4.5 min-w-4.5 place-items-center rounded-full bg-brand-yellow px-1 text-[9px] font-bold text-brand-green sm:h-5 sm:min-w-5 sm:text-[10px]">{cartCount}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Search Row */}
+          <div className="relative mt-2 md:hidden">
             <form onSubmit={submitSearch} className="relative">
-              <Icon name="search" className="search-field__icon pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand-green/65" />
+              <Icon name="search" className="search-field__icon pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-green/65 h-4 w-4" />
               <input
                 aria-label="Search products"
                 value={search}
                 onChange={(event) => void searchProducts(event.target.value)}
                 onFocus={() => search.length >= 2 && void searchProducts(search)}
                 placeholder="Search fresh produce…"
-                className="field search-field w-full"
+                className="field search-field w-full py-2 pl-9 pr-3 text-xs rounded-xl"
               />
             </form>
             {(suggestions.length > 0 || searching) && (
-              <div className="absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-brand-green/10 bg-white p-2 shadow-xl">
-                {searching && <p className="p-3 text-sm text-brand-ink/55">Searching…</p>}
+              <div className="absolute left-0 right-0 top-full z-50 mt-1.5 rounded-2xl border border-brand-green/10 bg-white p-2 shadow-xl">
+                {searching && <p className="p-2 text-xs text-brand-ink/55">Searching…</p>}
                 {suggestions.map((product) => (
                   <button
                     key={product.id}
-                    className="block w-full rounded-xl px-3 py-2 text-left text-sm hover:bg-brand-green/5"
+                    className="block w-full rounded-xl px-2.5 py-1.5 text-left text-xs hover:bg-brand-green/5"
                     onClick={() => { navigate(`/product/${product.slug}`); setSuggestions([]); setSearch('') }}
                   >
                     <span className="font-semibold">{product.name}</span>
@@ -360,45 +449,6 @@ function Header() {
               </div>
             )}
           </div>
-          <button className="branch-chip flex min-w-0 max-w-[6.5rem] px-2 sm:max-w-none sm:px-3" onClick={() => setBranchOpen(true)}>
-            <Icon name="pin" className="shrink-0" />
-            <span className="max-w-[4rem] truncate sm:max-w-36">{branch?.name ?? 'Choose branch'}</span>
-          </button>
-          <Link
-            className="relative icon-button"
-            to="/account#wishlist"
-            aria-label={`Wishlist, ${favorites.length} saved items`}
-            title="Wishlist / Saved Items"
-          >
-            <Icon name="heart" className={favorites.length > 0 ? 'fill-brand-tomato text-brand-tomato' : ''} />
-            {favorites.length > 0 && (
-              <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand-tomato px-1 text-[10px] font-bold text-white shadow-xs">
-                {favorites.length}
-              </span>
-            )}
-          </Link>
-          <Link
-            className={`relative icon-button transition ${
-              authenticated
-                ? 'border border-brand-green/35 bg-brand-green/10 text-brand-green hover:bg-brand-green/15'
-                : ''
-            }`}
-            to="/account"
-            aria-label={authenticated ? `Your account (${profile?.display_name || 'Signed in'})` : 'Your account'}
-            title={authenticated ? `Signed in as ${profile?.display_name || 'Customer'}` : 'Sign in / Your account'}
-          >
-            <Icon name="user" />
-            {authenticated && (
-              <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5" title="Logged in">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-600 ring-2 ring-white" />
-              </span>
-            )}
-          </Link>
-          <button id="header-cart-button" className="relative icon-button" onClick={() => setCartDrawerOpen(true)} aria-label={`Open cart, ${cartCount} items`}>
-            <Icon name="cart" />
-            <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand-yellow px-1 text-[10px] font-bold text-brand-green">{cartCount}</span>
-          </button>
         </div>
       </header>
       <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} title="Menu">
@@ -606,8 +656,8 @@ function WhatsAppButton() {
   const numbers = site?.contact.whatsapp_numbers ?? []
   if (!numbers.length) return null
   return (
-    <div className="fixed right-0 top-1/2 z-40 -translate-y-1/2 group">
-      <div className={`absolute right-full top-1/2 mr-3 w-64 max-w-[calc(100vw-4.5rem)] -translate-y-1/2 rounded-2xl bg-white p-4 shadow-xl transition ${open ? 'pointer-events-auto translate-x-0 opacity-100' : 'pointer-events-none translate-x-2 opacity-0 group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-x-0 group-focus-within:opacity-100'}`}>
+    <div className="hidden md:block fixed right-0 top-1/2 z-40 -translate-y-1/2 group">
+      <div className={`absolute right-full top-1/2 mr-3 w-64 max-w-[calc(100vw-4.5rem)] -translate-y-1/2 rounded-2xl bg-white p-4 shadow-xl border border-brand-green/10 transition ${open ? 'pointer-events-auto opacity-100 scale-100' : 'pointer-events-none opacity-0 scale-95 group-hover:pointer-events-auto group-hover:opacity-100 group-hover:scale-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100'}`}>
         <p className="mb-2 text-sm font-bold text-brand-green">Chat with FarmersHaus</p>
         {numbers.map((number) => (
           <a key={number} className="block rounded-lg px-2 py-2 text-sm hover:bg-brand-green/5" href={`https://wa.me/${number.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">{number}</a>

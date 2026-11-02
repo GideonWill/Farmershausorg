@@ -136,7 +136,7 @@ export function OrderPage() {
         /* ================================================================ */
         <div className="mb-10 space-y-8">
           {/* Celebratory Hero Card */}
-          <div className="relative overflow-hidden rounded-[2.2rem] bg-gradient-to-br from-brand-green via-[#0e4e37] to-[#073223] p-7 text-white shadow-xl sm:p-10">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-green via-[#0e4e37] to-[#073223] p-4 text-white shadow-xl sm:rounded-[2.2rem] sm:p-10">
             {/* Ambient decorative glow */}
             <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-brand-yellow/15 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-emerald-500/15 blur-2xl" />
@@ -199,10 +199,10 @@ export function OrderPage() {
               )}
 
               {/* Action Buttons */}
-              <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-white/15 pt-6">
+              <div className="mt-8 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 border-t border-white/15 pt-6">
                 <Link
                   to="/account#orders"
-                  className="inline-flex items-center gap-2 rounded-full bg-brand-yellow px-5 py-3 text-xs font-bold text-brand-green shadow-lg transition hover:bg-brand-yellow/90 active:scale-95 sm:text-sm"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-yellow px-5 py-3 text-xs font-bold text-brand-green shadow-lg transition hover:bg-brand-yellow/90 active:scale-95 sm:text-sm"
                 >
                   <span>Go to My Account (View Orders)</span>
                   <Icon name="arrow" className="h-4 w-4" />
@@ -210,7 +210,7 @@ export function OrderPage() {
 
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold text-white backdrop-blur-xs transition hover:bg-white/20 active:scale-95 sm:text-sm"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold text-white backdrop-blur-xs transition hover:bg-white/20 active:scale-95 sm:text-sm"
                   disabled={receipt.isPending}
                   onClick={() => receipt.mutate()}
                 >
@@ -220,7 +220,7 @@ export function OrderPage() {
 
                 <Link
                   to="/shop"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-transparent px-5 py-3 text-xs font-semibold text-white/80 transition hover:bg-white/10 hover:text-white sm:text-sm"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-transparent px-5 py-3 text-xs font-semibold text-white/80 transition hover:bg-white/10 hover:text-white sm:text-sm"
                 >
                   <span>Continue shopping</span>
                 </Link>
@@ -229,7 +229,7 @@ export function OrderPage() {
           </div>
 
           {/* Live Order Timeline */}
-          <section className="rounded-3xl border border-brand-green/15 bg-white p-6 shadow-2xs sm:p-8" aria-labelledby="tracking-title">
+          <section className="rounded-3xl border border-brand-green/15 bg-white p-4 shadow-2xs sm:p-8" aria-labelledby="tracking-title">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-2 border-b border-brand-green/10 pb-4">
               <div>
                 <h2 className="font-brand-heading text-2xl font-bold text-brand-green" id="tracking-title">

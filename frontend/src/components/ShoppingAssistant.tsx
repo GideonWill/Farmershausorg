@@ -136,7 +136,7 @@ export function ShoppingAssistant() {
   return (
     <>
       {/* Floating Action Button with Company Logo only */}
-      <div className="fixed bottom-6 right-6 z-40">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           aria-label={isOpen ? 'Close Assistant' : 'Open Farmershaus Assistant'}
@@ -173,7 +173,7 @@ export function ShoppingAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.95 }}
             transition={{ duration: 0.22, ease: 'easeOut' }}
-            className="fixed bottom-20 right-4 sm:right-6 z-50 flex flex-col w-[410px] sm:w-[480px] max-w-[calc(100vw-2rem)] h-[650px] max-h-[85vh] rounded-3xl bg-white shadow-2xl border border-brand-green/15 overflow-hidden"
+            className="fixed inset-x-2 bottom-18 sm:inset-auto sm:bottom-20 sm:right-6 z-50 flex flex-col w-auto sm:w-[480px] max-w-full sm:max-w-[calc(100vw-2rem)] h-[580px] sm:h-[650px] max-h-[82vh] rounded-3xl bg-white shadow-2xl border border-brand-green/15 overflow-hidden"
           >
             {/* Header with Company Logo */}
             <div className="flex items-center justify-between border-b border-brand-green/10 bg-brand-green px-5 py-4 text-white">

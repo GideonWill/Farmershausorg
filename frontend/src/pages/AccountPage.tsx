@@ -109,16 +109,21 @@ export function AccountPage() {
     mutationFn: async (payload: { endpoint: string; body: Record<string, string> }) =>
       api<{ access: string; refresh: string }>(payload.endpoint, {
         method: 'POST',
+        cartSessionKey,
         body: JSON.stringify(payload.body),
       }),
-    onSuccess: (tokens) => {
+    onSuccess: async (tokens) => {
       saveAuthTokens(tokens)
       setAuthenticated(true)
-      if (searchParams.get('next') === '/checkout') navigate('/checkout')
       setOtpRequested(false)
       setOtpCode('')
+      await queryClient.invalidateQueries({ queryKey: ['cart'] })
+      await queryClient.invalidateQueries({ queryKey: ['me'] })
       void queryClient.invalidateQueries()
       notify('Welcome to FarmersHaus!', 'success')
+      if (searchParams.get('next') === '/checkout') {
+        navigate('/checkout')
+      }
     },
     onError: (error) => notify(error instanceof Error ? error.message : 'Sign in failed.', 'error'),
   })
@@ -141,6 +146,7 @@ export function AccountPage() {
     mutationFn: (body: Record<string, string>) =>
       api<CustomerProfile>('/auth/register/', {
         method: 'POST',
+        cartSessionKey,
         body: JSON.stringify(body),
       }),
     onSuccess: () => {
@@ -498,31 +504,31 @@ export function AccountPage() {
   return (
     <div className="section-wrap min-h-[75vh]">
       {/* Hero Customer Banner */}
-      <div className="relative mb-8 overflow-hidden rounded-[2.2rem] bg-gradient-to-r from-brand-green via-[#0c4a34] to-[#073022] p-6 text-white shadow-xl sm:p-9">
+      <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-r from-brand-green via-[#0c4a34] to-[#073022] p-4 text-white shadow-xl sm:rounded-[2.2rem] sm:p-9">
         {/* Decorative background glow */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand-yellow/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-10 right-1/4 h-48 w-48 rounded-full bg-emerald-500/10 blur-2xl" />
 
-        <div className="relative z-10 flex flex-wrap items-center justify-between gap-6">
-          <div className="flex items-center gap-4 sm:gap-5">
-            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl border-2 border-brand-yellow/40 bg-white/10 text-2xl font-bold text-brand-yellow shadow-inner sm:h-20 sm:w-20 sm:text-3xl">
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 sm:gap-6">
+          <div className="flex items-center gap-3 sm:gap-5">
+            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border-2 border-brand-yellow/40 bg-white/10 text-xl font-bold text-brand-yellow shadow-inner sm:h-20 sm:w-20 sm:text-3xl">
               {initials}
             </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="font-brand-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <h1 className="font-brand-heading text-xl font-bold tracking-tight text-white sm:text-3xl">
                   Welcome back, {profileName.split(' ')[0]}!
                 </h1>
-                <span className="inline-flex items-center gap-1 rounded-full bg-brand-yellow/20 px-2.5 py-0.5 text-[10px] font-bold text-brand-yellow">
+                <span className="inline-flex items-center gap-1 rounded-full bg-brand-yellow/20 px-2 py-0.5 text-[9px] font-bold text-brand-yellow sm:text-[10px] sm:px-2.5">
                   <Icon name="badgeCheck" className="h-3 w-3" /> Verified Member
                 </span>
               </div>
-              <p className="mt-1 text-xs text-white/75 sm:text-sm">
+              <p className="mt-0.5 truncate text-xs text-white/75 sm:text-sm">
                 {profileQuery.data?.phone} {profileQuery.data?.email ? `· ${profileQuery.data.email}` : ''}
               </p>
-              <p className="mt-1 flex items-center gap-1 text-[11px] text-white/60">
+              <p className="mt-0.5 flex items-center gap-1 text-[11px] text-white/60">
                 <Icon name="pin" className="h-3 w-3 text-brand-yellow" />
-                <span>Preferred Branch: {branch?.name ?? 'FarmersHaus Westland'}</span>
+                <span>Preferred: {branch?.name?.replace('FarmersHaus ', '') ?? 'Westland'}</span>
               </p>
             </div>
           </div>
@@ -530,14 +536,14 @@ export function AccountPage() {
           <button
             type="button"
             onClick={signOut}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 active:scale-95"
+            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 active:scale-95 sm:px-4 sm:py-2"
           >
             <span>Sign out</span>
           </button>
         </div>
 
         {/* Quick Stats Grid */}
-        <div className="relative z-10 mt-8 grid grid-cols-2 gap-3 border-t border-white/15 pt-6 sm:grid-cols-4">
+        <div className="relative z-10 mt-6 grid grid-cols-2 gap-2 sm:gap-3 border-t border-white/15 pt-5 sm:grid-cols-4">
           <button
             type="button"
             onClick={() => setActiveTab('orders')}
@@ -578,48 +584,12 @@ export function AccountPage() {
         </div>
       </div>
 
-      {/* Staff Operations Dashboard Access Banner */}
-      {(profileQuery.data?.is_staff || profileQuery.data?.is_super_admin || (profileQuery.data?.branch_memberships?.length ?? 0) > 0) && (
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-brand-green/20 bg-brand-green/[0.07] p-5 shadow-2xs sm:p-6">
-          <div className="flex items-center gap-3.5">
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-brand-green text-brand-yellow shadow-xs">
-              <Icon name="shield" className="h-6 w-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-brand-green px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
-                  Staff &amp; Operations
-                </span>
-                <span className="text-xs text-brand-ink/60">
-                  {profileQuery.data?.branch_memberships?.length
-                    ? profileQuery.data.branch_memberships.map((m) => m.branch_name).join(', ')
-                    : 'System Administrator'}
-                </span>
-              </div>
-              <h2 className="mt-1 font-brand-heading text-lg font-bold text-brand-green">
-                Branch Order Management &amp; Inventory
-              </h2>
-              <p className="mt-0.5 text-xs text-brand-ink/70">
-                Operate on incoming customer orders, confirm and pack orders, assign dispatch riders, and update live branch produce stock.
-              </p>
-            </div>
-          </div>
-          <Link
-            to="/staff"
-            className="inline-flex items-center gap-2 rounded-full bg-brand-green px-5 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-brand-green/90 active:scale-95 sm:text-sm"
-          >
-            <span>Launch Staff Dashboard</span>
-            <Icon name="arrow" className="h-4 w-4" />
-          </Link>
-        </div>
-      )}
-
       {/* Tabs Navigation Bar */}
-      <div id="account-tabs-section" className="mb-8 flex flex-wrap gap-2 border-b border-brand-green/15 pb-2">
+      <div id="account-tabs-section" className="mb-6 flex gap-2 border-b border-brand-green/15 pb-2 overflow-x-auto scrollbar-none whitespace-nowrap -mx-3 px-3 sm:mx-0 sm:px-0 sm:flex-wrap">
         <button
           type="button"
           onClick={() => setActiveTab('profile')}
-          className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition ${
+          className={`shrink-0 flex items-center gap-2 rounded-2xl px-3.5 py-2 text-xs font-bold transition sm:px-4 sm:py-2.5 ${
             activeTab === 'profile'
               ? 'bg-brand-green text-white shadow-xs'
               : 'text-brand-ink/70 hover:bg-brand-green/10 hover:text-brand-green'
@@ -632,7 +602,7 @@ export function AccountPage() {
         <button
           type="button"
           onClick={() => setActiveTab('orders')}
-          className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition ${
+          className={`shrink-0 flex items-center gap-2 rounded-2xl px-3.5 py-2 text-xs font-bold transition sm:px-4 sm:py-2.5 ${
             activeTab === 'orders'
               ? 'bg-brand-green text-white shadow-xs'
               : 'text-brand-ink/70 hover:bg-brand-green/10 hover:text-brand-green'
@@ -654,7 +624,7 @@ export function AccountPage() {
         <button
           type="button"
           onClick={() => setActiveTab('addresses')}
-          className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition ${
+          className={`shrink-0 flex items-center gap-2 rounded-2xl px-3.5 py-2 text-xs font-bold transition sm:px-4 sm:py-2.5 ${
             activeTab === 'addresses'
               ? 'bg-brand-green text-white shadow-xs'
               : 'text-brand-ink/70 hover:bg-brand-green/10 hover:text-brand-green'
@@ -678,7 +648,7 @@ export function AccountPage() {
         <button
           type="button"
           onClick={() => setActiveTab('wishlist')}
-          className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition ${
+          className={`shrink-0 flex items-center gap-2 rounded-2xl px-3.5 py-2 text-xs font-bold transition sm:px-4 sm:py-2.5 ${
             activeTab === 'wishlist'
               ? 'bg-brand-green text-white shadow-xs'
               : 'text-brand-ink/70 hover:bg-brand-green/10 hover:text-brand-green'
@@ -831,7 +801,7 @@ export function AccountPage() {
                     key={order.id}
                     className="rounded-3xl border border-brand-green/15 bg-white p-5 shadow-xs transition hover:border-brand-green/30 sm:p-6"
                   >
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-brand-green/10 pb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-brand-green/10 pb-3">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-brand-ink">Order #{order.order_number}</span>
@@ -852,10 +822,10 @@ export function AccountPage() {
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
                         <button
                           type="button"
-                          className="button button-small button-outline text-xs"
+                          className="button button-small button-outline text-xs flex-1 sm:flex-initial justify-center"
                           disabled={
                             reorderMutation.isPending ||
                             productsQuery.isLoading ||
@@ -868,7 +838,7 @@ export function AccountPage() {
                         </button>
                         <Link
                           to={`/orders/${order.order_number}`}
-                          className="button button-small button-primary text-xs"
+                          className="button button-small button-primary text-xs flex-1 sm:flex-initial justify-center text-center"
                         >
                           View receipt
                         </Link>

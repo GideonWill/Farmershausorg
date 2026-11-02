@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { getAuthTokens } from '../lib/auth'
 import { api, getList, type BasketPackage, type Branch, type Cart, type Category, type Product, type SiteSettings } from '../lib/api'
 import { useStore } from '../stores/store'
 
@@ -81,12 +83,21 @@ export function useBaskets() {
 export function useCart() {
   const branch = useResolvedBranch()
   const cartSessionKey = useStore((state) => state.cartSessionKey)
+  const [hasToken, setHasToken] = useState(() => Boolean(getAuthTokens()?.access))
+
+  useEffect(() => {
+    const onAuth = () => setHasToken(Boolean(getAuthTokens()?.access))
+    window.addEventListener('farmershaus:auth-changed', onAuth)
+    return () => window.removeEventListener('farmershaus:auth-changed', onAuth)
+  }, [])
+
   return useQuery({
-    queryKey: ['cart', branch?.id, cartSessionKey],
+    queryKey: ['cart', branch?.id, cartSessionKey, hasToken ? 'auth' : 'guest'],
     queryFn: async () => (await api<{ cart: Cart | null }>(
       `/cart/?branch=${branch?.id}`,
       { cartSessionKey },
     )).cart,
     enabled: Boolean(branch),
+    refetchOnMount: 'always',
   })
 }

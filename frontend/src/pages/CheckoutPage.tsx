@@ -39,7 +39,13 @@ export function CheckoutPage() {
   const { data: baskets = [] } = useBaskets()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const authenticated = Boolean(getAuthTokens())
+  const [authenticated, setAuthenticated] = useState(() => Boolean(getAuthTokens()))
+
+  useEffect(() => {
+    const updateAuth = () => setAuthenticated(Boolean(getAuthTokens()))
+    window.addEventListener('farmershaus:auth-changed', updateAuth)
+    return () => window.removeEventListener('farmershaus:auth-changed', updateAuth)
+  }, [])
   const [fulfillment, setFulfillment] = useState<'delivery' | 'pickup'>('delivery')
   const [addressId, setAddressId] = useState('')
   const [zoneId, setZoneId] = useState('')
@@ -113,7 +119,12 @@ export function CheckoutPage() {
   const selectedZone = zonesQuery.data?.find((zone) => zone.id === selectedZoneId)
   const deliveryFee = fulfillment === 'delivery' ? selectedZone?.delivery_fee_minor ?? 0 : 0
   const activeVoucher = voucherResult?.code === voucherCode.trim() ? voucherResult : null
-  const activeVoucherError = voucherError?.code === voucherCode.trim() ? voucherError.message : ''
+  const activeVoucherError =
+    voucherError?.code === voucherCode.trim() && typeof voucherError.message === 'string'
+      ? voucherError.message.includes('[object')
+        ? 'Voucher code was not found or is invalid.'
+        : voucherError.message
+      : ''
   const discount = activeVoucher?.discount_minor ?? 0
   const total = Math.max(0, subtotal + deliveryFee - discount)
 
@@ -402,7 +413,7 @@ export function CheckoutPage() {
       <form className="grid items-start gap-8 lg:grid-cols-[1fr_390px]" onSubmit={submitCheckout}>
         <div className="space-y-6">
           {/* Section 1: Fulfillment Type */}
-          <section className="rounded-3xl border border-brand-green/15 bg-white p-6 shadow-2xs sm:p-7">
+          <section className="rounded-3xl border border-brand-green/15 bg-white p-4 shadow-2xs sm:p-7">
             <h2 className="mb-4 flex items-center gap-2 font-brand-heading text-xl font-bold text-brand-green sm:text-2xl">
               <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-green/10 text-xs font-bold text-brand-green">
                 1
@@ -489,7 +500,7 @@ export function CheckoutPage() {
 
           {/* Section 2 (Delivery only): Delivery Address */}
           {fulfillment === 'delivery' && (
-            <section className="rounded-3xl border border-brand-green/15 bg-white p-6 shadow-2xs sm:p-7">
+            <section className="rounded-3xl border border-brand-green/15 bg-white p-4 shadow-2xs sm:p-7">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h2 className="flex items-center gap-2 font-brand-heading text-xl font-bold text-brand-green sm:text-2xl">
                   <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-green/10 text-xs font-bold text-brand-green">
@@ -575,7 +586,7 @@ export function CheckoutPage() {
 
           {/* Section 3 (Delivery only): Delivery Area / Zone */}
           {fulfillment === 'delivery' && (
-            <section className="rounded-3xl border border-brand-green/15 bg-white p-6 shadow-2xs sm:p-7">
+            <section className="rounded-3xl border border-brand-green/15 bg-white p-4 shadow-2xs sm:p-7">
               <h2 className="mb-4 flex items-center gap-2 font-brand-heading text-xl font-bold text-brand-green sm:text-2xl">
                 <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-green/10 text-xs font-bold text-brand-green">
                   3
@@ -684,7 +695,7 @@ export function CheckoutPage() {
           )}
 
           {/* Section 4: Fulfillment Slot */}
-          <section className="rounded-3xl border border-brand-green/15 bg-white p-6 shadow-2xs sm:p-7">
+          <section className="rounded-3xl border border-brand-green/15 bg-white p-4 shadow-2xs sm:p-7">
             <h2 className="mb-4 flex items-center gap-2 font-brand-heading text-xl font-bold text-brand-green sm:text-2xl">
               <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-green/10 text-xs font-bold text-brand-green">
                 {fulfillment === 'delivery' ? '4' : '2'}
@@ -738,7 +749,7 @@ export function CheckoutPage() {
           </section>
 
           {/* Section 5: Order Contact & Special Instructions */}
-          <section className="rounded-3xl border border-brand-green/15 bg-white p-6 shadow-2xs sm:p-7">
+          <section className="rounded-3xl border border-brand-green/15 bg-white p-4 shadow-2xs sm:p-7">
             <h2 className="mb-4 flex items-center gap-2 font-brand-heading text-xl font-bold text-brand-green sm:text-2xl">
               <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-green/10 text-xs font-bold text-brand-green">
                 {fulfillment === 'delivery' ? '5' : '3'}
@@ -776,7 +787,7 @@ export function CheckoutPage() {
 
         {/* Right Column: Order Summary Sidebar */}
         <aside className="sticky top-28 space-y-4">
-          <div className="rounded-3xl border border-brand-green/15 bg-white p-6 shadow-md">
+          <div className="rounded-3xl border border-brand-green/15 bg-white p-4 shadow-md sm:p-6">
             <h2 className="font-brand-heading text-2xl font-bold text-brand-green">Order Summary</h2>
 
             {/* Branch Origin Info */}
@@ -897,7 +908,7 @@ export function CheckoutPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="button button-primary mt-5 w-full justify-center shadow-md py-3 text-sm"
+              className="button button-primary mt-5 w-full justify-center shadow-md py-3.5 text-base sm:py-3 sm:text-sm font-bold"
               disabled={
                 checkoutMutation.isPending ||
                 slotsQuery.isLoading ||

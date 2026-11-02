@@ -13,6 +13,7 @@ const OrderPage = lazy(() => import('../pages/OrderPage').then((module) => ({ de
 const FindUsPage = lazy(() => import('../pages/FindUsPage').then((module) => ({ default: module.FindUsPage })))
 const RecipesPage = lazy(() => import('../pages/RecipesPage').then((module) => ({ default: module.RecipesPage })))
 const InfoPage = lazy(() => import('../pages/InfoPage').then((module) => ({ default: module.InfoPage })))
+const ContactPage = lazy(() => import('../pages/ContactPage').then((module) => ({ default: module.ContactPage })))
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })))
 const StaffDashboardPage = lazy(() => import('../pages/StaffDashboardPage').then((module) => ({ default: module.StaffDashboardPage })))
 
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
       { path: 'recipes', element: <RecipesPage /> },
       { path: 'recipes/:slug', element: <RecipesPage /> },
       { path: 'about', element: <InfoPage /> },
-      { path: 'contact', element: <InfoPage /> },
+      { path: 'contact', element: <ContactPage /> },
       { path: 'faqs', element: <InfoPage /> },
       { path: 'delivery-info', element: <InfoPage /> },
       { path: 'terms', element: <InfoPage /> },
