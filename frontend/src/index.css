@@ -500,13 +500,11 @@ html {
 
 .featured-showcase__slide {
   flex: 0 0 var(--featured-slide-width);
-  opacity: 0.48;
-  filter: blur(2px);
+  opacity: 0.6;
   scroll-snap-align: center;
-  transform: scale(0.84);
+  transform: scale(0.88);
   transform-origin: center;
-  transition: filter 450ms ease, opacity 450ms ease, transform 450ms ease;
-  will-change: filter, opacity, transform;
+  transition: opacity 300ms ease, transform 300ms ease;
 }
 
 .featured-showcase__slide[data-active="true"] {

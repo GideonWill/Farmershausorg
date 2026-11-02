@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
@@ -11,7 +11,10 @@ import { useBaskets, useBranches, useCart, useSiteSettings } from '../hooks/useS
 import { useStore } from '../stores/store'
 import { Drawer, Icon, Modal } from './ui'
 import { SplashScreen } from './SplashScreen'
-import { ShoppingAssistant } from './ShoppingAssistant'
+import { lazy } from 'react'
+const ShoppingAssistant = lazy(() =>
+  import('./ShoppingAssistant').then((m) => ({ default: m.ShoppingAssistant }))
+)
 import { getProduceIcon } from '../lib/images'
 
 const COPYRIGHT_YEAR = new Date().getFullYear()
@@ -221,7 +224,6 @@ function Header() {
   const [search, setSearch] = useState('')
   const [suggestions, setSuggestions] = useState<Product[]>([])
   const [searching, setSearching] = useState(false)
-  const autoLocationAttempted = useRef(false)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [authenticated, setAuthenticated] = useState(() => Boolean(getAuthTokens()))
@@ -249,28 +251,6 @@ function Header() {
       const fallbackBranch = branches.find((item) => item.is_active) ?? branches[0]
       if (fallbackBranch) setBranch(fallbackBranch)
     }
-
-    if (autoLocationAttempted.current) return
-    autoLocationAttempted.current = true
-
-    if (!navigator.geolocation) return
-
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        void api<{ branch: Branch }>('/branches/nearest/?' + new URLSearchParams({
-          latitude: String(coords.latitude),
-          longitude: String(coords.longitude),
-        }))
-          .then(({ branch: nearestBranch }) => {
-            if (nearestBranch && (!useStore.getState().branch || useStore.getState().branch?.id !== nearestBranch.id)) {
-              setBranch(nearestBranch)
-            }
-          })
-          .catch(() => {})
-      },
-      () => {},
-      { enableHighAccuracy: false, maximumAge: 300000, timeout: 5000 },
-    )
   }, [branch, branches, branchesLoading, setBranch])
 
   useEffect(() => {
@@ -801,6 +781,8 @@ export function Storefront() {
   const location = useLocation()
   const [showSplash, setShowSplash] = useState(() => {
     if (typeof window === 'undefined') return false
+    const seen = sessionStorage.getItem('farmershaus:splash-seen')
+    if (seen) return false
     return window.location.pathname === '/' || window.location.pathname === ''
   })
 
@@ -824,7 +806,9 @@ export function Storefront() {
       </main>
       <Footer />
       <WhatsAppButton />
-      <ShoppingAssistant />
+      <Suspense fallback={null}>
+        <ShoppingAssistant />
+      </Suspense>
       <CartDrawer />
       <button className="sr-only" onClick={() => setCartDrawerOpen(true)}>Open cart {cart?.items.length ?? 0}</button>
       <div className="sr-only" aria-live="polite">{site?.contact.announcement_bar_text}</div>

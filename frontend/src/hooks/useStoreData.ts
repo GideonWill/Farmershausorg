@@ -65,6 +65,7 @@ export function useProducts(filters: {
       return getList(payload)
     },
     enabled: Boolean(branch),
+    staleTime: 3 * 60 * 1000,
   })
 }
 
@@ -76,7 +77,7 @@ export function useBaskets() {
       `/basket-packages/?branch=${branch?.id}`,
     )),
     enabled: Boolean(branch),
-    refetchOnMount: 'always',
+    staleTime: 3 * 60 * 1000,
   })
 }
 

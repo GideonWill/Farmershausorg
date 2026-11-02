@@ -23,15 +23,12 @@ export function FarmToBasketExperience() {
     const video = videoRef.current
     if (!video) return
 
-    video.autoplay = !prefersReducedMotion
-
     const startPlayback = () => {
       if (prefersReducedMotion) {
         video.pause()
         setVideoState('paused')
         return
       }
-
       video.muted = true
       void video.play().catch(() => {
         setVideoState('paused')
@@ -43,7 +40,7 @@ export function FarmToBasketExperience() {
         setVideoState('error')
         return
       }
-      startPlayback()
+      setVideoState('playing')
     }
     const handlePlaying = () => setVideoState('playing')
     const handlePause = () => {
@@ -58,7 +55,29 @@ export function FarmToBasketExperience() {
 
     if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) handleReady()
 
+    // IntersectionObserver to pause when off-screen and play when visible
+    let observer: IntersectionObserver | null = null
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting && !prefersReducedMotion) {
+              startPlayback()
+            } else {
+              video.pause()
+              setVideoState('paused')
+            }
+          }
+        },
+        { threshold: 0.15 }
+      )
+      observer.observe(video)
+    } else {
+      startPlayback()
+    }
+
     return () => {
+      if (observer) observer.disconnect()
       video.removeEventListener('loadeddata', handleReady)
       video.removeEventListener('playing', handlePlaying)
       video.removeEventListener('pause', handlePause)
@@ -90,7 +109,7 @@ export function FarmToBasketExperience() {
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           disablePictureInPicture
           aria-label="Farmers harvesting and washing produce before it is packed into a basket"
         />

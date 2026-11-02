@@ -1,4 +1,5 @@
 
+import { memo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { useStore } from '../stores/store'
@@ -9,7 +10,7 @@ import { addToCart, switchToBranch } from '../lib/shopping'
 import { notify } from '../lib/notifications'
 import { Icon, LazyImage } from './ui'
 
-export function ProductCard({ product }: { product: Product }) {
+export const ProductCard = memo(function ProductCard({ product }: { product: Product }) {
   const branch = useStore((state) => state.branch)
   const cartSessionKey = useStore((state) => state.cartSessionKey)
   const toggleFavorite = useStore((state) => state.toggleFavorite)
@@ -114,4 +115,4 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
     </article>
   )
-}
+})

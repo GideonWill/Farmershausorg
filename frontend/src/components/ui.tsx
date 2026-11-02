@@ -169,9 +169,10 @@ export function LazyImage({
           src={src}
           alt={alt}
           loading="lazy"
+          decoding="async"
           onLoad={() => setLoaded(true)}
           onError={() => setFailed(true)}
-          className={`h-full w-full object-cover transition duration-700 ${loaded ? 'scale-100 blur-0' : 'scale-[1.04] blur-md'}`}
+          className={`h-full w-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
         />
       )}
       {!image && (
