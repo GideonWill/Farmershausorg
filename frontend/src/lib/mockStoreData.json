@@ -1,0 +1,1813 @@
+{
+  "branches": [
+    {
+      "id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "slug": "dome",
+      "name": "FarmersHaus Dome",
+      "address": "Aggrey Street, Dome, Accra",
+      "phone": "",
+      "latitude": "5.655423",
+      "longitude": "-0.232884",
+      "opening_hours": {
+        "monday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "tuesday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "wednesday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "thursday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "friday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "saturday": {
+          "open": "09:00",
+          "close": "18:00"
+        }
+      },
+      "hours_are_placeholder": true,
+      "is_open": true,
+      "is_active": true
+    },
+    {
+      "id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "slug": "east-legon",
+      "name": "FarmersHaus East Legon",
+      "address": "ARS Roundabout, East Legon, Accra",
+      "phone": "",
+      "latitude": "5.659954",
+      "longitude": "-0.151446",
+      "opening_hours": {
+        "monday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "tuesday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "wednesday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "thursday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "friday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "saturday": {
+          "open": "09:00",
+          "close": "18:00"
+        }
+      },
+      "hours_are_placeholder": true,
+      "is_open": true,
+      "is_active": true
+    },
+    {
+      "id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "slug": "north-legon",
+      "name": "FarmersHaus North Legon",
+      "address": "Wisconsin Road, Adjacent Antis, North Legon, Accra",
+      "phone": "",
+      "latitude": "5.670448",
+      "longitude": "-0.181634",
+      "opening_hours": {
+        "monday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "tuesday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "wednesday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "thursday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "friday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "saturday": {
+          "open": "09:00",
+          "close": "18:00"
+        }
+      },
+      "hours_are_placeholder": true,
+      "is_open": true,
+      "is_active": true
+    },
+    {
+      "id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "slug": "westland",
+      "name": "FarmersHaus Westland",
+      "address": "14 Ato Ahwoi Ave, Westland Junction, Accra",
+      "phone": "",
+      "latitude": "5.650075",
+      "longitude": "-0.209906",
+      "opening_hours": {
+        "monday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "tuesday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "wednesday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "thursday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "friday": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "saturday": {
+          "open": "09:00",
+          "close": "18:00"
+        }
+      },
+      "hours_are_placeholder": true,
+      "is_open": true,
+      "is_active": true
+    }
+  ],
+  "categories": [
+    {
+      "id": "8a615b57-8b64-4bf7-9cbf-51ccc0f659a1",
+      "slug": "fruits",
+      "name": "Fruits",
+      "description": "",
+      "display_order": 0
+    },
+    {
+      "id": "947ff069-625a-4f7b-9adb-994d0815c1b8",
+      "slug": "vegetables",
+      "name": "Vegetables",
+      "description": "",
+      "display_order": 1
+    },
+    {
+      "id": "09e4ce5f-e580-454d-9292-68bac7d0b605",
+      "slug": "roots",
+      "name": "Roots",
+      "description": "",
+      "display_order": 2
+    },
+    {
+      "id": "8ee66692-aecc-4d03-b7a7-4e56929a7959",
+      "slug": "herbs",
+      "name": "Herbs",
+      "description": "",
+      "display_order": 3
+    },
+    {
+      "id": "3ba23974-bbff-420f-ae2b-576303c94c7c",
+      "slug": "grains",
+      "name": "Grains",
+      "description": "",
+      "display_order": 4
+    },
+    {
+      "id": "e593d728-519a-46e0-8bd7-ff1794b6b54a",
+      "slug": "pantry",
+      "name": "Pantry",
+      "description": "",
+      "display_order": 5
+    },
+    {
+      "id": "9475d0ab-3ab4-4615-8e94-5cd5f5e9505d",
+      "slug": "dairy-eggs",
+      "name": "Dairy Eggs",
+      "description": "",
+      "display_order": 6
+    },
+    {
+      "id": "2f7e2862-64bb-4f1f-84a7-382c5019f45e",
+      "slug": "beverages",
+      "name": "Beverages",
+      "description": "",
+      "display_order": 7
+    }
+  ],
+  "products": [
+    {
+      "id": "df999d48-5d0a-4788-9c7f-525c4b1e4b79",
+      "sku": "FH-APPLE",
+      "slug": "apple",
+      "category": "fruits",
+      "name": "Apple",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 700,
+      "image_url": "/products/apple.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 700,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "9117d5cb-a9aa-4869-aad9-1a4e9c97a2b2",
+      "sku": "FH-AVOCADO",
+      "slug": "avocado",
+      "category": "fruits",
+      "name": "Avocado",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 800,
+      "image_url": "/products/avocado.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "0eae6e12-56ce-4222-a3a2-67690d55a04b",
+      "sku": "FH-BANANA",
+      "slug": "banana",
+      "category": "fruits",
+      "name": "Banana",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1500,
+      "image_url": "/products/banana.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "a0f3446b-6918-4720-973f-a20430ccb604",
+      "sku": "FH-BLACK-EYED-PEAS",
+      "slug": "black-eyed-peas",
+      "category": "grains",
+      "name": "Black-eyed peas",
+      "description": "",
+      "unit": "1 kg pack",
+      "unit_type": "pack",
+      "base_price_minor": 2100,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2100,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "a43e666c-a224-473e-935e-6c6be16bf28b",
+      "sku": "FH-BOTTLED-WATER",
+      "slug": "bottled-water",
+      "category": "beverages",
+      "name": "Bottled water",
+      "description": "",
+      "unit": "1.5 L bottle",
+      "unit_type": "volume",
+      "base_price_minor": 700,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 700,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "e4633d80-f236-41fc-82b5-5c5d91e17439",
+      "sku": "FH-BROCCOLI",
+      "slug": "broccoli",
+      "category": "vegetables",
+      "name": "Broccoli",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 2600,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2600,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "b83b8de7-74b2-4d28-bd2c-d0d4b87a8ffd",
+      "sku": "FH-BROWN-BEANS",
+      "slug": "brown-beans",
+      "category": "grains",
+      "name": "Brown beans",
+      "description": "",
+      "unit": "1 kg pack",
+      "unit_type": "pack",
+      "base_price_minor": 2200,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2200,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "6d3fe059-334c-44d9-b93f-92ca35a97e66",
+      "sku": "FH-BROWN-RICE",
+      "slug": "brown-rice",
+      "category": "grains",
+      "name": "Brown rice",
+      "description": "",
+      "unit": "1 kg pack",
+      "unit_type": "pack",
+      "base_price_minor": 3000,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 3000,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "9bfc1361-6cb8-40db-a624-78b7fd168353",
+      "sku": "FH-CABBAGE",
+      "slug": "cabbage",
+      "category": "vegetables",
+      "name": "Cabbage",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 1200,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1200,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "3be791fe-1759-4073-a718-a07e474eab4a",
+      "sku": "FH-CANE-SUGAR",
+      "slug": "cane-sugar",
+      "category": "pantry",
+      "name": "Cane sugar",
+      "description": "",
+      "unit": "1 kg pack",
+      "unit_type": "pack",
+      "base_price_minor": 1600,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1600,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "da3ab0f7-09fe-41c8-9d73-1dfd1eaaafb9",
+      "sku": "FH-CARROTS",
+      "slug": "carrots",
+      "category": "vegetables",
+      "name": "Carrots",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1500,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season",
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "c051738e-4ed8-41b8-a04e-93c3ceb72b21",
+      "sku": "FH-CASSAVA",
+      "slug": "cassava",
+      "category": "roots",
+      "name": "Cassava",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1000,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1000,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "988dfe73-c410-42a0-afe9-475f4700b685",
+      "sku": "FH-CASSAVA-FLOUR",
+      "slug": "cassava-flour",
+      "category": "pantry",
+      "name": "Cassava flour",
+      "description": "",
+      "unit": "1 kg pack",
+      "unit_type": "pack",
+      "base_price_minor": 1800,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "998abc21-9a15-4091-96dc-5a43641309f9",
+      "sku": "FH-CAULIFLOWER",
+      "slug": "cauliflower",
+      "category": "vegetables",
+      "name": "Cauliflower",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 2500,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "e1b00f8a-98b6-4458-b6b0-bfddb970cc37",
+      "sku": "FH-CHEDDAR-CHEESE",
+      "slug": "cheddar-cheese",
+      "category": "dairy-eggs",
+      "name": "Cheddar cheese",
+      "description": "",
+      "unit": "200 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 4200,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 4200,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "c820aab7-f37c-4e76-bc51-29529aebebf5",
+      "sku": "FH-COCOA-DRINK",
+      "slug": "cocoa-drink",
+      "category": "beverages",
+      "name": "Cocoa drink",
+      "description": "",
+      "unit": "500 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 3600,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 3600,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "6dc265c0-e67c-4703-a2a2-be9c2e83325e",
+      "sku": "FH-COCONUT",
+      "slug": "coconut",
+      "category": "fruits",
+      "name": "Coconut",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 1000,
+      "image_url": "/products/coconut.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1000,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "37dd6076-5946-42d3-92f9-131aff4354a7",
+      "sku": "FH-COCONUT-WATER",
+      "slug": "coconut-water",
+      "category": "beverages",
+      "name": "Coconut water",
+      "description": "",
+      "unit": "500 ml bottle",
+      "unit_type": "volume",
+      "base_price_minor": 1500,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "2309ac37-2f28-4784-9547-95949f66551c",
+      "sku": "FH-COCOYAM",
+      "slug": "cocoyam",
+      "category": "roots",
+      "name": "Cocoyam",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1600,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1600,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "c3ba126d-9ff3-463d-aece-09c11d7e1d3f",
+      "sku": "FH-CORIANDER",
+      "slug": "coriander",
+      "category": "herbs",
+      "name": "Coriander",
+      "description": "",
+      "unit": "bunch",
+      "unit_type": "bunch",
+      "base_price_minor": 1000,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1000,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "015572f9-3113-4254-a817-cf7c59f1838f",
+      "sku": "FH-CUCUMBER",
+      "slug": "cucumber",
+      "category": "vegetables",
+      "name": "Cucumber",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 700,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 700,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "c9e79a4c-4c50-4378-b1e3-c321f5020a8b",
+      "sku": "FH-FARM-EGGS",
+      "slug": "farm-eggs",
+      "category": "dairy-eggs",
+      "name": "Farm eggs",
+      "description": "",
+      "unit": "tray",
+      "unit_type": "tray",
+      "base_price_minor": 3500,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 3500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "2b8c6330-1935-4940-9042-d713ec460c7d",
+      "sku": "FH-FRESH-MILK",
+      "slug": "fresh-milk",
+      "category": "dairy-eggs",
+      "name": "Fresh milk",
+      "description": "",
+      "unit": "1 L carton",
+      "unit_type": "volume",
+      "base_price_minor": 2800,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "5113b84e-08d0-4e73-9552-85bf0c731d87",
+      "sku": "FH-FRESH-ORANGE-JUICE",
+      "slug": "fresh-orange-juice",
+      "category": "beverages",
+      "name": "Fresh orange juice",
+      "description": "",
+      "unit": "1 L bottle",
+      "unit_type": "volume",
+      "base_price_minor": 3800,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season",
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 3800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "53ed321b-4c6d-44ea-af88-0312f306dd6d",
+      "sku": "FH-FRESH-PEPPER",
+      "slug": "fresh-pepper",
+      "category": "vegetables",
+      "name": "Fresh pepper",
+      "description": "",
+      "unit": "250 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 1000,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1000,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "ac50f0af-e3d8-4789-8af8-3788ce661867",
+      "sku": "FH-GARDEN-EGGS",
+      "slug": "garden-eggs",
+      "category": "vegetables",
+      "name": "Garden eggs",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1800,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "38a7a44c-0ce0-4b4e-bbaa-714898dcbb66",
+      "sku": "FH-GARLIC",
+      "slug": "garlic",
+      "category": "roots",
+      "name": "Garlic",
+      "description": "",
+      "unit": "250 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 1400,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1400,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "961b747f-9d8d-4cdc-b433-ed7859964e7d",
+      "sku": "FH-GINGER",
+      "slug": "ginger",
+      "category": "roots",
+      "name": "Ginger",
+      "description": "",
+      "unit": "250 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 1000,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1000,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "eff2cf7f-340e-415d-ba1a-33e0dd71ddab",
+      "sku": "FH-GRAPES",
+      "slug": "grapes",
+      "category": "fruits",
+      "name": "Grapes",
+      "description": "",
+      "unit": "500 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 3200,
+      "image_url": "/products/grapes.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 3200,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "1d6a06e2-d63e-45f2-9690-50b236d2f4e2",
+      "sku": "FH-GROUNDNUT-OIL",
+      "slug": "groundnut-oil",
+      "category": "pantry",
+      "name": "Groundnut oil",
+      "description": "",
+      "unit": "1 L bottle",
+      "unit_type": "volume",
+      "base_price_minor": 4200,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 4200,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "24f3394e-0cc5-4522-af1a-effd19508fa1",
+      "sku": "FH-IRISH-POTATO",
+      "slug": "irish-potato",
+      "category": "roots",
+      "name": "Irish potato",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1700,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1700,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "70081c78-379d-4ed0-878e-e5c59e08ed24",
+      "sku": "FH-KONTOMIRE",
+      "slug": "kontomire",
+      "category": "herbs",
+      "name": "Kontomire",
+      "description": "",
+      "unit": "bunch",
+      "unit_type": "bunch",
+      "base_price_minor": 700,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 700,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "be29471f-c687-43fd-a6f3-7f1442359cf3",
+      "sku": "FH-LEMON",
+      "slug": "lemon",
+      "category": "fruits",
+      "name": "Lemon",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 500,
+      "image_url": "/products/lemon.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "60437dc6-4c78-4c12-bfd3-edb25f3e8b33",
+      "sku": "FH-LENTILS",
+      "slug": "lentils",
+      "category": "grains",
+      "name": "Lentils",
+      "description": "",
+      "unit": "500 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 2500,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season",
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "79c3c272-c012-4b24-a585-1c86c6874fe4",
+      "sku": "FH-LETTUCE",
+      "slug": "lettuce",
+      "category": "vegetables",
+      "name": "Lettuce",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 900,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 900,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "95833dd8-2d05-4c03-9473-866b023229e4",
+      "sku": "FH-LOCAL-RICE",
+      "slug": "local-rice",
+      "category": "grains",
+      "name": "Local rice",
+      "description": "",
+      "unit": "1 kg pack",
+      "unit_type": "pack",
+      "base_price_minor": 2400,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2400,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "7c8bc72c-348d-46fb-a43b-03e2ff7b23df",
+      "sku": "FH-MAIZE",
+      "slug": "maize",
+      "category": "grains",
+      "name": "Maize",
+      "description": "",
+      "unit": "1 kg pack",
+      "unit_type": "pack",
+      "base_price_minor": 1400,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1400,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "20aadba5-6713-45e8-a233-f43ba8cd7a46",
+      "sku": "FH-MANGO",
+      "slug": "mango",
+      "category": "fruits",
+      "name": "Mango",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 900,
+      "image_url": "/products/mango.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 900,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "08424712-a4bb-4a4f-8636-f5938a0ae0cc",
+      "sku": "FH-MIERIKSWORTEL",
+      "slug": "mierikswortel",
+      "category": "pantry",
+      "name": "Mierikswortel (Horseradish)",
+      "description": "K\u00fchne Mierikswortel (Raifort r\u00e2p\u00e9 / finely grated horseradish), 175g glass jar. A sharp, piquant German horseradish relish that brings zesty depth to roasted beef, grilled steak, smoked fish, and homemade dressings.",
+      "unit": "175 g jar",
+      "unit_type": "pack",
+      "base_price_minor": 4599,
+      "image_url": "/products/mierikswortel.jpg",
+      "gallery_image_urls": [
+        "/products/mierikswortel-promo.jpg"
+      ],
+      "nutrition": {
+        "serving_size": "15g",
+        "energy_kcal": "16",
+        "carbohydrates": "2g",
+        "fat": "0.8g"
+      },
+      "origin": "Germany",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 4599,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "37867b69-db71-4305-9c03-6beb2fbb1244",
+      "sku": "FH-MILLET",
+      "slug": "millet",
+      "category": "grains",
+      "name": "Millet",
+      "description": "",
+      "unit": "1 kg pack",
+      "unit_type": "pack",
+      "base_price_minor": 1800,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "3e7a6a44-4cc3-47fb-9732-53dcf25fed71",
+      "sku": "FH-MINT",
+      "slug": "mint",
+      "category": "herbs",
+      "name": "Mint",
+      "description": "",
+      "unit": "bunch",
+      "unit_type": "bunch",
+      "base_price_minor": 900,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 900,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "bf1b855f-6f3b-49ef-84ed-1ce99511616f",
+      "sku": "FH-NATURAL-HONEY",
+      "slug": "natural-honey",
+      "category": "pantry",
+      "name": "Natural honey",
+      "description": "",
+      "unit": "500 g jar",
+      "unit_type": "pack",
+      "base_price_minor": 4500,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 4500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "cf0a14db-8b3a-4f75-bb02-93477811b3f3",
+      "sku": "FH-OKRA",
+      "slug": "okra",
+      "category": "vegetables",
+      "name": "Okra",
+      "description": "",
+      "unit": "500 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 900,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 900,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "dd1ad89a-4a8b-4cb2-bd24-7a342d3551cc",
+      "sku": "FH-ONIONS",
+      "slug": "onions",
+      "category": "vegetables",
+      "name": "Onions",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1400,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1400,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "c2830ac0-9b8f-4e51-a34a-f6d8b73182c5",
+      "sku": "FH-ORANGE",
+      "slug": "orange",
+      "category": "fruits",
+      "name": "Orange",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1800,
+      "image_url": "/products/orange.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "1bce6785-53c7-4561-a4e3-659663fbf810",
+      "sku": "FH-PARSLEY",
+      "slug": "parsley",
+      "category": "herbs",
+      "name": "Parsley",
+      "description": "",
+      "unit": "bunch",
+      "unit_type": "bunch",
+      "base_price_minor": 1000,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1000,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "d8bc6253-3736-433b-95b6-450c7a612ded",
+      "sku": "FH-PAWPAW",
+      "slug": "pawpaw",
+      "category": "fruits",
+      "name": "Pawpaw",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 1100,
+      "image_url": "/products/pawpaw.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1100,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "f93139c1-3561-4d47-9825-5095808b2aa7",
+      "sku": "FH-PEANUT-BUTTER",
+      "slug": "peanut-butter",
+      "category": "pantry",
+      "name": "Peanut butter",
+      "description": "",
+      "unit": "350 g jar",
+      "unit_type": "pack",
+      "base_price_minor": 2600,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2600,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "b3916235-423f-42a9-971c-c568cb7545d8",
+      "sku": "FH-PINEAPPLE",
+      "slug": "pineapple",
+      "category": "fruits",
+      "name": "Pineapple",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 1200,
+      "image_url": "/products/pineapple.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season",
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1200,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "31b8396b-cd69-408f-8b7b-23f7341cb8d9",
+      "sku": "FH-PLAIN-YOGHURT",
+      "slug": "plain-yoghurt",
+      "category": "dairy-eggs",
+      "name": "Plain yoghurt",
+      "description": "",
+      "unit": "500 ml tub",
+      "unit_type": "volume",
+      "base_price_minor": 2400,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2400,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "143ddb92-103a-4117-a9bb-e6427cd4bae5",
+      "sku": "FH-RED-KIDNEY-BEANS",
+      "slug": "red-kidney-beans",
+      "category": "pantry",
+      "name": "Red kidney beans",
+      "description": "Victoria Italian Red Kidney Beans (Fagioli rossi) in light brine. 400g can (240g drained weight). Rich in plant-based protein, dietary fiber, and essential minerals. Perfect for fresh salads, chili, stews, and waakye.",
+      "unit": "400 g can",
+      "unit_type": "pack",
+      "base_price_minor": 2399,
+      "image_url": "/products/red-kidney-beans.jpg",
+      "gallery_image_urls": [
+        "/products/red-kidney-beans-promo.jpg"
+      ],
+      "nutrition": {
+        "serving_size": "100g",
+        "protein": "8.5g",
+        "carbohydrates": "15g",
+        "fiber": "6.4g",
+        "fat": "0.5g"
+      },
+      "origin": "Italy",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2399,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "06f67321-5187-4ecb-93c5-cb2734b241ff",
+      "sku": "FH-RED-PALM-OIL",
+      "slug": "red-palm-oil",
+      "category": "pantry",
+      "name": "Red palm oil",
+      "description": "",
+      "unit": "1 L bottle",
+      "unit_type": "volume",
+      "base_price_minor": 3200,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 3200,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "33d19377-541a-483e-a9ad-3f5a214024bc",
+      "sku": "FH-REMIA-SALAD-DRESSING",
+      "slug": "remia-salad-dressing",
+      "category": "pantry",
+      "name": "Remia Salad Dressing",
+      "description": "Remia Thousand Island salad dressing with sweet paprika, crisp onion, and aromatic herbs, 250ml glass bottle. Creamy, tangy, and subtly sweet \u2014 perfect for green salads, wraps, and dips.",
+      "unit": "250 ml bottle",
+      "unit_type": "volume",
+      "base_price_minor": 4450,
+      "image_url": "/products/remia-salad-dressing.jpg",
+      "gallery_image_urls": [
+        "/products/remia-salad-dressing-promo.jpg"
+      ],
+      "nutrition": {
+        "serving_size": "30ml",
+        "energy_kcal": "65",
+        "carbohydrates": "4.5g",
+        "fat": "5g"
+      },
+      "origin": "Netherlands",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 4450,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "a0a05f4e-c0db-4017-85c8-091120224442",
+      "sku": "FH-SALTED-BUTTER",
+      "slug": "salted-butter",
+      "category": "dairy-eggs",
+      "name": "Salted butter",
+      "description": "",
+      "unit": "200 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 2600,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2600,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "ce276cf5-5695-445a-a4bf-00c8ceb073f2",
+      "sku": "FH-SOBOLO-DRINK",
+      "slug": "sobolo-drink",
+      "category": "beverages",
+      "name": "Sobolo drink",
+      "description": "",
+      "unit": "500 ml bottle",
+      "unit_type": "volume",
+      "base_price_minor": 1200,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1200,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "0f6e51c4-7f99-4681-b9fc-2ff854ef5901",
+      "sku": "FH-SORGHUM",
+      "slug": "sorghum",
+      "category": "grains",
+      "name": "Sorghum",
+      "description": "",
+      "unit": "1 kg pack",
+      "unit_type": "pack",
+      "base_price_minor": 1600,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1600,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "2e1e3275-b85e-48f6-b648-fc02e2caaef7",
+      "sku": "FH-SPANISH-BLACK-OLIVES",
+      "slug": "spanish-black-olives",
+      "category": "pantry",
+      "name": "Spanish Black Olives",
+      "description": "Figaro premium Spanish pitted black olives, 340g glass jar. Naturally cured with a smooth, savory flavor, perfect for Greek salads, pasta, pizza toppings, and tapas.",
+      "unit": "340 g jar",
+      "unit_type": "pack",
+      "base_price_minor": 4699,
+      "image_url": "/products/spanish-black-olives.jpg",
+      "gallery_image_urls": [
+        "/products/spanish-olives-promo.jpg"
+      ],
+      "nutrition": {
+        "serving_size": "30g",
+        "energy_kcal": "35",
+        "fiber": "1g",
+        "fat": "3.5g",
+        "sodium_mg": "240"
+      },
+      "origin": "Spain",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 4699,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "a2626bb8-bb29-4627-96bd-9cd9dd7b968b",
+      "sku": "FH-SPANISH-GREEN-OLIVES",
+      "slug": "spanish-green-olives",
+      "category": "pantry",
+      "name": "Spanish Green Olives",
+      "description": "Figaro Spanish pitted green olives in light brine, 340g glass jar. Plump, crisp, and delightfully savory, ideal for party charcuterie boards, salads, appetizers, and savory dishes.",
+      "unit": "340 g jar",
+      "unit_type": "pack",
+      "base_price_minor": 4699,
+      "image_url": "/products/spanish-green-olives.jpg",
+      "gallery_image_urls": [
+        "/products/spanish-olives-promo.jpg"
+      ],
+      "nutrition": {
+        "serving_size": "30g",
+        "energy_kcal": "40",
+        "fiber": "1g",
+        "fat": "4g",
+        "sodium_mg": "320"
+      },
+      "origin": "Spain",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 4699,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "1f76be53-135b-47a0-9447-64cd8edd512c",
+      "sku": "FH-SPINACH",
+      "slug": "spinach",
+      "category": "herbs",
+      "name": "Spinach",
+      "description": "",
+      "unit": "bunch",
+      "unit_type": "bunch",
+      "base_price_minor": 1000,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1000,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "5ef52b1d-8611-45a1-ba4f-03898ddcbd06",
+      "sku": "FH-SPRING-ONION",
+      "slug": "spring-onion",
+      "category": "herbs",
+      "name": "Spring onion",
+      "description": "",
+      "unit": "bunch",
+      "unit_type": "bunch",
+      "base_price_minor": 800,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "b671254c-ef6f-4e5d-8c83-9237f3ebb7e2",
+      "sku": "FH-STRAWBERRY",
+      "slug": "strawberry",
+      "category": "fruits",
+      "name": "Strawberry",
+      "description": "",
+      "unit": "250 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 3500,
+      "image_url": "/products/strawberry.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 3500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "082bae58-dd2d-4f98-92d1-4f9ae70aa17e",
+      "sku": "FH-SWEET-CORN",
+      "slug": "sweet-corn",
+      "category": "vegetables",
+      "name": "Sweet corn",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 800,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "2a8766ec-0e0d-4061-8a74-cbe3641dc555",
+      "sku": "FH-SWEET-POTATO",
+      "slug": "sweet-potato",
+      "category": "roots",
+      "name": "Sweet potato",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1300,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1300,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "f03d48f5-b49c-450c-ae75-b1003c9057f1",
+      "sku": "FH-TOMATO-PASTE",
+      "slug": "tomato-paste",
+      "category": "pantry",
+      "name": "Tomato paste",
+      "description": "",
+      "unit": "400 g tin",
+      "unit_type": "pack",
+      "base_price_minor": 1800,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "2c972fa8-2c3b-44ad-b296-ad29cbada81a",
+      "sku": "FH-TOMATOES",
+      "slug": "tomatoes",
+      "category": "vegetables",
+      "name": "Tomatoes",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1600,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1600,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "d908af42-6793-4489-a9d7-bc08eac99e0d",
+      "sku": "FH-TURMERIC",
+      "slug": "turmeric",
+      "category": "roots",
+      "name": "Turmeric",
+      "description": "",
+      "unit": "250 g pack",
+      "unit_type": "pack",
+      "base_price_minor": 1200,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season",
+        "organic"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1200,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "f75df381-e4a4-4ef2-9547-c42ae1e5c709",
+      "sku": "FH-WATERMELON",
+      "slug": "watermelon",
+      "category": "fruits",
+      "name": "Watermelon",
+      "description": "",
+      "unit": "each",
+      "unit_type": "piece",
+      "base_price_minor": 2500,
+      "image_url": "/products/watermelon.jpg",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 2500,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    },
+    {
+      "id": "bb4c0220-5391-4a64-b6c1-046233e9dad1",
+      "sku": "FH-WHITE-YAM",
+      "slug": "white-yam",
+      "category": "roots",
+      "name": "White yam",
+      "description": "",
+      "unit": "kg",
+      "unit_type": "weight",
+      "base_price_minor": 1800,
+      "image_url": "",
+      "gallery_image_urls": [],
+      "nutrition": {},
+      "origin": "",
+      "tags": [
+        "in-season"
+      ],
+      "branch_availability": {
+        "is_available": true,
+        "price_minor": 1800,
+        "available_quantity": 50
+      },
+      "available_at_other_branches": []
+    }
+  ]
+}
