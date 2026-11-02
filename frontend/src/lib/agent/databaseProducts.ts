@@ -1,5 +1,5 @@
 // Authoritative Catalogue Data synchronized with Django SQLite database
-import type { ProductSearchResult } from './types.ts'
+import type { ProductSearchResult } from './types'
 
 export interface RealProduct extends ProductSearchResult {
   branchStocks: Record<string, number>

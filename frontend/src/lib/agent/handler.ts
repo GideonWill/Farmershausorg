@@ -4,10 +4,10 @@ import {
   toUIMessageStream,
   type UIMessage,
 } from 'ai'
-import { getLanguageModel, runAgentStream } from './farmbot.ts'
-import { CROPS_DATABASE, WEBSITE_KNOWLEDGE } from './knowledgeBase.ts'
-import { checkProductStockAndAvailability, EXTENSIVE_CATALOGUE } from './tools.ts'
-import type { ProductSearchResult } from './types.ts'
+import { getLanguageModel, runAgentStream } from './farmbot'
+import { CROPS_DATABASE, WEBSITE_KNOWLEDGE } from './knowledgeBase'
+import { checkProductStockAndAvailability, EXTENSIVE_CATALOGUE } from './tools'
+import type { ProductSearchResult } from './types'
 
 export async function handleAgentChat(req: Request): Promise<Response> {
   if (req.method !== 'POST') {

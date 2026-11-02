@@ -1,8 +1,8 @@
 import { tool } from 'ai'
 import { z } from 'zod'
-import type { AgronomyInfo, BranchInfo, ProductSearchResult, RecipeSuggestion } from './types.ts'
-import { CROPS_DATABASE, WEBSITE_KNOWLEDGE } from './knowledgeBase.ts'
-import { REAL_DATABASE_PRODUCTS, type RealProduct } from './databaseProducts.ts'
+import type { AgronomyInfo, BranchInfo, ProductSearchResult, RecipeSuggestion } from './types'
+import { CROPS_DATABASE, WEBSITE_KNOWLEDGE } from './knowledgeBase'
+import { REAL_DATABASE_PRODUCTS, type RealProduct } from './databaseProducts'
 
 declare const process: { env?: Record<string, string | undefined> } | undefined
 
