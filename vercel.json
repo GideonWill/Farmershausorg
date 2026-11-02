@@ -8,6 +8,8 @@
     "frontend": {
       "root": "frontend",
       "framework": "vite",
+      "buildCommand": "vite build",
+      "outputDirectory": "dist",
       "bindings": [
         {
           "type": "service",
