@@ -1,7 +1,19 @@
 // Authoritative Catalogue Data synchronized with Django SQLite database
-import type { ProductSearchResult } from './types'
 
-export interface RealProduct extends ProductSearchResult {
+export interface RealProduct {
+  id: string
+  slug: string
+  name: string
+  category: string
+  priceMinor: number
+  priceFormatted: string
+  unit: string
+  unitType: string
+  origin: string
+  isAvailable: boolean
+  availableQuantity?: number
+  imageUrl: string
+  tags: string[]
   branchStocks: Record<string, number>
 }
 
