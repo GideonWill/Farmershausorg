@@ -781,8 +781,8 @@ export function Storefront() {
   const location = useLocation()
   const [showSplash, setShowSplash] = useState(() => {
     if (typeof window === 'undefined') return false
-    const seen = sessionStorage.getItem('farmershaus:splash-seen')
-    if (seen) return false
+
+
     return window.location.pathname === '/' || window.location.pathname === ''
   })
 

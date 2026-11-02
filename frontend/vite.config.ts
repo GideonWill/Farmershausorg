@@ -55,6 +55,18 @@ function agentDevServerPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), agentDevServerPlugin()],
+  server: {
+    proxy: {
+      '/api/v1': {
+        target: process.env.BACKEND_INTERNAL_URL || 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
+      '/admin': {
+        target: process.env.BACKEND_INTERNAL_URL || 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
+    },
+  },
   build: {
     rollupOptions: {
       output: {

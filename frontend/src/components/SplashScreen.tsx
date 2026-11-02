@@ -33,15 +33,10 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   }, [onComplete])
 
   const finishSplash = useCallback(() => {
-    try {
-      sessionStorage.setItem('farmershaus:splash-seen', 'true')
-    } catch {
-      // ignore
-    }
     setVisible(false)
     setTimeout(() => {
       onCompleteRef.current()
-    }, 280)
+    }, 550)
   }, [])
 
   // Typing progression effect
@@ -54,7 +49,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
     const typeNextLetter = (currentIndex: number) => {
       if (currentIndex < TOTAL_LETTERS) {
         setTypedCount(currentIndex + 1)
-        const variableDelay = 35 + (currentIndex % 3) * 8
+        const variableDelay = 110 + (currentIndex % 3) * 15 + (currentIndex === 3 ? 30 : 0)
         timerRef.current = window.setTimeout(() => {
           typeNextLetter(currentIndex + 1)
         }, variableDelay)
@@ -63,14 +58,14 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           setIsFinishing(true)
           timerRef.current = window.setTimeout(() => {
             finishSplash()
-          }, 450)
-        }, 220)
+          }, 950)
+        }, 600)
       }
     }
 
     const initialDelay = window.setTimeout(() => {
       typeNextLetter(0)
-    }, 80)
+    }, 280)
 
     return () => {
       window.clearTimeout(initialDelay)
@@ -105,17 +100,6 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           onClick={finishSplash}
         >
-          {/* Immediate Skip Button */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              finishSplash()
-            }}
-            className="absolute top-5 right-5 z-30 inline-flex items-center gap-1.5 rounded-full border border-brand-green/20 bg-white/90 px-4 py-1.5 text-xs font-bold text-brand-green shadow-xs backdrop-blur-xs transition hover:bg-white active:scale-95 cursor-pointer"
-          >
-            <span>Skip to store</span> &rarr;
-          </button>
           <div className="farmershaus-splash__glow pointer-events-none absolute inset-0 -z-10" />
 
           {/* Central Logo Construction */}

@@ -4,6 +4,8 @@ import type { AgronomyInfo, BranchInfo, ProductSearchResult, RecipeSuggestion } 
 import { CROPS_DATABASE, WEBSITE_KNOWLEDGE } from './knowledgeBase.ts'
 import { REAL_DATABASE_PRODUCTS, type RealProduct } from './databaseProducts.ts'
 
+declare const process: { env?: Record<string, string | undefined> } | undefined
+
 export const LAUNCH_BRANCHES: BranchInfo[] = WEBSITE_KNOWLEDGE.branches.map((b) => ({
   id: b.id,
   slug: b.slug,
@@ -73,6 +75,38 @@ export const searchProductsTool = tool({
     maxPriceGhs: z.number().optional().describe('Maximum price in GHS'),
   }),
   execute: async ({ query, category, tag, maxPriceGhs }): Promise<ProductSearchResult[]> => {
+    const backendUrl = typeof process !== 'undefined' ? process.env?.BACKEND_INTERNAL_URL : undefined
+    if (backendUrl) {
+      try {
+        const url = new URL('/api/v1/products/', backendUrl)
+        if (query) url.searchParams.set('search', query)
+        const response = await fetch(url)
+        if (response.ok) {
+          const data = (await response.json()) as any
+          const items: any[] = Array.isArray(data) ? data : data.results || []
+          if (items.length > 0) {
+            return items.map((prod) => ({
+              id: String(prod.id),
+              name: String(prod.name || ''),
+              slug: String(prod.slug || ''),
+              category: String(prod.category_name || prod.category || 'produce'),
+              priceMinor: Number(prod.base_price_minor ?? 0),
+              priceFormatted: `GHS ${(((prod.base_price_minor ?? 0) / 100)).toFixed(2)}`,
+              unit: String(prod.unit || 'unit'),
+              unitType: String(prod.unit_type || 'piece'),
+              origin: String(prod.origin || 'Local Farm'),
+              isAvailable: Boolean(prod.branch_availability?.is_available ?? true),
+              availableQuantity: Number(prod.branch_availability?.available_quantity ?? 10),
+              tags: Array.isArray(prod.tags) ? prod.tags : [],
+              imageUrl: String(prod.image_url || ''),
+            })).slice(0, 4)
+          }
+        }
+      } catch {
+        // Fall back to local catalogue
+      }
+    }
+
     return REAL_DATABASE_PRODUCTS.filter((prod) => {
       if (query) {
         const q = query.toLowerCase().trim()
