@@ -63,11 +63,13 @@ export function Drawer({
   open,
   onClose,
   title,
+  action,
   children,
 }: {
   open: boolean
   onClose: () => void
   title: string
+  action?: ReactNode
   children: ReactNode
 }) {
   useEffect(() => {
@@ -96,7 +98,10 @@ export function Drawer({
           >
             <header className="flex items-center justify-between border-b border-brand-green/10 px-6 py-5">
               <h2 className="font-brand-heading text-2xl font-bold text-brand-green">{title}</h2>
-              <button className="icon-button" onClick={onClose} aria-label="Close drawer"><Icon name="close" /></button>
+              <div className="flex items-center gap-2">
+                {action}
+                <button className="icon-button" onClick={onClose} aria-label="Close drawer"><Icon name="close" /></button>
+              </div>
             </header>
             {children}
           </motion.aside>
@@ -114,6 +119,7 @@ export function Icon({ name, className = '' }: { name: string; className?: strin
     pin: <><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16" /></>,
     close: <><path d="m6 6 12 12M18 6 6 18" /></>,
+    trash: <><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></>,
     arrow: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>,
     plus: <><path d="M12 5v14M5 12h14" /></>,
     minus: <path d="M5 12h14" />,
@@ -121,6 +127,15 @@ export function Icon({ name, className = '' }: { name: string; className?: strin
     clock: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
     check: <path d="m5 12 4 4L19 6" />,
     whatsapp: <><path d="M20.5 11.5a8.4 8.4 0 0 1-12.4 7.4L4 20l1.1-4A8.4 8.4 0 1 1 20.5 11.5Z" /><path d="M9 8.5c.3 2.4 2.1 4.2 4.5 4.5l1-1 2 1c-.2 1.5-1.2 2-2.6 1.8-3.6-.6-6.1-3-6.7-6.7-.2-1.4.4-2.4 1.8-2.6l1 2-1 1Z" /></>,
+    truck: <><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.24-4.05A1 1 0 0 0 18 8.35H15v9.65Z" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /></>,
+    store: <><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" /><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" /><path d="M2 7h20" /></>,
+    package: <><path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.29 7 12 12.01 20.71 7" /><line x1="12" y1="22.08" x2="12" y2="12" /></>,
+    shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
+    edit: <><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></>,
+    badgeCheck: <><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" /><path d="m9 12 2 2 4-4" /></>,
+    tag: <><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" /><circle cx="7" cy="7" r=".5" fill="currentColor" /></>,
+    chevronDown: <polyline points="6 9 12 15 18 9" />,
+    lock: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></>,
   }
   return (
     <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

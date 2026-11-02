@@ -135,35 +135,31 @@ export function ShoppingAssistant() {
 
   return (
     <>
-      {/* Floating Action Button with Company Logo */}
+      {/* Floating Action Button with Company Logo only */}
       <div className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           aria-label={isOpen ? 'Close Assistant' : 'Open Farmershaus Assistant'}
-          className={`flex items-center gap-3 rounded-full px-4 py-3 shadow-2xl transition duration-300 hover:scale-105 active:scale-95 ${
+          title="Farmershaus Assistant"
+          className={`group relative flex h-14 w-14 items-center justify-center rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 ${
             isOpen
               ? 'bg-brand-ink text-white shadow-brand-ink/30'
-              : 'bg-brand-green text-white shadow-brand-green/40 ring-4 ring-brand-yellow/30'
+              : 'bg-white p-2.5 ring-4 ring-brand-green/20 shadow-brand-green/30 border border-brand-green/10'
           }`}
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white p-1 shadow-xs shrink-0">
-            {isOpen ? (
-              <span className="text-brand-ink font-bold text-sm">✕</span>
-            ) : (
-              <img
-                src="/brand/farmershaus-logo.png"
-                alt="FarmersHaus"
-                className="h-full w-auto object-contain"
-              />
-            )}
-          </div>
-          <span className="font-semibold text-sm tracking-wide hidden sm:inline">
-            {isOpen ? 'Close' : 'Farmershaus Assistant'}
-          </span>
+          {isOpen ? (
+            <span className="text-white font-bold text-lg leading-none">✕</span>
+          ) : (
+            <img
+              src="/brand/farmershaus-logo.png"
+              alt="FarmersHaus"
+              className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+          )}
           {!isOpen && (
-            <span className="flex h-2.5 w-2.5 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-yellow opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-yellow" />
+            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green opacity-75" />
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-brand-green border-2 border-white" />
             </span>
           )}
         </button>

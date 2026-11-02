@@ -21,6 +21,17 @@ export function CartPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
     onError: (error) => notify(error instanceof Error ? error.message : 'Cart update failed.', 'error'),
   })
+  const clearMutation = useMutation({
+    mutationFn: async () => {
+      if (!branch) return
+      return api(`/cart/?branch=${branch.id}`, { method: 'DELETE', cartSessionKey })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
+      notify('All items cleared from your cart.', 'info')
+    },
+    onError: (error) => notify(error instanceof Error ? error.message : 'Failed to clear cart.', 'error'),
+  })
   const basketPrices = new Map(baskets.map((item) => [item.id, item.base_price_minor]))
   const subtotal = cart?.items.reduce((sum, item) => {
     const price = item.product?.unit_price_minor ?? basketPrices.get(item.basket_package?.id ?? '') ?? 0
@@ -33,7 +44,21 @@ export function CartPage() {
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="eyebrow">Shopping from {branch.name}</p>
-          <h1 className="section-title">Your cart</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="section-title">Your cart</h1>
+            {Boolean(cart?.items.length) && (
+              <button
+                type="button"
+                onClick={() => clearMutation.mutate()}
+                disabled={clearMutation.isPending}
+                className="inline-flex items-center gap-1.5 rounded-full border border-brand-tomato/20 bg-brand-tomato/10 px-3 py-1.5 text-xs font-semibold text-brand-tomato transition hover:bg-brand-tomato hover:text-white active:scale-95 disabled:opacity-50"
+                title="Clear all items from your cart"
+              >
+                <Icon name="trash" className="h-3.5 w-3.5" />
+                <span>{clearMutation.isPending ? 'Clearing...' : 'Clear all'}</span>
+              </button>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2.5 rounded-2xl border border-brand-green/15 bg-brand-cream/80 px-4 py-2.5 shadow-xs">
           <Icon name="pin" className="h-5 w-5 shrink-0 text-brand-green" />
@@ -76,7 +101,7 @@ export function CartPage() {
             <div className="rounded-2xl border border-brand-green/15 bg-brand-cream/80 p-4 text-xs leading-5 text-brand-ink/70">
               <p className="font-bold text-brand-green">Single-market guarantee:</p>
               <p className="mt-1">
-                Your order is prepared 100% by FarmersHaus {branch.name}. To guarantee freshness and fast delivery, we never split orders across multiple branches.
+                Your order is prepared 100% by {branch.name}. To guarantee freshness and fast delivery, we never split orders across multiple branches.
               </p>
             </div>
           </div>

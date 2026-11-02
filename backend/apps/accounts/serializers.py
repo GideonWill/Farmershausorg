@@ -122,6 +122,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "display_name",
             "first_name",
             "last_name",
+            "is_staff",
             "is_super_admin",
             "branch_memberships",
         )

@@ -379,6 +379,25 @@ export function StaffDashboardPage() {
           <button className="button button-primary mt-6 w-full justify-center" disabled={login.isPending}>
             {login.isPending ? 'Signing in…' : 'Sign in to dashboard'}
           </button>
+          <div className="mt-5 rounded-2xl border border-brand-green/20 bg-brand-cream/80 p-3.5 text-xs text-brand-ink/75">
+            <p className="font-bold text-brand-green">Staff &amp; Manager Demo Access</p>
+            <p className="mt-1">
+              Username: <code className="rounded bg-brand-green/10 px-1 py-0.5 font-mono font-bold text-brand-green">demo-customer</code> or <code className="rounded bg-brand-green/10 px-1 py-0.5 font-mono font-bold text-brand-green">demo-manager</code>
+            </p>
+            <p className="mt-1">
+              Password: <code className="rounded bg-brand-green/10 px-1 py-0.5 font-mono font-bold text-brand-green">Farmershaus123!</code>
+            </p>
+            <button
+              type="button"
+              className="mt-2.5 inline-flex items-center gap-1.5 rounded-xl border border-brand-green/30 bg-brand-green/10 px-3 py-1.5 text-xs font-semibold text-brand-green transition hover:bg-brand-green/20 active:scale-95"
+              onClick={() => {
+                setIdentifier('demo-customer')
+                setPassword('Farmershaus123!')
+              }}
+            >
+              Fill Staff Credentials
+            </button>
+          </div>
         </form>
         <Link to="/" className="mt-6 text-sm font-semibold text-brand-green hover:underline">Return to FarmersHaus</Link>
       </main>

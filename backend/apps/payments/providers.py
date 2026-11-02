@@ -45,6 +45,12 @@ class PaymentProvider:
         self.credentials = credentials or resolve_credentials(account)
 
     def initiate(self, payment, attempt, *, customer_name, phone, email):
+        if not getattr(settings, "HUBTEL_LIVE_ENABLED", False):
+            return {
+                "checkout_url": f"/orders/{payment.order.order_number}?sandbox_payment=1",
+                "provider_reference": f"sandbox-{attempt.idempotency_key[:12]}",
+                "is_sandbox": True,
+            }
         raise NotImplementedError
 
     def verify_webhook(self, raw_body, headers):
@@ -92,11 +98,15 @@ class HubtelProvider(PaymentProvider):
         return result
 
     def initiate(self, payment, attempt, *, customer_name, phone, email):
+        if not getattr(settings, "HUBTEL_LIVE_ENABLED", False):
+            return {
+                "checkout_url": f"/orders/{payment.order.order_number}?sandbox_payment=1",
+                "provider_reference": f"sandbox-{attempt.idempotency_key[:12]}",
+                "is_sandbox": True,
+            }
         endpoint = self.credentials.get("checkout_endpoint")
         if not endpoint:
             raise ImproperlyConfigured("Hubtel checkout_endpoint is not configured.")
-        if not getattr(settings, "HUBTEL_LIVE_ENABLED", False):
-            raise ImproperlyConfigured("Hubtel live payments are disabled in this environment.")
         if not self.account.settlement_verified:
             raise ImproperlyConfigured("This branch's Hubtel settlement destination is not verified.")
         callback_url = getattr(settings, "HUBTEL_WEBHOOK_URL", "")

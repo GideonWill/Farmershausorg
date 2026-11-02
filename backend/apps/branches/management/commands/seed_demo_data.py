@@ -1,15 +1,18 @@
 import os
+from datetime import datetime, time, timedelta
 
 from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone
 
 from apps.accounts.models import BranchMembership, User
 from apps.baskets.models import BasketCategory, BasketComponent, BasketPackage
-from apps.branches.models import Branch
+from apps.branches.models import Branch, DeliveryZone
 from apps.catalogue.models import Category, Product, ProductTag
 from apps.content.models import SiteSettings
 from apps.inventory.models import ProductBranch
+from apps.orders.models import CustomerAddress, FulfillmentSlot
 
 
 BRANCHES = (
@@ -108,6 +111,11 @@ CATEGORY_PRODUCTS = {
         ("Natural honey", "500 g jar", "pack", 4500),
         ("Cassava flour", "1 kg pack", "pack", 1800),
         ("Cane sugar", "1 kg pack", "pack", 1600),
+        ("Red kidney beans", "400 g can", "pack", 2399),
+        ("Mierikswortel (Horseradish)", "175 g jar", "pack", 4599),
+        ("Remia Salad Dressing", "250 ml bottle", "volume", 4450),
+        ("Spanish Black Olives", "340 g jar", "pack", 4699),
+        ("Spanish Green Olives", "340 g jar", "pack", 4699),
     ),
     "dairy-eggs": (
         ("Farm eggs", "tray", "tray", 3500),
@@ -215,6 +223,21 @@ DEMO_BASKETS = (
 )
 
 
+PRODUCT_IMAGES = {
+    "apple": ("/products/apple.jpg", []),
+    "banana": ("/products/banana.jpg", []),
+    "grapes": ("/products/grapes.jpg", []),
+    "mango": ("/products/mango.jpg", []),
+    "pineapple": ("/products/pineapple.jpg", []),
+    "red-kidney-beans": ("/products/red-kidney-beans.jpg", ["/products/red-kidney-beans-promo.jpg"]),
+    "mierikswortel": ("/products/mierikswortel.jpg", ["/products/mierikswortel-promo.jpg"]),
+    "mierikswortel-(horseradish)": ("/products/mierikswortel.jpg", ["/products/mierikswortel-promo.jpg"]),
+    "remia-salad-dressing": ("/products/remia-salad-dressing.jpg", ["/products/remia-salad-dressing-promo.jpg"]),
+    "spanish-black-olives": ("/products/spanish-black-olives.jpg", ["/products/spanish-olives-promo.jpg"]),
+    "spanish-green-olives": ("/products/spanish-green-olives.jpg", ["/products/spanish-olives-promo.jpg"]),
+}
+
+
 class Command(BaseCommand):
     help = "Create launch branches, demo catalogue, ready-made baskets, branch stock, and role test accounts."
 
@@ -234,6 +257,8 @@ class Command(BaseCommand):
         products = self.seed_products()
         self.seed_inventory(branches, products)
         baskets = self.seed_baskets(products, branches)
+        self.seed_delivery_zones(branches)
+        self.seed_fulfillment_slots(branches)
         self.seed_test_users(password, branches["dome"])
         SiteSettings.objects.get_or_create(pk=1)
         self.stdout.write(
@@ -284,6 +309,7 @@ class Command(BaseCommand):
         for category_slug, entries in CATEGORY_PRODUCTS.items():
             for name, unit, unit_type, price_minor in entries:
                 slug = name.lower().replace(" ", "-")
+                img_info = PRODUCT_IMAGES.get(slug, ("", []))
                 product, _ = Product.objects.update_or_create(
                     slug=slug,
                     defaults={
@@ -294,8 +320,8 @@ class Command(BaseCommand):
                         "unit": unit,
                         "unit_type": unit_type,
                         "base_price_minor": price_minor,
-                        "image_url": "",
-                        "gallery_image_urls": [],
+                        "image_url": img_info[0],
+                        "gallery_image_urls": img_info[1],
                         "nutrition": {},
                         "origin": "",
                         "is_active": True,
@@ -370,7 +396,7 @@ class Command(BaseCommand):
                 stock = (
                     0
                     if (product_index + branch_index * 2) % 7 == 0
-                    else 4 + (product_index * 3 + branch_index * 5) % 18
+                    else 250
                 )
                 is_available = stock > 0 and (product_index + branch_index) % 6 != 0
                 override = (
@@ -421,3 +447,66 @@ class Command(BaseCommand):
                     branch=branch,
                     defaults={"role": membership_role, "is_active": True},
                 )
+            if username == "demo-customer":
+                CustomerAddress.objects.update_or_create(
+                    user=user,
+                    defaults={
+                        "recipient_name": "Ama Mensah",
+                        "phone": "+233500000001",
+                        "address_line_1": "House 12, Haatso-Atomic Road",
+                        "address_line_2": "Near Supermarket Junction",
+                        "area": "Dome / Haatso",
+                        "directions": "Blue gate opposite the pharmacy",
+                        "latitude": 5.6601,
+                        "longitude": -0.2155,
+                        "is_default": True,
+                    },
+                )
+
+    def seed_delivery_zones(self, branches):
+        for branch in branches.values():
+            DeliveryZone.objects.update_or_create(
+                branch=branch,
+                name="Standard Local Delivery",
+                defaults={
+                    "area_description": f"Within 8 km radius of {branch.name}",
+                    "delivery_fee_minor": 1500,
+                    "minimum_order_minor": 0,
+                    "is_active": True,
+                },
+            )
+            DeliveryZone.objects.update_or_create(
+                branch=branch,
+                name="Express Same-Day Delivery",
+                defaults={
+                    "area_description": f"Priority express courier from {branch.name}",
+                    "delivery_fee_minor": 2500,
+                    "minimum_order_minor": 0,
+                    "is_active": True,
+                },
+            )
+
+    def seed_fulfillment_slots(self, branches):
+        now = timezone.now()
+        slot_windows = [
+            (time(9, 0), time(12, 0)),
+            (time(12, 0), time(15, 0)),
+            (time(15, 0), time(18, 0)),
+            (time(18, 0), time(21, 0)),
+        ]
+        for branch in branches.values():
+            for day_offset in range(6):
+                day_date = (now + timedelta(days=day_offset)).date()
+                for start_t, end_t in slot_windows:
+                    start_dt = timezone.make_aware(datetime.combine(day_date, start_t))
+                    end_dt = timezone.make_aware(datetime.combine(day_date, end_t))
+                    if start_dt <= now:
+                        continue
+                    for method in ["delivery", "pickup"]:
+                        FulfillmentSlot.objects.update_or_create(
+                            branch=branch,
+                            method=method,
+                            starts_at=start_dt,
+                            ends_at=end_dt,
+                            defaults={"capacity": 25, "is_active": True},
+                        )

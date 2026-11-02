@@ -19,7 +19,6 @@ export function BasketsPage() {
   const { data: products = [], isLoading: productsLoading, error: productsError } = useProducts()
   const branch = useStore((state) => state.branch)
   const cartSessionKey = useStore((state) => state.cartSessionKey)
-  const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen)
   const queryClient = useQueryClient()
   const prefersReducedMotion = useReducedMotion()
   const toteTarget = useRef<HTMLImageElement>(null)
@@ -103,7 +102,6 @@ export function BasketsPage() {
     onSuccess: () => {
       playAddToBasketSound()
       void queryClient.invalidateQueries({ queryKey: ['cart'] })
-      setTimeout(() => setCartDrawerOpen(true), 400)
       notify('Basket added to your cart.', 'success')
     },
     onError: (issue) => notify(issue instanceof Error ? issue.message : 'Could not add this basket.', 'error'),
@@ -143,9 +141,6 @@ export function BasketsPage() {
       if (addedIds.length) playAddToBasketSound()
       await queryClient.invalidateQueries({ queryKey: ['cart'] })
       setSelectedItems((current) => Object.fromEntries(Object.entries(current).filter(([id]) => !addedIds.includes(id))))
-      if (addedIds.length) {
-        setTimeout(() => setCartDrawerOpen(true), 400)
-      }
       if (failedNames.length) {
         notify(`${addedIds.length} item type(s) added. Could not add: ${failedNames.join(', ')}. Your selections remain so you can retry.`, 'error')
       } else {

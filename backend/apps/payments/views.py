@@ -69,6 +69,83 @@ class PaymentInitiationView(APIView):
         return Response(response_data, status=status.HTTP_201_CREATED)
 
 
+class PaymentSimulateSuccessView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @extend_schema(responses={200: PaymentReadSerializer})
+    def post(self, request, order_number):
+        import uuid
+        from apps.common.models import AuditEvent
+        from apps.orders.models import OrderStatusHistory
+        from apps.orders.services import consume_order_reservations
+        from apps.payments.models import BranchPaymentAccount, PaymentAttempt
+
+        order = get_object_or_404(CustomerOrder, order_number=order_number)
+        if not request.user.is_superuser and order.user_id != request.user.pk:
+            raise PermissionDenied("You do not have access to this order.")
+        if order.status != CustomerOrder.Status.AWAITING_PAYMENT:
+            payment = getattr(order, "payment", None)
+            if payment:
+                return Response(PaymentReadSerializer(payment).data, status=status.HTTP_200_OK)
+            raise ValidationError({"order": "This order is not awaiting payment."})
+
+        account = BranchPaymentAccount.objects.filter(branch=order.branch, is_enabled=True).first()
+        payment, _ = Payment.objects.get_or_create(
+            order=order,
+            defaults={
+                "branch_payment_account": account,
+                "provider": "hubtel",
+                "amount_minor": order.total_amount_minor,
+                "currency": order.currency,
+                "method": request.data.get("method", Payment.Method.MOBILE_MONEY),
+                "network": request.data.get("network", "mtn"),
+                "merchant_idempotency_reference": f"order-{order.order_number}".lower(),
+            },
+        )
+        attempt = payment.attempts.order_by("-created_at").first()
+        if not attempt:
+            attempt = PaymentAttempt.objects.create(
+                payment=payment,
+                idempotency_key=f"sandbox-{uuid.uuid4().hex[:12]}",
+                request_metadata={"method": payment.method, "network": payment.network, "mode": "sandbox"},
+            )
+
+        provider_reference = f"HUBTEL-TEST-{uuid.uuid4().hex[:8].upper()}"
+        attempt.provider_reference = provider_reference
+        attempt.status = PaymentAttempt.Status.SUCCEEDED
+        attempt.completed_at = timezone.now()
+        attempt.save(update_fields=("provider_reference", "status", "completed_at", "updated_at"))
+
+        payment.status = Payment.Status.SUCCEEDED
+        payment.provider_reference = provider_reference
+        payment.succeeded_at = timezone.now()
+        payment.save(update_fields=("status", "provider_reference", "succeeded_at", "updated_at"))
+
+        previous = order.status
+        order.status = CustomerOrder.Status.CONFIRMED
+        order.paid_at = timezone.now()
+        order.confirmed_at = order.paid_at
+        order.save(update_fields=("status", "paid_at", "confirmed_at", "updated_at"))
+
+        OrderStatusHistory.objects.create(
+            order=order,
+            from_status=previous,
+            to_status=order.status,
+            actor=request.user,
+            note="Payment completed via Hubtel Test / Sandbox mode.",
+        )
+        AuditEvent.objects.create(
+            branch=order.branch,
+            action="order.status_changed",
+            resource_type="CustomerOrder",
+            resource_id=str(order.pk),
+            before_data={"status": previous},
+            after_data={"status": order.status, "source": "sandbox_payment"},
+        )
+        consume_order_reservations(order)
+        return Response(PaymentReadSerializer(payment).data, status=status.HTTP_200_OK)
+
+
 class PaymentStatusView(APIView):
     permission_classes = (IsAuthenticated,)
 

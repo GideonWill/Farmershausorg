@@ -9,7 +9,7 @@ export function addToCart(
   branch: Branch | null,
   cartSessionKey: string,
   queryClient: QueryClient,
-  setDrawerOpen: (open: boolean) => void,
+  _setDrawerOpen?: (open: boolean) => void,
   fromElementOrEvent?: HTMLElement | React.MouseEvent | { x: number; y: number } | null,
 ) {
   if (!branch) {
@@ -30,7 +30,6 @@ export function addToCart(
   })
     .then(() => {
       void queryClient.invalidateQueries({ queryKey: ['cart'] })
-      setTimeout(() => setDrawerOpen(true), 450)
     })
     .catch((error: unknown) =>
       notify(error instanceof Error ? error.message : 'Could not add this item.', 'error'),

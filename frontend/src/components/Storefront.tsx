@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
 import { Suspense } from 'react'
-import { api, money, type Branch, type CartValidation, type Product } from '../lib/api'
+import { api, money, type Branch, type CartValidation, type CustomerProfile, type Product } from '../lib/api'
 import { notify } from '../lib/notifications'
+import { clearAuthTokens, getAuthTokens } from '../lib/auth'
 import { useBaskets, useBranches, useCart, useSiteSettings } from '../hooks/useStoreData'
 import { useStore } from '../stores/store'
 import { Drawer, Icon, Modal } from './ui'
@@ -222,9 +223,24 @@ function Header() {
   const [searching, setSearching] = useState(false)
   const autoLocationAttempted = useRef(false)
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [authenticated, setAuthenticated] = useState(() => Boolean(getAuthTokens()))
   const { data: cart } = useCart()
   const cartCount = cart?.items.reduce((count, item) => count + item.quantity, 0) ?? 0
   const { data: site } = useSiteSettings()
+
+  useEffect(() => {
+    const updateAuth = () => setAuthenticated(Boolean(getAuthTokens()))
+    window.addEventListener('farmershaus:auth-changed', updateAuth)
+    return () => window.removeEventListener('farmershaus:auth-changed', updateAuth)
+  }, [])
+
+  const { data: profile } = useQuery({
+    queryKey: ['me'],
+    queryFn: () => api<CustomerProfile>('/me/'),
+    enabled: authenticated,
+    staleTime: 60000,
+  })
   useEffect(() => {
     if (branchesLoading || branches.length === 0) return
 
@@ -315,7 +331,6 @@ function Header() {
             <NavLink className="nav-link" to="/baskets">Food baskets</NavLink>
             <NavLink className="nav-link" to="/recipes">Recipes</NavLink>
             <NavLink className="nav-link" to="/find-us">Find us</NavLink>
-            <Link className="nav-link" to="/#our-story">Our story</Link>
           </nav>
           <div className="relative order-last w-full md:order-none md:ml-auto md:min-w-48 md:max-w-md md:flex-1">
             <form onSubmit={submitSearch} className="relative">
@@ -362,7 +377,24 @@ function Header() {
               </span>
             )}
           </Link>
-          <Link className="icon-button" to="/account" aria-label="Your account"><Icon name="user" /></Link>
+          <Link
+            className={`relative icon-button transition ${
+              authenticated
+                ? 'border border-brand-green/35 bg-brand-green/10 text-brand-green hover:bg-brand-green/15'
+                : ''
+            }`}
+            to="/account"
+            aria-label={authenticated ? `Your account (${profile?.display_name || 'Signed in'})` : 'Your account'}
+            title={authenticated ? `Signed in as ${profile?.display_name || 'Customer'}` : 'Sign in / Your account'}
+          >
+            <Icon name="user" />
+            {authenticated && (
+              <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5" title="Logged in">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-600 ring-2 ring-white" />
+              </span>
+            )}
+          </Link>
           <button id="header-cart-button" className="relative icon-button" onClick={() => setCartDrawerOpen(true)} aria-label={`Open cart, ${cartCount} items`}>
             <Icon name="cart" />
             <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand-yellow px-1 text-[10px] font-bold text-brand-green">{cartCount}</span>
@@ -372,6 +404,60 @@ function Header() {
       <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} title="Menu">
         <div className="flex h-full flex-col justify-between px-5 py-4">
           <div className="space-y-4">
+            {authenticated ? (
+              <div className="rounded-2xl border border-brand-green/20 bg-brand-cream/90 p-3.5 shadow-2xs">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-green text-sm font-bold text-white shadow-xs">
+                    {profile?.display_name
+                      ? profile.display_name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()
+                      : 'FH'}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <p className="truncate text-sm font-bold text-brand-ink">{profile?.display_name || 'FarmersHaus Member'}</p>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" /> Active
+                      </span>
+                    </div>
+                    <p className="truncate text-xs text-brand-ink/60">{profile?.phone || profile?.email || 'Logged in'}</p>
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between border-t border-brand-green/10 pt-2 text-xs font-semibold">
+                  <Link
+                    to="/account"
+                    onClick={() => setMobileOpen(false)}
+                    className="font-bold text-brand-green hover:underline"
+                  >
+                    View my account &rarr;
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearAuthTokens()
+                      setAuthenticated(false)
+                      void queryClient.clear()
+                      notify('You have been signed out.', 'info')
+                    }}
+                    className="text-brand-tomato hover:underline"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link
+                to="/account"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-between rounded-2xl border border-dashed border-brand-green/25 bg-brand-cream/60 p-3 text-xs font-bold text-brand-green transition hover:bg-brand-cream"
+              >
+                <span className="flex items-center gap-2">
+                  <Icon name="user" className="h-4 w-4" />
+                  <span>Sign in / Register for fast checkout</span>
+                </span>
+                <Icon name="arrow" className="h-3.5 w-3.5" />
+              </Link>
+            )}
+
             <div className="rounded-2xl border border-brand-green/15 bg-brand-cream/60 p-3.5">
               <div className="flex items-center justify-between text-xs font-semibold text-brand-ink/60">
                 <span className="flex items-center gap-1.5"><Icon name="pin" className="text-brand-green" /> Selected branch</span>
@@ -405,10 +491,6 @@ function Header() {
                 <span>Recipes & ideas</span>
                 <Icon name="arrow" className="h-4 w-4 opacity-50" />
               </NavLink>
-              <Link onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/#our-story">
-                <span>Our story</span>
-                <Icon name="arrow" className="h-4 w-4 opacity-50" />
-              </Link>
               <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/find-us">
                 <span>Find our branches</span>
                 <Icon name="arrow" className="h-4 w-4 opacity-50" />
@@ -511,7 +593,7 @@ function Footer() {
       </div>
       <div className="store-footer__bottom">
         <span>© {COPYRIGHT_YEAR} FarmersHaus. Freshness for every day.</span>
-        <div className="store-footer__legal"><Link to="/faqs">FAQs</Link><Link to="/delivery-info">Delivery</Link><Link to="/terms">Terms</Link><Link to="/privacy">Privacy</Link><Link to="/refund-policy">Refund policy</Link></div>
+        <div className="store-footer__legal"><Link to="/faqs">FAQs</Link><Link to="/delivery-info">Delivery</Link><Link to="/terms">Terms</Link><Link to="/privacy">Privacy</Link><Link to="/refund-policy">Refund policy</Link><Link to="/staff" className="font-semibold text-brand-green/80 hover:text-brand-green">Staff Portal</Link></div>
         {contact?.social_links && Object.entries(contact.social_links).length > 0 && <div className="store-footer__social">{Object.entries(contact.social_links).map(([name, url]) => <a key={name} href={url} target="_blank" rel="noreferrer" className="capitalize">{name}</a>)}</div>}
       </div>
     </footer>
@@ -562,6 +644,22 @@ function CartDrawer() {
     onError: (error) => notify(error instanceof Error ? error.message : 'Cart update failed.', 'error'),
   })
 
+  const clearMutation = useMutation({
+    mutationFn: async () => {
+      if (!branch) return
+      return api(`/cart/?branch=${branch.id}`, {
+        method: 'DELETE',
+        cartSessionKey,
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
+      notify('All items cleared from your basket.', 'info')
+    },
+    onError: (error) => notify(error instanceof Error ? error.message : 'Cart update failed.', 'error'),
+  })
+
+  const hasItems = (cart?.items?.length ?? 0) > 0
   const basketPrices = new Map(baskets.map((basket) => [basket.id, basket.base_price_minor]))
   const subtotal = cart?.items.reduce((sum, item) => {
     const price = item.product?.unit_price_minor ?? basketPrices.get(item.basket_package?.id ?? '') ?? 0
@@ -569,7 +667,26 @@ function CartDrawer() {
   }, 0) ?? 0
 
   return (
-    <Drawer open={open} onClose={() => setOpen(false)} title="Your basket">
+    <Drawer
+      open={open}
+      onClose={() => setOpen(false)}
+      title="Your basket"
+      action={
+        hasItems ? (
+          <button
+            type="button"
+            onClick={() => clearMutation.mutate()}
+            disabled={clearMutation.isPending}
+            className="flex items-center gap-1.5 rounded-full border border-brand-tomato/20 bg-brand-tomato/10 px-3 py-1.5 text-xs font-semibold text-brand-tomato transition hover:bg-brand-tomato hover:text-white active:scale-95 disabled:opacity-50"
+            aria-label="Clear all items from basket"
+            title="Clear all items from your basket"
+          >
+            <Icon name="trash" className="h-3.5 w-3.5" />
+            <span>{clearMutation.isPending ? 'Clearing...' : 'Clear all'}</span>
+          </button>
+        ) : null
+      }
+    >
       {!branch ? <p className="p-6 text-sm text-brand-ink/60">Choose a branch to start shopping.</p>
         : isLoading ? <div className="space-y-3 p-6">{[1, 2, 3].map((item) => <div key={item} className="skeleton h-20" />)}</div>
           : !cart?.items.length ? (

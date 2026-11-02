@@ -163,6 +163,7 @@ export type CustomerProfile = {
   display_name: string
   first_name: string
   last_name: string
+  is_staff?: boolean
   is_super_admin: boolean
   branch_memberships: Array<{
     branch_id: string
@@ -289,13 +290,27 @@ async function apiRequest(path: string, options: ApiOptions = {}): Promise<Respo
   return response
 }
 
+function extractErrorMessage(data: unknown): string {
+  if (!data) return ''
+  if (typeof data === 'string') return data
+  if (Array.isArray(data)) return data.map(extractErrorMessage).filter(Boolean).join(' ')
+  if (typeof data === 'object') {
+    const obj = data as Record<string, unknown>
+    if (typeof obj.detail === 'string') return obj.detail
+    if (typeof obj.message === 'string') return obj.message
+    if (obj.code === 'voucher_not_found') return 'Voucher code was not found or is invalid.'
+    return Object.values(obj).map(extractErrorMessage).filter(Boolean).join(' ')
+  }
+  return String(data)
+}
+
 export async function api<T>(path: string, options: ApiOptions = {}): Promise<T> {
   const response = await apiRequest(path, options)
   if (!response.ok) {
     const body = await response.json().catch(() => null) as
       | { detail?: string; [key: string]: unknown }
       | null
-    const message = body?.detail ?? Object.values(body ?? {}).flat().join(' ') ?? response.statusText
+    const message = extractErrorMessage(body) || response.statusText
     throw new Error(String(message) || `Request failed (${response.status})`)
   }
   return response.json() as Promise<T>
