@@ -11,3 +11,4 @@ text = text.replace(
 
 fs.writeFileSync(path, text, 'utf8')
 console.log('Fixed Header JSX fragments')
+
