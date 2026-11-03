@@ -590,7 +590,6 @@ function Footer() {
     <footer className="store-footer">
       <div className="store-footer__hero">
         <div className="store-footer__hero-content">
-          <img className="store-footer__logo" src="/brand/farmershaus-logo.png" alt="FarmersHaus" />
           <p className="store-footer__eyebrow">Everyday fruits and veggies</p>
           <h2>FRESH FOOD.<br />HAPPIER DAYS.</h2>
           <p className="store-footer__tagline">{site?.site.tagline ?? 'Everyday Fruits and Veggies — a healthy happy life.'}</p>
