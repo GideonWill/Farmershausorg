@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { api, downloadFile, money, type CustomerOrder, type OrderPayment, type OrderStatus } from '../lib/api'
 import { useSiteSettings } from '../hooks/useStoreData'
 import { notify } from '../lib/notifications'
@@ -23,17 +23,12 @@ const networks = [
 
 export function OrderPage() {
   const { orderNumber = '' } = useParams()
-  const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
-  const isNewSuccess = searchParams.get('success') === 'true'
 
   const [method, setMethod] = useState<'mobile_money' | 'card'>('mobile_money')
   const [network, setNetwork] = useState('mtn')
   const [phone, setPhone] = useState('')
   const [paymentStarted, setPaymentStarted] = useState(false)
   const [payment, setPayment] = useState<OrderPayment | null>(null)
-  const [redirectSeconds, setRedirectSeconds] = useState<number | null>(isNewSuccess ? 6 : null)
-  const [autoRedirectCancelled, setAutoRedirectCancelled] = useState(false)
 
   const queryClient = useQueryClient()
   const { data: site } = useSiteSettings()
@@ -58,19 +53,6 @@ export function OrderPage() {
       return current && !['succeeded', 'failed', 'expired', 'refunded'].includes(current.status) ? 5000 : false
     },
   })
-
-  // Smooth auto-redirect timer when order payment just succeeded
-  useEffect(() => {
-    if (redirectSeconds === null || autoRedirectCancelled) return
-    if (redirectSeconds <= 0) {
-      navigate('/account#orders')
-      return
-    }
-    const timer = setTimeout(() => {
-      setRedirectSeconds((prev) => (prev !== null ? prev - 1 : null))
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [redirectSeconds, autoRedirectCancelled, navigate])
 
   const startPayment = useMutation({
     mutationFn: () => {
@@ -167,45 +149,14 @@ export function OrderPage() {
                 </div>
               </div>
 
-              {/* Smooth redirect notice if newly placed order */}
-              {redirectSeconds !== null && !autoRedirectCancelled && (
-                <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-xs text-white backdrop-blur-md">
-                  <div className="flex items-center gap-2">
-                    <span className="grid h-5 w-5 place-items-center rounded-full bg-brand-yellow text-[11px] font-bold text-brand-green">
-                      {redirectSeconds}
-                    </span>
-                    <span>
-                      Taking you to your account order history in <strong>{redirectSeconds}s</strong>…
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => navigate('/account#orders')}
-                      className="font-bold text-brand-yellow hover:underline"
-                    >
-                      Go to orders now &rarr;
-                    </button>
-                    <span className="text-white/40">·</span>
-                    <button
-                      type="button"
-                      onClick={() => setAutoRedirectCancelled(true)}
-                      className="text-white/70 hover:text-white hover:underline"
-                    >
-                      Stay on this page
-                    </button>
-                  </div>
-                </div>
-              )}
-
               {/* Action Buttons */}
               <div className="mt-8 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 border-t border-white/15 pt-6">
                 <Link
-                  to="/account#orders"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-yellow px-5 py-3 text-xs font-bold text-brand-green shadow-lg transition hover:bg-brand-yellow/90 active:scale-95 sm:text-sm"
+                  to="/shop"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-yellow px-6 py-3.5 text-xs font-bold text-brand-green shadow-xl transition hover:bg-brand-yellow/90 hover:scale-[1.02] active:scale-95 sm:text-sm"
                 >
-                  <span>Go to My Account (View Orders)</span>
-                  <Icon name="arrow" className="h-4 w-4" />
+                  <Icon name="arrow" className="h-4 w-4 rotate-180" />
+                  <span>Back to Shop (Browse Fresh Produce)</span>
                 </Link>
 
                 <button
@@ -219,10 +170,10 @@ export function OrderPage() {
                 </button>
 
                 <Link
-                  to="/shop"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-transparent px-5 py-3 text-xs font-semibold text-white/80 transition hover:bg-white/10 hover:text-white sm:text-sm"
+                  to="/account#orders"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-xs font-medium text-white/80 transition hover:bg-white/15 hover:text-white sm:text-sm"
                 >
-                  <span>Continue shopping</span>
+                  <span>View in order history</span>
                 </Link>
               </div>
             </div>

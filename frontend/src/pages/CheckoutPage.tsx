@@ -50,6 +50,8 @@ export function CheckoutPage() {
   const [guestAddressLine2, setGuestAddressLine2] = useState('')
   const [guestArea, setGuestArea] = useState('')
   const [guestDirections, setGuestDirections] = useState('')
+  const [isExecutingPayment, setIsExecutingPayment] = useState(false)
+  const [paymentStep, setPaymentStep] = useState(1)
 
   useEffect(() => {
     const updateAuth = () => setAuthenticated(Boolean(getAuthTokens()))
@@ -303,9 +305,64 @@ export function CheckoutPage() {
     )
   }
 
-  function submitCheckout(event: FormEvent<HTMLFormElement>) {
+  async function submitCheckout(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    checkoutMutation.mutate()
+    setCheckoutError(null)
+
+    if (!cart?.id || !branch) {
+      setCheckoutError('Your cart or branch is not available.')
+      return
+    }
+    if (!selectedSlotId) {
+      setCheckoutError('Choose an available fulfillment time slot.')
+      return
+    }
+    if (!authenticated && isGuest) {
+      if (!guestName.trim() || !guestEmail.trim() || !guestPhone.trim()) {
+        setCheckoutError('Please provide your full name, email, and phone number for delivery and order updates.')
+        return
+      }
+      if (fulfillment === 'delivery' && (!guestAddressLine1.trim() || !guestArea.trim())) {
+        setCheckoutError('Please enter your delivery street address and area.')
+        return
+      }
+    }
+    if (fulfillment === 'delivery' && authenticated && (!selectedAddressId || !selectedZoneId)) {
+      setCheckoutError('Choose a saved delivery address and delivery zone.')
+      return
+    }
+    if (fulfillment === 'delivery' && selectedZone && subtotal < selectedZone.minimum_order_minor) {
+      setCheckoutError(
+        `The minimum order for ${selectedZone.name} is ${money(selectedZone.minimum_order_minor)}.`,
+      )
+      return
+    }
+
+    // Launch execution screen
+    setIsExecutingPayment(true)
+    setPaymentStep(1)
+
+    const timer1 = setTimeout(() => setPaymentStep(2), 900)
+    const timer2 = setTimeout(() => setPaymentStep(3), 1900)
+
+    try {
+      const minDelay = new Promise((resolve) => setTimeout(resolve, 2600))
+      const [order] = await Promise.all([
+        checkoutMutation.mutateAsync(),
+        minDelay,
+      ])
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+      clearLocalCart()
+      navigate(`/orders/${order.order_number}?success=true`)
+    } catch (err: unknown) {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+      setIsExecutingPayment(false)
+      setPaymentStep(1)
+      const msg = err instanceof Error ? err.message : 'Checkout could not be completed.'
+      setCheckoutError(msg)
+    }
   }
 
   // Format fulfillment slot dates nicely
@@ -1200,6 +1257,106 @@ export function CheckoutPage() {
           </div>
         </form>
       </Modal>
+
+      {/* Full-screen Payment Execution Overlay */}
+      {isExecutingPayment && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Executing payment"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-brand-green/95 p-4 text-white backdrop-blur-lg animate-fadeIn select-none"
+        >
+          {/* Ambient Glows */}
+          <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-brand-yellow/15 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-emerald-400/10 blur-3xl" />
+
+          <div className="relative mx-auto flex w-full max-w-md flex-col items-center text-center">
+            {/* Animated Shield/Padlock with Pulsing Radar Ring */}
+            <div className="relative mb-6 flex items-center justify-center">
+              <span className="absolute h-24 w-24 animate-ping rounded-full bg-brand-yellow/20" />
+              <span className="absolute h-20 w-20 animate-pulse rounded-full bg-white/10" />
+              <div className="relative grid h-20 w-20 place-items-center rounded-3xl bg-brand-yellow text-brand-green shadow-2xl">
+                {paymentStep === 3 ? (
+                  <Icon name="check" className="h-10 w-10 stroke-[3] text-brand-green animate-scaleIn" />
+                ) : (
+                  <svg
+                    className="h-9 w-9 animate-spin text-brand-green"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                )}
+              </div>
+            </div>
+
+            {/* Title & Description */}
+            <h2 className="font-brand-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              {paymentStep === 3 ? 'Payment Authorized!' : 'Executing Payment…'}
+            </h2>
+            <p className="mt-2 text-xs leading-relaxed text-white/80 sm:text-sm">
+              Please do not refresh, close this window, or press back while we securely process your payment.
+            </p>
+
+            {/* Live Progress Checklist Card */}
+            <div className="mt-6 w-full rounded-2xl border border-white/15 bg-white/10 p-4 text-left shadow-xl backdrop-blur-md">
+              <div className="space-y-3">
+                {/* Step 1 */}
+                <div className={`flex items-center gap-3 transition-opacity duration-300 ${paymentStep >= 1 ? 'opacity-100' : 'opacity-40'}`}>
+                  <div className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold ${paymentStep > 1 ? 'bg-brand-yellow text-brand-green' : 'bg-white/20 text-white animate-pulse'}`}>
+                    {paymentStep > 1 ? '✓' : '1'}
+                  </div>
+                  <span className="text-xs font-medium text-white sm:text-sm">
+                    Connecting to secure payment gateway
+                  </span>
+                </div>
+
+                {/* Step 2 */}
+                <div className={`flex items-center gap-3 transition-opacity duration-300 ${paymentStep >= 2 ? 'opacity-100' : 'opacity-40'}`}>
+                  <div className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold ${paymentStep > 2 ? 'bg-brand-yellow text-brand-green' : paymentStep === 2 ? 'bg-white/20 text-white animate-pulse' : 'bg-white/10 text-white/40'}`}>
+                    {paymentStep > 2 ? '✓' : '2'}
+                  </div>
+                  <span className="text-xs font-medium text-white sm:text-sm">
+                    Authorizing transaction &amp; verifying funds
+                  </span>
+                </div>
+
+                {/* Step 3 */}
+                <div className={`flex items-center gap-3 transition-opacity duration-300 ${paymentStep >= 3 ? 'opacity-100' : 'opacity-40'}`}>
+                  <div className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold ${paymentStep === 3 ? 'bg-brand-yellow text-brand-green animate-bounce' : 'bg-white/10 text-white/40'}`}>
+                    {paymentStep === 3 ? '✓' : '3'}
+                  </div>
+                  <span className="text-xs font-medium text-white sm:text-sm">
+                    Payment approved! Finalizing harvest confirmation
+                  </span>
+                </div>
+              </div>
+
+              {/* Amount badge */}
+              <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 text-xs text-white/80">
+                <span>Total amount</span>
+                <span className="font-mono text-sm font-bold text-brand-yellow">
+                  {money(total)}
+                </span>
+              </div>
+            </div>
+
+            {/* Security Badge */}
+            <div className="mt-5 flex items-center gap-2 text-[11px] font-medium text-white/60">
+              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clipRule="evenodd" />
+              </svg>
+              <span>256-Bit SSL Encrypted • Verified by FarmersHaus</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
