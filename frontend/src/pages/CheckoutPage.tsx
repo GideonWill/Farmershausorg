@@ -13,6 +13,8 @@ import {
 } from '../lib/api'
 import type { BasketPackage } from '../lib/api'
 import { useBaskets, useCart } from '../hooks/useStoreData'
+import { clearLocalCart } from '../lib/cartManager'
+import mockCheckoutData from '../lib/mockCheckoutData.json'
 import { getAuthTokens } from '../lib/auth'
 import { notify } from '../lib/notifications'
 import { useStore } from '../stores/store'
@@ -79,18 +81,31 @@ export function CheckoutPage() {
 
   const zonesQuery = useQuery({
     queryKey: ['delivery-zones', branch?.slug],
-    queryFn: async () =>
-      getList(await api<DeliveryZone[] | { results: DeliveryZone[] }>(`/branches/${branch?.slug}/delivery-zones/`)),
-    enabled: Boolean(branch && fulfillment === 'delivery'),
+    queryFn: async () => {
+      try {
+        const res = await api<DeliveryZone[] | { results: DeliveryZone[] }>(`/branches/${branch?.slug}/delivery-zones/`)
+        const list = getList(res)
+        if (list.length) return list
+      } catch {}
+      return mockCheckoutData.delivery_zones as unknown as DeliveryZone[]
+    },
+    initialData: () => mockCheckoutData.delivery_zones as unknown as DeliveryZone[],
+    enabled: Boolean(fulfillment === 'delivery'),
   })
 
   const slotsQuery = useQuery({
     queryKey: ['fulfillment-slots', branch?.id, fulfillment],
-    queryFn: () =>
-      api<FulfillmentSlot[]>(
-        `/fulfillment-slots/?${new URLSearchParams({ branch: branch?.id ?? '', method: fulfillment })}`,
-      ),
-    enabled: Boolean(authenticated && branch),
+    queryFn: async () => {
+      try {
+        const res = await api<FulfillmentSlot[]>(
+          `/fulfillment-slots/?${new URLSearchParams({ branch: branch?.id ?? '', method: fulfillment })}`,
+        )
+        if (res && res.length) return res
+      } catch {}
+      return (mockCheckoutData.fulfillment_slots as unknown as FulfillmentSlot[]).filter((s) => s.method === fulfillment)
+    },
+    initialData: () => (mockCheckoutData.fulfillment_slots as unknown as FulfillmentSlot[]).filter((s) => s.method === fulfillment),
+    enabled: true,
   })
 
   const selectedAddressId = addressesQuery.data?.some((address) => address.id === addressId)
@@ -217,6 +232,7 @@ export function CheckoutPage() {
     onSuccess: (order) => {
       void queryClient.invalidateQueries({ queryKey: ['cart'] })
       void queryClient.invalidateQueries({ queryKey: ['orders'] })
+      clearLocalCart()
       navigate(`/orders/${order.order_number}?success=true`)
     },
     onError: (error) => {

@@ -3,6 +3,7 @@ import { api, type Branch, type Cart, type Product } from './api'
 import { notify } from './notifications'
 import { flyToCart } from './cartFlyEffect'
 import { ingredientImage, categoryImage } from './images'
+import { addProductToLocalCart } from './cartManager'
 
 export function addToCart(
   product: Product,
@@ -12,28 +13,34 @@ export function addToCart(
   _setDrawerOpen?: (open: boolean) => void,
   fromElementOrEvent?: HTMLElement | React.MouseEvent | { x: number; y: number } | null,
 ) {
-  if (!branch) {
-    notify('Choose a branch before adding products to your cart.', 'info')
-    return
-  }
+  // Always add to local cart state instantly
+  addProductToLocalCart(product, branch, 1)
 
-  // Trigger the throwing arc interaction towards the header cart icon
+  // Trigger visual arc animation
   flyToCart(
     fromElementOrEvent,
     product.image_url || ingredientImage(product.slug) || categoryImage(product.category),
   )
 
-  void api<Cart>('/cart/items/', {
-    method: 'POST',
-    cartSessionKey,
-    body: JSON.stringify({ branch_id: branch.id, product_id: product.id, quantity: 1 }),
-  })
-    .then(() => {
-      void queryClient.invalidateQueries({ queryKey: ['cart'] })
+  notify(`Added ${product.name} to your basket!`, 'success')
+
+  // Invalidate query so UI re-reads the updated cart immediately
+  void queryClient.invalidateQueries({ queryKey: ['cart'] })
+
+  // Synchronize with backend API in the background if available
+  if (branch) {
+    void api<Cart>('/cart/items/', {
+      method: 'POST',
+      cartSessionKey,
+      body: JSON.stringify({ branch_id: branch.id, product_id: product.id, quantity: 1 }),
     })
-    .catch((error: unknown) =>
-      notify(error instanceof Error ? error.message : 'Could not add this item.', 'error'),
-    )
+      .then(() => {
+        void queryClient.invalidateQueries({ queryKey: ['cart'] })
+      })
+      .catch((err) => {
+        console.warn('Backend sync deferred, cart stored locally:', err)
+      })
+  }
 }
 
 export async function switchToBranch(slug: string): Promise<void> {

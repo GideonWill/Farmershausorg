@@ -7,6 +7,7 @@ import { Suspense } from 'react'
 import { api, money, type Branch, type CartValidation, type CustomerProfile, type Product } from '../lib/api'
 import { notify } from '../lib/notifications'
 import { clearAuthTokens, getAuthTokens } from '../lib/auth'
+import { clearLocalCart, updateLocalCartItemQuantity } from '../lib/cartManager'
 import { useBaskets, useBranches, useCart, useSiteSettings } from '../hooks/useStoreData'
 import { useStore } from '../stores/store'
 import { Drawer, Icon, Modal } from './ui'
@@ -662,6 +663,7 @@ function CartDrawer() {
   const { data: baskets = [] } = useBaskets()
   const mutation = useMutation({
     mutationFn: async ({ itemId, quantity }: { itemId: string; quantity?: number }) => {
+      updateLocalCartItemQuantity(itemId, quantity)
       if (quantity === undefined) {
         return api(`/cart/items/${itemId}/`, { method: 'DELETE', cartSessionKey })
       }
@@ -677,6 +679,7 @@ function CartDrawer() {
 
   const clearMutation = useMutation({
     mutationFn: async () => {
+      clearLocalCart()
       if (!branch) return
       return api(`/cart/?branch=${branch.id}`, {
         method: 'DELETE',

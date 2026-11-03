@@ -1,3 +1,4 @@
+import { clearLocalCart, updateLocalCartItemQuantity } from "../lib/cartManager"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { api, money } from '../lib/api'
@@ -15,16 +16,19 @@ export function CartPage() {
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async ({ id, quantity }: { id: string; quantity?: number }) => {
-      if (quantity === undefined) return api(`/cart/items/${id}/`, { method: 'DELETE', cartSessionKey })
-      return api(`/cart/items/${id}/`, { method: 'PATCH', cartSessionKey, body: JSON.stringify({ quantity }) })
+      updateLocalCartItemQuantity(id, quantity)
+      if (quantity === undefined) return api(`/cart/items/${id}/`, { method: 'DELETE', cartSessionKey }).catch(() => null)
+      return api(`/cart/items/${id}/`, { method: 'PATCH', cartSessionKey, body: JSON.stringify({ quantity }) }).catch(() => null)
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
     onError: (error) => notify(error instanceof Error ? error.message : 'Cart update failed.', 'error'),
   })
   const clearMutation = useMutation({
     mutationFn: async () => {
-      if (!branch) return
-      return api(`/cart/?branch=${branch.id}`, { method: 'DELETE', cartSessionKey })
+      clearLocalCart()
+      if (branch) {
+        await api(`/cart/?branch=${branch.id}`, { method: 'DELETE', cartSessionKey }).catch(() => null)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] })

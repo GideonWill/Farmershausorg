@@ -1,0 +1,1614 @@
+{
+  "delivery_zones": [
+    {
+      "id": "e101718b-85cf-44a6-8254-b0516e4692fd",
+      "branch_slug": "dome",
+      "name": "Express Same-Day Delivery",
+      "area_description": "Priority express courier from FarmersHaus Dome",
+      "postcodes": [],
+      "delivery_fee_minor": 2500,
+      "minimum_order_minor": 0
+    },
+    {
+      "id": "d9ef28d8-d6f3-4562-8339-483f99e87aca",
+      "branch_slug": "dome",
+      "name": "Standard Local Delivery",
+      "area_description": "Within 8 km radius of FarmersHaus Dome",
+      "postcodes": [],
+      "delivery_fee_minor": 1500,
+      "minimum_order_minor": 0
+    },
+    {
+      "id": "a4041228-e9a0-4db9-8c93-0cb317b98915",
+      "branch_slug": "east-legon",
+      "name": "Express Same-Day Delivery",
+      "area_description": "Priority express courier from FarmersHaus East Legon",
+      "postcodes": [],
+      "delivery_fee_minor": 2500,
+      "minimum_order_minor": 0
+    },
+    {
+      "id": "df2cfb64-2c5a-4ea4-9229-d4aaab1287aa",
+      "branch_slug": "east-legon",
+      "name": "Standard Local Delivery",
+      "area_description": "Within 8 km radius of FarmersHaus East Legon",
+      "postcodes": [],
+      "delivery_fee_minor": 1500,
+      "minimum_order_minor": 0
+    },
+    {
+      "id": "7d4ca110-7475-46fd-b580-5a10f87d823d",
+      "branch_slug": "north-legon",
+      "name": "Express Same-Day Delivery",
+      "area_description": "Priority express courier from FarmersHaus North Legon",
+      "postcodes": [],
+      "delivery_fee_minor": 2500,
+      "minimum_order_minor": 0
+    },
+    {
+      "id": "ce0b46d2-9991-4d26-a566-35948e109091",
+      "branch_slug": "north-legon",
+      "name": "Standard Local Delivery",
+      "area_description": "Within 8 km radius of FarmersHaus North Legon",
+      "postcodes": [],
+      "delivery_fee_minor": 1500,
+      "minimum_order_minor": 0
+    },
+    {
+      "id": "76f5a946-e675-4235-b520-1c743e4fa07f",
+      "branch_slug": "westland",
+      "name": "Express Same-Day Delivery",
+      "area_description": "Priority express courier from FarmersHaus Westland",
+      "postcodes": [],
+      "delivery_fee_minor": 2500,
+      "minimum_order_minor": 0
+    },
+    {
+      "id": "cc4f863f-709f-4e3c-9662-3d2621c1b86d",
+      "branch_slug": "westland",
+      "name": "Standard Local Delivery",
+      "area_description": "Within 8 km radius of FarmersHaus Westland",
+      "postcodes": [],
+      "delivery_fee_minor": 1500,
+      "minimum_order_minor": 0
+    }
+  ],
+  "fulfillment_slots": [
+    {
+      "id": "d2bf8761-3e74-4205-a389-e965325f7478",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-02T09:00:00+00:00",
+      "ends_at": "2026-11-02T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "8b0f163d-df18-4c53-aa6f-7ed1dfdcc790",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-02T09:00:00+00:00",
+      "ends_at": "2026-11-02T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "7955ae53-9838-4514-a8c8-23de86892096",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-02T09:00:00+00:00",
+      "ends_at": "2026-11-02T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "8df2e8b7-c202-4a41-876c-2247b728fa99",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-02T09:00:00+00:00",
+      "ends_at": "2026-11-02T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "e053fede-cf3d-4de7-a338-b409f7a03bb1",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-02T09:00:00+00:00",
+      "ends_at": "2026-11-02T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "2e12af4e-2c5e-400c-9e8f-44290da62074",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-02T09:00:00+00:00",
+      "ends_at": "2026-11-02T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "ee1ada75-e2da-4d70-9e19-99149ec93d76",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-02T09:00:00+00:00",
+      "ends_at": "2026-11-02T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "e316939e-43e1-4f18-b7e3-28ef558904e2",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-02T09:00:00+00:00",
+      "ends_at": "2026-11-02T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "df3cc4a9-cc27-4208-9393-d6c0577c3049",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-02T12:00:00+00:00",
+      "ends_at": "2026-11-02T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "a06f1363-ce6d-4d6e-8429-b36ea5ab68f5",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-02T12:00:00+00:00",
+      "ends_at": "2026-11-02T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "aa55d735-1377-4ee4-be3e-5e237dbc0ffe",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-02T12:00:00+00:00",
+      "ends_at": "2026-11-02T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "746872b1-95ee-4b9b-b92d-36765974d8af",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-02T12:00:00+00:00",
+      "ends_at": "2026-11-02T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "ca86b5b7-ddc8-4144-b6b4-ebe5a766e456",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-02T12:00:00+00:00",
+      "ends_at": "2026-11-02T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "0f98cf18-ebfc-426f-8df4-f4743e6ab72b",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-02T12:00:00+00:00",
+      "ends_at": "2026-11-02T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "b9e60b61-3b53-45fd-a49c-eb954694eeb9",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-02T12:00:00+00:00",
+      "ends_at": "2026-11-02T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "32988b11-a22e-4787-99ee-79dc5244a2fb",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-02T12:00:00+00:00",
+      "ends_at": "2026-11-02T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "7b5bb955-dae1-40e1-b82d-4b97477d8755",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-02T15:00:00+00:00",
+      "ends_at": "2026-11-02T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "ff72c3ec-e9fb-4863-a751-05b2bbe87e0c",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-02T15:00:00+00:00",
+      "ends_at": "2026-11-02T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "8ce75f47-3327-46bb-927e-98272d17d4ae",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-02T15:00:00+00:00",
+      "ends_at": "2026-11-02T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "ef50bf4a-563d-4d46-b056-58387440186b",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-02T15:00:00+00:00",
+      "ends_at": "2026-11-02T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "3a0cdfa3-fda8-4906-91e0-a13077539a30",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-02T15:00:00+00:00",
+      "ends_at": "2026-11-02T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "3ecda159-de6e-4cb7-a38b-9ed02ace090b",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-02T15:00:00+00:00",
+      "ends_at": "2026-11-02T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "afa0e858-d5b6-47b0-8131-ebb8454b8e4f",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-02T15:00:00+00:00",
+      "ends_at": "2026-11-02T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "9e31757d-b7e8-4133-962c-b9bbdd2f48be",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-02T15:00:00+00:00",
+      "ends_at": "2026-11-02T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "a32f22dc-9deb-4982-8f5d-08c3328a6e38",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-02T18:00:00+00:00",
+      "ends_at": "2026-11-02T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "a1fdf796-0f2e-4e52-91f5-b2f73886f6dc",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-02T18:00:00+00:00",
+      "ends_at": "2026-11-02T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "210a8fe7-4ed3-44f2-aa42-7d5a593e771d",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-02T18:00:00+00:00",
+      "ends_at": "2026-11-02T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "578ab104-5621-46aa-a0e7-fef72aa173a3",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-02T18:00:00+00:00",
+      "ends_at": "2026-11-02T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "ac8beb1b-e364-4ff3-b853-da97a6e7bfb3",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-02T18:00:00+00:00",
+      "ends_at": "2026-11-02T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "dbf24181-0261-4a84-b394-af84d2b6510f",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-02T18:00:00+00:00",
+      "ends_at": "2026-11-02T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "92228d76-893a-428a-b0b3-b80e21f97d56",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-02T18:00:00+00:00",
+      "ends_at": "2026-11-02T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "9875a400-f29e-4ecc-b17a-93a5faa94946",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-02T18:00:00+00:00",
+      "ends_at": "2026-11-02T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "53ed1c33-20d3-4de8-911b-69747875e888",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-03T09:00:00+00:00",
+      "ends_at": "2026-11-03T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "7257a4c4-7fc0-45f5-86c7-d9be961e72aa",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-03T09:00:00+00:00",
+      "ends_at": "2026-11-03T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "3cafb07f-1792-4e96-aaf7-cfa69626afe7",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-03T09:00:00+00:00",
+      "ends_at": "2026-11-03T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "d63c8b78-ef80-4d6d-a0e1-f67db972042b",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-03T09:00:00+00:00",
+      "ends_at": "2026-11-03T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "a8d4f5c0-591e-4902-9230-49a2732abe56",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-03T09:00:00+00:00",
+      "ends_at": "2026-11-03T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "4326a9d6-9706-4e8d-bc47-e5b4596753dd",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-03T09:00:00+00:00",
+      "ends_at": "2026-11-03T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "97d28f7c-037b-47c7-8268-f670165fea24",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-03T09:00:00+00:00",
+      "ends_at": "2026-11-03T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "b41bc339-14b4-4fae-984b-88c5bacbca9b",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-03T09:00:00+00:00",
+      "ends_at": "2026-11-03T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c9490be8-64fa-4b35-b161-166bc8ab0e30",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-03T12:00:00+00:00",
+      "ends_at": "2026-11-03T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c84d5de9-c839-4b58-8c59-7b9cd2692c14",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-03T12:00:00+00:00",
+      "ends_at": "2026-11-03T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "a5242875-5c70-4c72-a8c6-354fc479d038",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-03T12:00:00+00:00",
+      "ends_at": "2026-11-03T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "62d6911d-87c2-4244-a4d5-ccdbe9b8c9fa",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-03T12:00:00+00:00",
+      "ends_at": "2026-11-03T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "01166078-5917-4417-bffa-fd123dc85d4c",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-03T12:00:00+00:00",
+      "ends_at": "2026-11-03T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "33553b73-3667-488e-8d44-c88ebd44bce9",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-03T12:00:00+00:00",
+      "ends_at": "2026-11-03T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "2d37bf47-fd04-4bd6-998a-b8309a8e6fce",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-03T12:00:00+00:00",
+      "ends_at": "2026-11-03T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "3bcb89e0-6124-4426-bfa7-5d65fd4a956e",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-03T12:00:00+00:00",
+      "ends_at": "2026-11-03T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "f7bb7a7c-4f9e-402f-902e-da5d1bfeb4d8",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-03T15:00:00+00:00",
+      "ends_at": "2026-11-03T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "6bf20f2b-f377-4470-9370-d992365daadc",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-03T15:00:00+00:00",
+      "ends_at": "2026-11-03T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "5d2f15b1-a3af-47eb-8c47-be738418450f",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-03T15:00:00+00:00",
+      "ends_at": "2026-11-03T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "cca76cf8-db46-46f7-b6b5-312064d7ebf3",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-03T15:00:00+00:00",
+      "ends_at": "2026-11-03T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "42867e71-413f-4445-ba4e-b34af21129f2",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-03T15:00:00+00:00",
+      "ends_at": "2026-11-03T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "50c7d80d-afcd-4e2a-9510-ed400e788cef",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-03T15:00:00+00:00",
+      "ends_at": "2026-11-03T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "4c65a307-28c2-4d6b-abf3-0bbfa7b277ac",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-03T15:00:00+00:00",
+      "ends_at": "2026-11-03T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "33b0c29c-5fb0-41e7-bad3-a005c2313f2e",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-03T15:00:00+00:00",
+      "ends_at": "2026-11-03T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "d24ea57b-bdbd-4105-955f-d08c2a7af7ae",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-03T18:00:00+00:00",
+      "ends_at": "2026-11-03T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "8cc7b485-3e38-445e-87ca-bb49ae74c495",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-03T18:00:00+00:00",
+      "ends_at": "2026-11-03T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "5f9060ec-2c7e-4bae-b9d9-7f5b9d31a2e3",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-03T18:00:00+00:00",
+      "ends_at": "2026-11-03T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "d06c2dce-f1ea-45d1-8a5f-c450dcd975aa",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-03T18:00:00+00:00",
+      "ends_at": "2026-11-03T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "49223408-04d8-41c0-8ead-49339713e6fc",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-03T18:00:00+00:00",
+      "ends_at": "2026-11-03T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "5f620c3d-5766-4c14-84cb-7709f64c9bd0",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-03T18:00:00+00:00",
+      "ends_at": "2026-11-03T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "fddc757a-60b5-40cd-a7cc-bf5563474623",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-03T18:00:00+00:00",
+      "ends_at": "2026-11-03T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "37cc8855-92d9-436b-8127-c26ebe208124",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-03T18:00:00+00:00",
+      "ends_at": "2026-11-03T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "8165fa08-93b4-4d70-b069-220a5e1095ad",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-04T09:00:00+00:00",
+      "ends_at": "2026-11-04T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "b1f03c29-0ffd-4058-9017-4679a6c9892f",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-04T09:00:00+00:00",
+      "ends_at": "2026-11-04T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "bc98a0aa-1957-4d01-905a-7bf7ff2a9946",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-04T09:00:00+00:00",
+      "ends_at": "2026-11-04T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "71935af9-2f69-454f-ae7d-18cc68e83f0d",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-04T09:00:00+00:00",
+      "ends_at": "2026-11-04T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "7e221718-92bc-4ce6-bfbe-fcabdcca13a8",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-04T09:00:00+00:00",
+      "ends_at": "2026-11-04T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "a45ca245-1d1a-4470-a87b-a9454d9710cb",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-04T09:00:00+00:00",
+      "ends_at": "2026-11-04T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "7cefccec-9c4d-4dcc-bf92-24eb1f2e65fb",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-04T09:00:00+00:00",
+      "ends_at": "2026-11-04T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "0c0016b0-26e3-4ec4-afc2-20a906358170",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-04T09:00:00+00:00",
+      "ends_at": "2026-11-04T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "82f9101f-7c9c-4254-be67-b6db9b4f2be8",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-04T12:00:00+00:00",
+      "ends_at": "2026-11-04T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "0cba7e9f-2692-475a-ab12-b46ae69a7a02",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-04T12:00:00+00:00",
+      "ends_at": "2026-11-04T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "98e39fd9-d360-476a-8de7-dd1e89aa1652",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-04T12:00:00+00:00",
+      "ends_at": "2026-11-04T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "b57be2a9-988a-47fa-99ed-4a786d203c52",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-04T12:00:00+00:00",
+      "ends_at": "2026-11-04T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "a0641132-a83c-432c-8f22-e1f22b147c2e",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-04T12:00:00+00:00",
+      "ends_at": "2026-11-04T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "03382f82-6450-4f12-bb3e-7f04a3e25b17",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-04T12:00:00+00:00",
+      "ends_at": "2026-11-04T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "e44ed5cd-0e19-43e7-a78f-8d9ba6166fa7",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-04T12:00:00+00:00",
+      "ends_at": "2026-11-04T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "9016e141-e531-4cb6-970e-552732466710",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-04T12:00:00+00:00",
+      "ends_at": "2026-11-04T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "9eba119f-67b7-4c9a-a14d-fe1eed39cef0",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-04T15:00:00+00:00",
+      "ends_at": "2026-11-04T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c2461a4a-c055-432c-a045-921f2c4becda",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-04T15:00:00+00:00",
+      "ends_at": "2026-11-04T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "bc6a3ba6-6aca-4569-91c4-6f78532896fd",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-04T15:00:00+00:00",
+      "ends_at": "2026-11-04T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "0ecf952a-fd98-4510-acff-bf08130cf477",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-04T15:00:00+00:00",
+      "ends_at": "2026-11-04T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "dfdfc234-a057-4710-87d6-f6b201d459db",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-04T15:00:00+00:00",
+      "ends_at": "2026-11-04T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "e23add8c-3883-4112-999c-f1a475073181",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-04T15:00:00+00:00",
+      "ends_at": "2026-11-04T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c448ff6b-1d68-4177-9864-d7998b1009c3",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-04T15:00:00+00:00",
+      "ends_at": "2026-11-04T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "7a77e628-3769-48b2-b314-eea74af8a067",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-04T15:00:00+00:00",
+      "ends_at": "2026-11-04T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "4d4f1224-988f-472d-a63e-2ba694fb4a78",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-04T18:00:00+00:00",
+      "ends_at": "2026-11-04T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "827018e6-19f0-4832-be22-426f627e3cfb",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-04T18:00:00+00:00",
+      "ends_at": "2026-11-04T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "64f6f724-9f9b-448d-bbb5-bcc35f24aca1",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-04T18:00:00+00:00",
+      "ends_at": "2026-11-04T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "bee23c55-85c2-4d87-a2a3-f9fd54dc4e3e",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-04T18:00:00+00:00",
+      "ends_at": "2026-11-04T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "06968657-3325-48c1-83a6-78bff9ef7279",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-04T18:00:00+00:00",
+      "ends_at": "2026-11-04T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "31d99137-7fb4-46fe-98e4-d0de86d51da3",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-04T18:00:00+00:00",
+      "ends_at": "2026-11-04T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "3daf7d68-d963-4502-b955-87edf209951d",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-04T18:00:00+00:00",
+      "ends_at": "2026-11-04T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "35abf680-137d-4f71-9fc4-772cbd4f5462",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-04T18:00:00+00:00",
+      "ends_at": "2026-11-04T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "05a5837e-d4d8-4539-84a5-43c2a23bf234",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-05T09:00:00+00:00",
+      "ends_at": "2026-11-05T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "50b359c3-9cc3-4929-bc2f-8ed139b68ac0",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-05T09:00:00+00:00",
+      "ends_at": "2026-11-05T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "35210825-0152-4321-8ee1-6264cb3fb0fc",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-05T09:00:00+00:00",
+      "ends_at": "2026-11-05T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "d83f56e3-6dcd-4615-84d4-bf78f3ed8149",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-05T09:00:00+00:00",
+      "ends_at": "2026-11-05T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "993c77bd-d618-4793-8b69-8fe0b320fe12",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-05T09:00:00+00:00",
+      "ends_at": "2026-11-05T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "9605535f-4656-4a31-9784-67644b6c9f1c",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-05T09:00:00+00:00",
+      "ends_at": "2026-11-05T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "dafe9288-da69-42c2-9624-50cc61606534",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-05T09:00:00+00:00",
+      "ends_at": "2026-11-05T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "6bacbf03-62fb-436c-a235-1a3f8d862da0",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-05T09:00:00+00:00",
+      "ends_at": "2026-11-05T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "55f70fcf-6937-4b94-99c5-34854215dd74",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-05T12:00:00+00:00",
+      "ends_at": "2026-11-05T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "99ca13ca-f6fe-4d8a-8896-2bf0abb51754",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-05T12:00:00+00:00",
+      "ends_at": "2026-11-05T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "9d03f677-391c-44bc-8227-63de3e405fd1",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-05T12:00:00+00:00",
+      "ends_at": "2026-11-05T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "86660e8c-357a-482a-a44b-b29e3d772aed",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-05T12:00:00+00:00",
+      "ends_at": "2026-11-05T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c8157a68-351a-4403-a175-4256457b9172",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-05T12:00:00+00:00",
+      "ends_at": "2026-11-05T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "5876162a-8edc-49f2-b3b0-42699909e88a",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-05T12:00:00+00:00",
+      "ends_at": "2026-11-05T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "66cc6cce-cc29-4e56-9e80-a5d6f3c5382b",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-05T12:00:00+00:00",
+      "ends_at": "2026-11-05T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "fd4eb141-c28e-468c-bf02-6e6f90350972",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-05T12:00:00+00:00",
+      "ends_at": "2026-11-05T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "63a54337-7d2a-4852-afd1-d797a30bbb6a",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-05T15:00:00+00:00",
+      "ends_at": "2026-11-05T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "d859b63d-efb0-4fb0-9b11-a902de2ebe8c",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-05T15:00:00+00:00",
+      "ends_at": "2026-11-05T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "6b6bb28b-e1e7-413d-aaca-83a3994d1763",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-05T15:00:00+00:00",
+      "ends_at": "2026-11-05T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "30359869-7fd5-4d3d-bcec-6db033238b12",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-05T15:00:00+00:00",
+      "ends_at": "2026-11-05T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c730786d-083b-418b-825f-47baef57c93d",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-05T15:00:00+00:00",
+      "ends_at": "2026-11-05T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "7faa9184-d1da-41d7-bf39-5f0831883a1e",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-05T15:00:00+00:00",
+      "ends_at": "2026-11-05T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "e34fee3d-bd54-4a44-887e-91d97d24453d",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-05T15:00:00+00:00",
+      "ends_at": "2026-11-05T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "615ce716-67f1-433d-9630-03b696c2d0f2",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-05T15:00:00+00:00",
+      "ends_at": "2026-11-05T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "a64426ca-ceba-4f7b-9695-8266a93803a4",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-05T18:00:00+00:00",
+      "ends_at": "2026-11-05T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "55251dd9-8b09-4c73-8ed6-565338743f24",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-05T18:00:00+00:00",
+      "ends_at": "2026-11-05T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "309a9df2-0df7-4c7c-8223-883d7c35895a",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-05T18:00:00+00:00",
+      "ends_at": "2026-11-05T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "28f70f46-1c75-4466-993f-58a5d6f24f35",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-05T18:00:00+00:00",
+      "ends_at": "2026-11-05T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "90f31f41-bb13-4525-8826-df95c16bec10",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-05T18:00:00+00:00",
+      "ends_at": "2026-11-05T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "64db720a-34f6-441b-8b8d-4f335ccd56fd",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-05T18:00:00+00:00",
+      "ends_at": "2026-11-05T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c81a4e2c-f08c-45fb-851d-6a021b7e9667",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-05T18:00:00+00:00",
+      "ends_at": "2026-11-05T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "339d19b8-c8de-4c73-ae0e-42592bd5c6ad",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-05T18:00:00+00:00",
+      "ends_at": "2026-11-05T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "f4aa82d7-8c4c-4379-86bc-78fd165367c1",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-06T09:00:00+00:00",
+      "ends_at": "2026-11-06T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "ef97c1bf-802b-49c6-b490-2886369ebfb1",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-06T09:00:00+00:00",
+      "ends_at": "2026-11-06T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "4639dea2-ff26-47cf-a914-e3fe6281c840",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-06T09:00:00+00:00",
+      "ends_at": "2026-11-06T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c5830926-f5a6-4762-90db-8383eabfb43e",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-06T09:00:00+00:00",
+      "ends_at": "2026-11-06T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "d6614f5b-961c-4921-a84f-86e2c56ac7a2",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-06T09:00:00+00:00",
+      "ends_at": "2026-11-06T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "57087368-cffa-43a0-8445-e001b799ba25",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-06T09:00:00+00:00",
+      "ends_at": "2026-11-06T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "8bb477ba-a29e-4c77-bace-687ca8c51f58",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-06T09:00:00+00:00",
+      "ends_at": "2026-11-06T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "9db92c9b-8d8d-4faa-be2f-75a4ad207333",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-06T09:00:00+00:00",
+      "ends_at": "2026-11-06T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "63e01803-7077-4ce4-ada1-236bc0a4f287",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-06T12:00:00+00:00",
+      "ends_at": "2026-11-06T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "6b0d2687-2796-4c2b-92ea-2174b7c83ad3",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-06T12:00:00+00:00",
+      "ends_at": "2026-11-06T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "07b45dae-c381-45b0-ace2-be510b998c42",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-06T12:00:00+00:00",
+      "ends_at": "2026-11-06T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "e4d824f5-6d35-4be2-9ea8-e3de4b57f05e",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-06T12:00:00+00:00",
+      "ends_at": "2026-11-06T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "cb47193c-e357-4bda-93cd-7d41694af566",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-06T12:00:00+00:00",
+      "ends_at": "2026-11-06T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "de2aedb7-7f97-4108-bbc9-d61c65c00b27",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-06T12:00:00+00:00",
+      "ends_at": "2026-11-06T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "3e2d6673-f1b4-4bd8-b5fc-09327849c04d",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-06T12:00:00+00:00",
+      "ends_at": "2026-11-06T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "1f0c4932-d057-40ca-8b8c-16dab07053a2",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-06T12:00:00+00:00",
+      "ends_at": "2026-11-06T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "1b906782-dbfb-4378-9c8f-b99c208a12c3",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-06T15:00:00+00:00",
+      "ends_at": "2026-11-06T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "f39dd176-9dab-4846-831e-e84c1e8cd449",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-06T15:00:00+00:00",
+      "ends_at": "2026-11-06T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "8035e447-b0c0-4f80-9461-65e2e647566d",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-06T15:00:00+00:00",
+      "ends_at": "2026-11-06T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "9d664506-501e-4760-90e6-84d65ec49933",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-06T15:00:00+00:00",
+      "ends_at": "2026-11-06T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "ceb8bed2-c6bd-4127-9150-76ef1b05fc6a",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-06T15:00:00+00:00",
+      "ends_at": "2026-11-06T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "4bda8145-9379-4752-b72e-8b7535d5c803",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-06T15:00:00+00:00",
+      "ends_at": "2026-11-06T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "0c794998-86c2-449f-8027-109e6e868548",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-06T15:00:00+00:00",
+      "ends_at": "2026-11-06T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "37e6deaf-3c5a-440f-b5ae-b55fe15d6b4b",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-06T15:00:00+00:00",
+      "ends_at": "2026-11-06T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "410bd04e-115c-463d-b90b-9ad04c3d70e6",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-06T18:00:00+00:00",
+      "ends_at": "2026-11-06T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "341d1a98-8f7d-404a-87f5-7e1dcbe7292e",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-06T18:00:00+00:00",
+      "ends_at": "2026-11-06T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "1da98f96-d007-457b-a92c-14e0817300ab",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-06T18:00:00+00:00",
+      "ends_at": "2026-11-06T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "cdc5d083-ff20-422c-a2a8-8dd4bc0e63a5",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-06T18:00:00+00:00",
+      "ends_at": "2026-11-06T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "4dac95f5-1528-4d2c-a733-9f660fa6fa89",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-06T18:00:00+00:00",
+      "ends_at": "2026-11-06T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "39d6e08d-c588-4961-ac5d-57083691563b",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-06T18:00:00+00:00",
+      "ends_at": "2026-11-06T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "2477cc23-f01c-4cf2-acfc-86bad10bd02f",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-06T18:00:00+00:00",
+      "ends_at": "2026-11-06T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "b2c349ef-cb70-4572-9438-1a03370fd5a5",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-06T18:00:00+00:00",
+      "ends_at": "2026-11-06T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "1a0f35a3-662b-4a4d-8b3c-2f8ac34709ee",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-07T09:00:00+00:00",
+      "ends_at": "2026-11-07T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "de88073a-797e-4b96-805f-d73f60865242",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-07T09:00:00+00:00",
+      "ends_at": "2026-11-07T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "6621c7f1-a39c-466a-9352-710857c41e6f",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-07T09:00:00+00:00",
+      "ends_at": "2026-11-07T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "f7548131-80af-493b-8740-f890bff7f07c",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-07T09:00:00+00:00",
+      "ends_at": "2026-11-07T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "eb36837c-ca82-4bc5-b4db-addf9942c690",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-07T09:00:00+00:00",
+      "ends_at": "2026-11-07T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "fc561f92-6752-4bd3-97c1-60082df0b791",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-07T09:00:00+00:00",
+      "ends_at": "2026-11-07T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "f75325ac-b5a5-432c-bf1f-04d830aa16d8",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-07T09:00:00+00:00",
+      "ends_at": "2026-11-07T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "e6422b50-989f-4181-b8cc-7b7c1c3d523b",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-07T09:00:00+00:00",
+      "ends_at": "2026-11-07T12:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "508e5724-b5b3-4136-af90-65463ad324cd",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-07T12:00:00+00:00",
+      "ends_at": "2026-11-07T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "6e7c08dd-2422-4316-8610-5800fd780594",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-07T12:00:00+00:00",
+      "ends_at": "2026-11-07T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "1dcc588c-fa7e-42fc-8108-27af79c2d449",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-07T12:00:00+00:00",
+      "ends_at": "2026-11-07T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "42aa963a-9d95-441f-99d5-6b5a26b2c658",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-07T12:00:00+00:00",
+      "ends_at": "2026-11-07T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "d64378bf-eb7a-47ea-a1a4-3806b1a11d64",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-07T12:00:00+00:00",
+      "ends_at": "2026-11-07T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "04596df9-0378-4d9f-afa4-0f7c9a1800e8",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-07T12:00:00+00:00",
+      "ends_at": "2026-11-07T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c83c1368-327f-49cd-96cf-7c44e0f71b76",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-07T12:00:00+00:00",
+      "ends_at": "2026-11-07T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "ee94fd41-29cb-4ed8-b675-6e5021e49b0e",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-07T12:00:00+00:00",
+      "ends_at": "2026-11-07T15:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "f122a4f6-a7f7-4188-a05b-b42d3bacbfe2",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-07T15:00:00+00:00",
+      "ends_at": "2026-11-07T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "c04e9dc0-0255-4144-a786-2ff0714caa52",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-07T15:00:00+00:00",
+      "ends_at": "2026-11-07T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "b64793a4-1c9a-4ac1-9665-c9b8ead337b3",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-07T15:00:00+00:00",
+      "ends_at": "2026-11-07T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "0c520f7b-cb60-49ae-a391-33d54650a631",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-07T15:00:00+00:00",
+      "ends_at": "2026-11-07T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "05084f0b-483b-4d6b-bd6f-cbeb89a370ab",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-07T15:00:00+00:00",
+      "ends_at": "2026-11-07T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "5ff0a723-dc6e-4452-9bed-d65d64f1dcbe",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-07T15:00:00+00:00",
+      "ends_at": "2026-11-07T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "104f483b-9f05-450c-a588-8ff0af36376a",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-07T15:00:00+00:00",
+      "ends_at": "2026-11-07T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "e339f31b-5e6f-439a-85a9-743fafe2ddbb",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-07T15:00:00+00:00",
+      "ends_at": "2026-11-07T18:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "ce896a81-0680-490f-adf0-45b58c1035c3",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "delivery",
+      "starts_at": "2026-11-07T18:00:00+00:00",
+      "ends_at": "2026-11-07T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "b80e06b2-74f1-4bb7-a056-fec56d5e63cb",
+      "branch_id": "3a0cfcb4-fdc2-4bf7-a9c8-72135df6ffd4",
+      "method": "pickup",
+      "starts_at": "2026-11-07T18:00:00+00:00",
+      "ends_at": "2026-11-07T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "042acbbf-320d-4cff-926a-67ada189498c",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "delivery",
+      "starts_at": "2026-11-07T18:00:00+00:00",
+      "ends_at": "2026-11-07T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "6665af34-0b47-42cf-845c-d46c0b5c4f99",
+      "branch_id": "082d3c37-9c96-40d5-b5f0-66e1f9829dac",
+      "method": "pickup",
+      "starts_at": "2026-11-07T18:00:00+00:00",
+      "ends_at": "2026-11-07T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "fd1925ca-7d2e-4739-9e26-c453306766d7",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "delivery",
+      "starts_at": "2026-11-07T18:00:00+00:00",
+      "ends_at": "2026-11-07T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "3e0709fd-3f01-47d6-a0c3-e5d1b61659ea",
+      "branch_id": "dbcf8505-dc2c-4c43-be21-304f38217713",
+      "method": "pickup",
+      "starts_at": "2026-11-07T18:00:00+00:00",
+      "ends_at": "2026-11-07T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "3d8cc414-934f-4716-8ce5-7d25c9724d8f",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "delivery",
+      "starts_at": "2026-11-07T18:00:00+00:00",
+      "ends_at": "2026-11-07T21:00:00+00:00",
+      "remaining_capacity": 25
+    },
+    {
+      "id": "40849348-5cf3-46e6-8c3d-aeb1d1bad65d",
+      "branch_id": "b6a12533-0844-451f-a793-bfd030488f3f",
+      "method": "pickup",
+      "starts_at": "2026-11-07T18:00:00+00:00",
+      "ends_at": "2026-11-07T21:00:00+00:00",
+      "remaining_capacity": 25
+    }
+  ]
+}

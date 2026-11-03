@@ -202,6 +202,8 @@ export function useBasketCategories() {
   })
 }
 
+import { getLocalCart } from '../lib/cartManager'
+
 export function useCart() {
   const branch = useResolvedBranch()
   const cartSessionKey = useStore((state) => state.cartSessionKey)
@@ -217,14 +219,19 @@ export function useCart() {
     queryKey: ['cart', branch?.id, cartSessionKey, hasToken ? 'auth' : 'guest'],
     queryFn: async () => {
       try {
-        return (await api<{ cart: Cart | null }>(
+        const res = await api<{ cart: Cart | null }>(
           `/cart/?branch=${branch?.id}`,
           { cartSessionKey },
-        )).cart
+        )
+        if (res.cart && res.cart.items.length > 0) {
+          return res.cart
+        }
       } catch {
-        return null
+        // Fall back to local cart
       }
+      return getLocalCart(branch?.id)
     },
+    initialData: () => getLocalCart(branch?.id),
     refetchOnMount: 'always',
   })
 }

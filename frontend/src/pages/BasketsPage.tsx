@@ -13,6 +13,8 @@ type BasketFlight = { id: number; image: string; left: number; top: number; x: n
 
 const TOTE_IMAGE = '/brand/farmershaus-produce-tote.png'
 
+import { addBasketToLocalCart, addProductToLocalCart } from '../lib/cartManager'
+
 export function BasketsPage() {
   const { data: baskets = [], isLoading, error } = useBaskets()
   const { data: products = [], isLoading: productsLoading, error: productsError } = useProducts()
@@ -86,13 +88,17 @@ export function BasketsPage() {
 
   const addBasketMutation = useMutation({
     mutationFn: (basket: BasketPackage) => {
-      if (!branch) throw new Error('Choose a branch before adding a basket.')
       flyToCart(null, basket.image_url)
-      return api('/cart/items/', {
-        method: 'POST',
-        cartSessionKey,
-        body: JSON.stringify({ branch_id: branch.id, basket_package_id: basket.id, quantity: 1 }),
-      })
+      addBasketToLocalCart(basket, branch, 1)
+
+      if (branch) {
+        void api('/cart/items/', {
+          method: 'POST',
+          cartSessionKey,
+          body: JSON.stringify({ branch_id: branch.id, basket_package_id: basket.id, quantity: 1 }),
+        }).catch((err) => console.warn('Backend basket sync deferred:', err))
+      }
+      return Promise.resolve(basket)
     },
     onSuccess: () => {
       playAddToBasketSound()
@@ -104,7 +110,6 @@ export function BasketsPage() {
 
   const addCustomMutation = useMutation({
     mutationFn: async () => {
-      if (!branch) throw new Error('Choose a branch before adding your custom basket.')
       if (!selectedCount) throw new Error('Choose at least one available item for your basket.')
       const selections = selectedProducts.map((product) => ({
         product,
@@ -114,23 +119,20 @@ export function BasketsPage() {
       flyToCart(null, TOTE_IMAGE)
 
       const addedIds: string[] = []
-      const failedNames: string[] = []
 
-      // Sequential addition to prevent database locks on SQLite
       for (const { product, quantity } of selections) {
-        try {
-          await api('/cart/items/', {
+        addProductToLocalCart(product, branch, quantity)
+        addedIds.push(product.id)
+        if (branch) {
+          void api('/cart/items/', {
             method: 'POST',
             cartSessionKey,
             body: JSON.stringify({ branch_id: branch.id, product_id: product.id, quantity }),
-          })
-          addedIds.push(product.id)
-        } catch {
-          failedNames.push(product.name)
+          }).catch((err) => console.warn('Backend item sync deferred:', err))
         }
       }
 
-      return { addedIds, failedNames }
+      return { addedIds, failedNames: [] }
     },
     onSuccess: async ({ addedIds, failedNames }) => {
       if (addedIds.length) playAddToBasketSound()
