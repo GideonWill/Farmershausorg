@@ -17,11 +17,33 @@ export function CartPage() {
   const mutation = useMutation({
     mutationFn: async ({ id, quantity }: { id: string; quantity?: number }) => {
       updateLocalCartItemQuantity(id, quantity)
-      if (quantity === undefined) return api(`/cart/items/${id}/`, { method: 'DELETE', cartSessionKey }).catch(() => null)
-      return api(`/cart/items/${id}/`, { method: 'PATCH', cartSessionKey, body: JSON.stringify({ quantity }) }).catch(() => null)
+      queryClient.setQueryData(['cart', branch?.id], (old: any) => {
+        if (!old || !old.items) return old
+        if (quantity === undefined || quantity <= 0) {
+          const newItems = old.items.filter((i: any) => i.id !== id)
+          return {
+            ...old,
+            items: newItems,
+            total_items: newItems.reduce((acc: number, item: any) => acc + item.quantity, 0),
+          }
+        }
+        const newItems = old.items.map((i: any) =>
+          i.id === id ? { ...i, quantity } : i
+        )
+        return {
+          ...old,
+          items: newItems,
+          total_items: newItems.reduce((acc: number, item: any) => acc + item.quantity, 0),
+        }
+      })
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
+      if (quantity === undefined || quantity <= 0) {
+        await api(`/cart/items/${id}/`, { method: 'DELETE', cartSessionKey }).catch(() => null)
+      } else {
+        await api(`/cart/items/${id}/`, { method: 'PATCH', cartSessionKey, body: JSON.stringify({ quantity }) }).catch(() => null)
+      }
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
-    onError: (error) => notify(error instanceof Error ? error.message : 'Cart update failed.', 'error'),
   })
   const clearMutation = useMutation({
     mutationFn: async () => {
@@ -93,7 +115,7 @@ export function CartPage() {
                   </div>
                   <div className="min-w-[130px] flex-1"><h2 className="font-semibold">{name}</h2><p className="mt-1 text-sm text-brand-ink/55">{item.product?.unit ?? 'FarmersHaus food basket'}</p><p className="mt-1 text-sm font-bold text-brand-green">{money(price)}</p></div>
                   <div className="flex items-center gap-2">
-                    <button className="quantity-button" aria-label={`Decrease ${name} quantity`} onClick={() => mutation.mutate({ id: item.id, quantity: Math.max(1, item.quantity - 1) })}><Icon name="minus" /></button>
+                    <button className="quantity-button" aria-label={`Decrease ${name} quantity`} onClick={() => mutation.mutate({ id: item.id, quantity: item.quantity > 1 ? item.quantity - 1 : undefined })}><Icon name="minus" /></button>
                     <span className="min-w-7 text-center">{item.quantity}</span>
                     <button className="quantity-button" aria-label={`Increase ${name} quantity`} onClick={() => mutation.mutate({ id: item.id, quantity: item.quantity + 1 })}><Icon name="plus" /></button>
                   </div>

@@ -664,35 +664,65 @@ function CartDrawer() {
   const mutation = useMutation({
     mutationFn: async ({ itemId, quantity }: { itemId: string; quantity?: number }) => {
       updateLocalCartItemQuantity(itemId, quantity)
-      if (quantity === undefined) {
-        return api(`/cart/items/${itemId}/`, { method: 'DELETE', cartSessionKey })
-      }
-      return api(`/cart/items/${itemId}/`, {
-        method: 'PATCH',
-        cartSessionKey,
-        body: JSON.stringify({ quantity }),
+      queryClient.setQueryData(['cart', branch?.id], (old: any) => {
+        if (!old || !old.items) return old
+        if (quantity === undefined || quantity <= 0) {
+          const newItems = old.items.filter((i: any) => i.id !== itemId)
+          return {
+            ...old,
+            items: newItems,
+            total_items: newItems.reduce((acc: number, item: any) => acc + item.quantity, 0),
+          }
+        }
+        const newItems = old.items.map((i: any) =>
+          i.id === itemId ? { ...i, quantity } : i
+        )
+        return {
+          ...old,
+          items: newItems,
+          total_items: newItems.reduce((acc: number, item: any) => acc + item.quantity, 0),
+        }
       })
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
+      try {
+        if (quantity === undefined || quantity <= 0) {
+          await api(`/cart/items/${itemId}/`, { method: 'DELETE', cartSessionKey })
+        } else {
+          await api(`/cart/items/${itemId}/`, {
+            method: 'PATCH',
+            cartSessionKey,
+            body: JSON.stringify({ quantity }),
+          })
+        }
+      } catch {}
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
-    onError: (error) => notify(error instanceof Error ? error.message : 'Cart update failed.', 'error'),
   })
 
   const clearMutation = useMutation({
     mutationFn: async () => {
       clearLocalCart()
-      if (!branch) return
-      return api(`/cart/?branch=${branch.id}`, {
-        method: 'DELETE',
-        cartSessionKey,
-      })
+      queryClient.setQueryData(['cart', branch?.id], (old: any) => ({
+        ...old,
+        items: [],
+        total_items: 0,
+        total_minor: 0,
+      }))
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
+      if (branch) {
+        try {
+          await api(`/cart/?branch=${branch.id}`, {
+            method: 'DELETE',
+            cartSessionKey,
+          })
+        } catch {}
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] })
       notify('All items cleared from your basket.', 'info')
     },
-    onError: (error) => notify(error instanceof Error ? error.message : 'Cart update failed.', 'error'),
   })
-
   const hasItems = (cart?.items?.length ?? 0) > 0
   const basketPrices = new Map(baskets.map((basket) => [basket.id, basket.base_price_minor]))
   const subtotal = cart?.items.reduce((sum, item) => {
@@ -735,7 +765,7 @@ function CartDrawer() {
               <div className="mx-5 mt-4 rounded-xl border border-brand-green/15 bg-brand-cream/70 px-3.5 py-2">
                 <p className="flex items-center gap-1.5 text-xs font-bold text-brand-green">
                   <Icon name="pin" className="h-3.5 w-3.5 shrink-0" />
-                  <span>Direct delivery from FarmersHaus {branch.name}</span>
+                  <span>Direct delivery from {branch.name.startsWith('FarmersHaus') ? branch.name : `FarmersHaus ${branch.name}`}</span>
                 </p>
                 <p className="mt-0.5 text-[10px] text-brand-ink/60">
                   All items packed &amp; dispatched together from this single local market.
@@ -756,10 +786,33 @@ function CartDrawer() {
                         <p className="truncate text-sm font-semibold">{name}</p>
                         <p className="mt-1 text-xs text-brand-ink/55">{money(price)} × {item.quantity}</p>
                         <div className="mt-2 flex items-center gap-2">
-                          <button aria-label={`Decrease ${name} quantity`} className="quantity-button" onClick={() => mutation.mutate({ itemId: item.id, quantity: Math.max(1, item.quantity - 1) })}><Icon name="minus" /></button>
-                          <span className="min-w-4 text-center text-xs">{item.quantity}</span>
-                          <button aria-label={`Increase ${name} quantity`} className="quantity-button" onClick={() => mutation.mutate({ itemId: item.id, quantity: item.quantity + 1 })}><Icon name="plus" /></button>
-                          <button className="ml-auto text-xs font-semibold text-brand-tomato hover:underline" onClick={() => mutation.mutate({ itemId: item.id })}>Remove</button>
+                          <button
+                            type="button"
+                            aria-label={`Decrease ${name} quantity`}
+                            className="quantity-button active:scale-90 transition cursor-pointer"
+                            onClick={() => mutation.mutate({ itemId: item.id, quantity: item.quantity > 1 ? item.quantity - 1 : undefined })}
+                            title={item.quantity > 1 ? 'Decrease quantity' : 'Remove item'}
+                          >
+                            <Icon name="minus" />
+                          </button>
+                          <span className="min-w-4 text-center text-xs font-bold text-brand-ink">{item.quantity}</span>
+                          <button
+                            type="button"
+                            aria-label={`Increase ${name} quantity`}
+                            className="quantity-button active:scale-90 transition cursor-pointer"
+                            onClick={() => mutation.mutate({ itemId: item.id, quantity: item.quantity + 1 })}
+                            title="Increase quantity"
+                          >
+                            <Icon name="plus" />
+                          </button>
+                          <button
+                            type="button"
+                            className="ml-auto text-xs font-semibold text-brand-tomato hover:underline active:scale-95 transition cursor-pointer"
+                            onClick={() => mutation.mutate({ itemId: item.id })}
+                            title="Remove from basket"
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
                       <span className="text-sm font-bold">{money(price * item.quantity)}</span>
@@ -767,9 +820,27 @@ function CartDrawer() {
                   )
                 })}
               </div>
-              <div className="border-t border-brand-green/10 p-5">
-                <div className="mb-4 flex justify-between text-sm"><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
-                <Link to="/cart" onClick={() => setOpen(false)} className="button button-primary w-full justify-center">View full cart <Icon name="arrow" /></Link>
+              <div className="border-t border-brand-green/10 p-5 bg-white">
+                <div className="mb-4 flex items-center justify-between text-sm">
+                  <span className="text-brand-ink/75 font-medium">Subtotal</span>
+                  <strong className="text-base font-bold text-brand-ink">{money(subtotal)}</strong>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Link
+                    to="/checkout"
+                    onClick={() => setOpen(false)}
+                    className="button button-primary w-full justify-center shadow-md font-bold text-sm py-3"
+                  >
+                    Proceed to checkout <Icon name="arrow" />
+                  </Link>
+                  <Link
+                    to="/cart"
+                    onClick={() => setOpen(false)}
+                    className="button button-outline w-full justify-center text-xs py-2 text-brand-ink/80 hover:text-brand-green transition"
+                  >
+                    View full cart
+                  </Link>
+                </div>
                 <p className="mt-3 text-center text-xs text-brand-ink/45">Delivery fees are calculated at checkout.</p>
               </div>
             </>
