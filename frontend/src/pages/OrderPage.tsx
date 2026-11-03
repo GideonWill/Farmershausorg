@@ -6,6 +6,7 @@ import { useSiteSettings } from '../hooks/useStoreData'
 import { notify } from '../lib/notifications'
 import { Icon } from '../components/ui'
 import { getProduceIcon } from '../lib/images'
+import { getOrderByNumber, savePlacedOrder } from '../lib/orderStore'
 
 const timeline: Array<{ status: OrderStatus; title: string; detail: string }> = [
   { status: 'confirmed', title: 'Order confirmed', detail: 'Payment received and your order is with the branch.' },
@@ -35,7 +36,17 @@ export function OrderPage() {
 
   const orderQuery = useQuery({
     queryKey: ['order', orderNumber],
-    queryFn: () => api<CustomerOrder>(`/orders/${orderNumber}/tracking/`),
+    queryFn: async () => {
+      try {
+        const remote = await api<CustomerOrder>(`/orders/${orderNumber}/tracking/`)
+        savePlacedOrder(remote)
+        return remote
+      } catch (err) {
+        const local = getOrderByNumber(orderNumber)
+        if (local) return local
+        throw err
+      }
+    },
     enabled: Boolean(orderNumber),
     refetchInterval: (query) => {
       const current = query.state.data as CustomerOrder | undefined

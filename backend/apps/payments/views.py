@@ -131,11 +131,12 @@ class PaymentSimulateSuccessView(APIView):
             order=order,
             from_status=previous,
             to_status=order.status,
-            actor=request.user,
+            actor=request.user if request.user.is_authenticated else None,
             note="Payment completed via Hubtel Test / Sandbox mode.",
         )
         AuditEvent.objects.create(
             branch=order.branch,
+            actor=request.user if request.user.is_authenticated else None,
             action="order.status_changed",
             resource_type="CustomerOrder",
             resource_id=str(order.pk),

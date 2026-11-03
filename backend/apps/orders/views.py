@@ -230,8 +230,12 @@ class StaffOrderCollectionView(APIView):
         ).exists():
             raise PermissionDenied("You do not have access to this branch.")
         orders = _order_queryset().filter(branch_id=branch_id)
-        if not (request.user.is_superuser and request.query_params.get("include_unpaid") == "true"):
-            orders = orders.filter(paid_at__isnull=False)
+        include_unpaid = request.query_params.get("include_unpaid") == "true"
+        if not include_unpaid:
+            from django.db.models import Q
+            orders = orders.filter(
+                Q(paid_at__isnull=False) | ~Q(status=CustomerOrder.Status.AWAITING_PAYMENT)
+            )
         return orders.exclude(
             status__in=(CustomerOrder.Status.CANCELLED, CustomerOrder.Status.EXPIRED)
         )[:500]
