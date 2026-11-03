@@ -288,10 +288,11 @@ function Header() {
 
   return (
     <>
+    <div className="sticky top-0 z-50 shadow-sm">
       <div className="bg-brand-green px-4 py-2 text-center text-xs font-semibold tracking-wide text-white sm:text-sm">
         {site?.contact.announcement_bar_text || 'Fresh from our farmers to your family — order online today.'}
       </div>
-      <header data-storefront-nav className="sticky top-0 z-50 border-b border-brand-green/10 bg-white/95 backdrop-blur-md">
+      <header data-storefront-nav className="border-b border-brand-green/10 bg-white/95 backdrop-blur-md">
         <div className="mx-auto max-w-[1440px] px-3 py-2 sm:px-6 sm:py-3 lg:px-10">
           <div className="flex items-center justify-between gap-1.5 sm:gap-3 lg:gap-6">
             {/* Left: Hamburger & Brand Logo */}
@@ -431,6 +432,7 @@ function Header() {
           </div>
         </div>
       </header>
+    </div>
       <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} title="Menu">
         <div className="flex h-full flex-col justify-between px-5 py-4">
           <div className="space-y-4">
