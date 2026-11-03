@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import farmToBasketVideo from '../assets/Farmers_harvesting_and_washing_p…_796fecb2.mp4'
+const farmToBasketVideo = "/videos/farm-to-basket.mp4"
 import { Icon } from './ui'
 
 type VideoState = 'loading' | 'playing' | 'paused' | 'error'

@@ -2,17 +2,17 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const SPLASH_LETTERS = [
-  { char: 'F', src: '/brand/splash/letter-0-f.png', width: 96, produce: 'Crisp Lettuce' },
-  { char: 'A', src: '/brand/splash/letter-1-a.png', width: 89, produce: 'Fresh Orange' },
-  { char: 'R', src: '/brand/splash/letter-2-r.png', width: 92, produce: 'Red Apple' },
-  { char: 'M', src: '/brand/splash/letter-3-m.png', width: 121, produce: 'Green Collards' },
-  { char: 'E', src: '/brand/splash/letter-4-e.png', width: 80, produce: 'Ripe Bananas' },
-  { char: 'R', src: '/brand/splash/letter-5-r.png', width: 92, produce: 'Vine Tomatoes' },
-  { char: 'S', src: '/brand/splash/letter-6-s.png', width: 82, produce: 'Bell Pepper' },
-  { char: 'H', src: '/brand/splash/letter-7-h.png', width: 101, produce: 'Sweet Corn' },
-  { char: 'A', src: '/brand/splash/letter-8-a.png', width: 88, produce: 'Garden Greens' },
-  { char: 'U', src: '/brand/splash/letter-9-u.png', width: 92, produce: 'Blueberries' },
-  { char: 'S', src: '/brand/splash/letter-10-s.png', width: 91, produce: 'Yellow Lemons' },
+  { char: 'F', src: '/brand/splash/letter-0-f.webp', fallback: '/brand/splash/letter-0-f.png', width: 96, produce: 'Crisp Lettuce' },
+  { char: 'A', src: '/brand/splash/letter-1-a.webp', fallback: '/brand/splash/letter-1-a.png', width: 89, produce: 'Fresh Orange' },
+  { char: 'R', src: '/brand/splash/letter-2-r.webp', fallback: '/brand/splash/letter-2-r.png', width: 92, produce: 'Red Apple' },
+  { char: 'M', src: '/brand/splash/letter-3-m.webp', fallback: '/brand/splash/letter-3-m.png', width: 121, produce: 'Green Collards' },
+  { char: 'E', src: '/brand/splash/letter-4-e.webp', fallback: '/brand/splash/letter-4-e.png', width: 80, produce: 'Ripe Bananas' },
+  { char: 'R', src: '/brand/splash/letter-5-r.webp', fallback: '/brand/splash/letter-5-r.png', width: 92, produce: 'Vine Tomatoes' },
+  { char: 'S', src: '/brand/splash/letter-6-s.webp', fallback: '/brand/splash/letter-6-s.png', width: 82, produce: 'Bell Pepper' },
+  { char: 'H', src: '/brand/splash/letter-7-h.webp', fallback: '/brand/splash/letter-7-h.png', width: 101, produce: 'Sweet Corn' },
+  { char: 'A', src: '/brand/splash/letter-8-a.webp', fallback: '/brand/splash/letter-8-a.png', width: 88, produce: 'Garden Greens' },
+  { char: 'U', src: '/brand/splash/letter-9-u.webp', fallback: '/brand/splash/letter-9-u.png', width: 92, produce: 'Blueberries' },
+  { char: 'S', src: '/brand/splash/letter-10-s.webp', fallback: '/brand/splash/letter-10-s.png', width: 91, produce: 'Yellow Lemons' },
 ] as const
 
 const TOTAL_LETTERS = SPLASH_LETTERS.length
@@ -37,6 +37,14 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
     setTimeout(() => {
       onCompleteRef.current()
     }, 550)
+  }, [])
+
+  // Preload all splash letter images immediately so typing never stutters
+  useEffect(() => {
+    SPLASH_LETTERS.forEach((l) => {
+      const img = new Image()
+      img.src = l.src
+    })
   }, [])
 
   // Typing progression effect
@@ -125,10 +133,8 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
                     >
                       <AnimatePresence>
                         {isTyped && (
-                          <motion.img
-                            src={letter.src}
-                            alt={letter.produce}
-                            className="h-full w-full object-contain"
+                          <motion.picture
+                            className="block h-full w-full"
                             initial={{
                               opacity: 0,
                               scale: 0.72,
@@ -145,7 +151,16 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
                               damping: 24,
                               mass: 0.8,
                             }}
-                          />
+                          >
+                            <source srcSet={letter.src} type="image/webp" />
+                            <img
+                              src={letter.fallback}
+                              alt={letter.produce}
+                              loading="eager"
+                              decoding="async"
+                              className="h-full w-full object-contain pointer-events-none"
+                            />
+                          </motion.picture>
                         )}
                       </AnimatePresence>
                       {isJustTyped && !isFinishing && (
