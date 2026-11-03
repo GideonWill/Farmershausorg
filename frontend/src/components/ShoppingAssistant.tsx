@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { useChat } from '@ai-sdk/react'
-import { DefaultChatTransport } from 'ai'
+import { generateClientAssistantResponse, type ChatMessage, type ChatPart } from '../lib/agent/clientAssistant'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useStore } from '../stores/store'
 import { Icon } from './ui'
@@ -112,13 +111,8 @@ export function ShoppingAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const branch = useStore((state) => state.branch)
 
-  const { messages, sendMessage, status, error } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-    }),
-  })
-
-  const isThinking = status === 'streaming' || status === 'submitted'
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [isThinking, setIsThinking] = useState(false)
 
   useEffect(() => {
     if (isOpen) {
@@ -126,11 +120,43 @@ export function ShoppingAssistant() {
     }
   }, [messages, isOpen])
 
-  function handleSend(textToSend?: string) {
+  async function handleSend(textToSend?: string) {
     const text = textToSend ?? input
     if (!text.trim() || isThinking) return
-    sendMessage({ text: text.trim() })
+
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      parts: [{ type: 'text', text: text.trim() }],
+    }
+
+    setMessages((prev) => [...prev, userMessage])
     setInput('')
+    setIsThinking(true)
+
+    try {
+      const assistantParts = await generateClientAssistantResponse(text.trim(), branch?.slug)
+      const assistantMessage: ChatMessage = {
+        id: `assistant-${Date.now()}`,
+        role: 'assistant',
+        parts: assistantParts,
+      }
+      setMessages((prev) => [...prev, assistantMessage])
+    } catch {
+      const fallbackMessage: ChatMessage = {
+        id: `assistant-${Date.now()}`,
+        role: 'assistant',
+        parts: [
+          {
+            type: 'text',
+            text: 'I am here to assist you with fresh fruits, vegetables, food baskets, and our 4 Accra branches. How can I help today?',
+          },
+        ],
+      }
+      setMessages((prev) => [...prev, fallbackMessage])
+    } finally {
+      setIsThinking(false)
+    }
   }
 
   return (
@@ -238,7 +264,7 @@ export function ShoppingAssistant() {
                   </div>
                 </div>
               ) : (
-                messages.map((message) => {
+                messages.map((message: ChatMessage) => {
                   const isUser = message.role === 'user'
                   return (
                     <div
@@ -263,7 +289,7 @@ export function ShoppingAssistant() {
                             : 'bg-white text-brand-ink border border-brand-green/10 rounded-bl-xs'
                         }`}
                       >
-                        {message.parts.map((part, index) => {
+                        {message.parts.map((part: ChatPart, index: number) => {
                           if (part.type === 'text') {
                             return (
                               <div key={index}>
@@ -489,11 +515,7 @@ export function ShoppingAssistant() {
                 </div>
               )}
 
-              {error && (
-                <div className="p-3 rounded-xl bg-brand-tomato/10 text-brand-tomato text-xs border border-brand-tomato/20">
-                  {error.message || 'Something went wrong. Please try again.'}
-                </div>
-              )}
+              
 
               <div ref={messagesEndRef} />
             </div>
