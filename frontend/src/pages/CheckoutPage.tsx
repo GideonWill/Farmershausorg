@@ -42,6 +42,14 @@ export function CheckoutPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [authenticated, setAuthenticated] = useState(() => Boolean(getAuthTokens()))
+  const [isGuest, setIsGuest] = useState(false)
+  const [guestName, setGuestName] = useState('')
+  const [guestPhone, setGuestPhone] = useState('')
+  const [guestEmail, setGuestEmail] = useState('')
+  const [guestAddressLine1, setGuestAddressLine1] = useState('')
+  const [guestAddressLine2, setGuestAddressLine2] = useState('')
+  const [guestArea, setGuestArea] = useState('')
+  const [guestDirections, setGuestDirections] = useState('')
 
   useEffect(() => {
     const updateAuth = () => setAuthenticated(Boolean(getAuthTokens()))
@@ -316,7 +324,7 @@ export function CheckoutPage() {
     return { dayLabel, timeLabel }
   }
 
-  if (!authenticated) {
+  if (!authenticated && !isGuest) {
     return (
       <div className="section-wrap min-h-[65vh]">
         <div className="mx-auto max-w-xl rounded-3xl border border-brand-green/15 bg-white p-8 text-center shadow-md sm:p-12">
@@ -338,6 +346,13 @@ export function CheckoutPage() {
             >
               Sign in or create account <Icon name="arrow" />
             </Link>
+            <button
+              type="button"
+              onClick={() => setIsGuest(true)}
+              className="button button-outline justify-center border-brand-green/30"
+            >
+              Checkout as Guest <Icon name="arrow" />
+            </button>
             <Link className="button button-outline justify-center" to="/shop">
               Continue browsing
             </Link>
@@ -514,26 +529,127 @@ export function CheckoutPage() {
             </div>
           </section>
 
-          {/* Section 2 (Delivery only): Delivery Address */}
-          {fulfillment === 'delivery' && (
+          {/* Section 2: Contact Details / Delivery Address */}
+          {(fulfillment === 'delivery' || (!authenticated && isGuest)) && (
             <section className="rounded-3xl border border-brand-green/15 bg-white p-4 shadow-2xs sm:p-7">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h2 className="flex items-center gap-2 font-brand-heading text-xl font-bold text-brand-green sm:text-2xl">
                   <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-green/10 text-xs font-bold text-brand-green">
                     2
                   </span>
-                  <span>Delivery Address</span>
+                  <span>{fulfillment === 'delivery' ? 'Delivery Address & Recipient Details' : 'Pickup Contact Details'}</span>
                 </h2>
-                <button
-                  type="button"
-                  onClick={() => setShowAddAddressModal(true)}
-                  className="button button-small button-outline text-xs"
-                >
-                  <Icon name="plus" className="h-3.5 w-3.5" /> Add new address
-                </button>
+                {authenticated && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAddAddressModal(true)}
+                    className="button button-small button-outline text-xs"
+                  >
+                    <Icon name="plus" className="h-3.5 w-3.5" /> Add new address
+                  </button>
+                )}
               </div>
 
-              {addressesQuery.isLoading ? (
+              {!authenticated ? (
+                <div className="space-y-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-xs font-bold text-brand-ink">
+                        Full Name <span className="text-brand-tomato">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={guestName}
+                        onChange={(e) => setGuestName(e.target.value)}
+                        placeholder="e.g. Kwame Mensah"
+                        className="w-full rounded-xl border border-brand-green/20 px-3.5 py-2.5 text-xs text-brand-ink focus:border-brand-green focus:outline-hidden"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-bold text-brand-ink">
+                        Mobile Phone Number <span className="text-brand-tomato">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={guestPhone}
+                        onChange={(e) => setGuestPhone(e.target.value)}
+                        placeholder="e.g. 055 420 8446"
+                        className="w-full rounded-xl border border-brand-green/20 px-3.5 py-2.5 text-xs text-brand-ink focus:border-brand-green focus:outline-hidden"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-brand-ink">
+                      Email Address <span className="text-brand-ink/40 font-normal">(Optional, for receipt)</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                      placeholder="e.g. kwame@example.com"
+                      className="w-full rounded-xl border border-brand-green/20 px-3.5 py-2.5 text-xs text-brand-ink focus:border-brand-green focus:outline-hidden"
+                    />
+                  </div>
+                  {fulfillment === 'delivery' && (
+                    <>
+                      <div>
+                        <label className="mb-1 block text-xs font-bold text-brand-ink">
+                          Street Address / House No. / Landmark <span className="text-brand-tomato">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={guestAddressLine1}
+                          onChange={(e) => setGuestAddressLine1(e.target.value)}
+                          placeholder="e.g. House 14, Aggrey St, Near Melcom"
+                          className="w-full rounded-xl border border-brand-green/20 px-3.5 py-2.5 text-xs text-brand-ink focus:border-brand-green focus:outline-hidden"
+                        />
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div>
+                          <label className="mb-1 block text-xs font-bold text-brand-ink">
+                            Area / Neighborhood in Accra <span className="text-brand-tomato">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={guestArea}
+                            onChange={(e) => setGuestArea(e.target.value)}
+                            placeholder="e.g. Dome / Westland / East Legon"
+                            className="w-full rounded-xl border border-brand-green/20 px-3.5 py-2.5 text-xs text-brand-ink focus:border-brand-green focus:outline-hidden"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-xs font-bold text-brand-ink">
+                            Apartment / Landmark Note <span className="text-brand-ink/40 font-normal">(Optional)</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={guestAddressLine2}
+                            onChange={(e) => setGuestAddressLine2(e.target.value)}
+                            placeholder="e.g. Apt 3B, Blue Gate"
+                            className="w-full rounded-xl border border-brand-green/20 px-3.5 py-2.5 text-xs text-brand-ink focus:border-brand-green focus:outline-hidden"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-bold text-brand-ink">
+                          Delivery Instructions for Rider <span className="text-brand-ink/40 font-normal">(Optional)</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={guestDirections}
+                          onChange={(e) => setGuestDirections(e.target.value)}
+                          placeholder="e.g. Call when at the junction"
+                          className="w-full rounded-xl border border-brand-green/20 px-3.5 py-2.5 text-xs text-brand-ink focus:border-brand-green focus:outline-hidden"
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : addressesQuery.isLoading ? (
                 <div className="skeleton h-24 rounded-2xl" />
               ) : addressesQuery.error ? (
                 <p className="rounded-2xl bg-red-50 p-4 text-sm text-brand-tomato">

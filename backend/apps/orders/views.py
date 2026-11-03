@@ -115,13 +115,19 @@ class FulfillmentSlotListView(APIView):
 
 
 class CheckoutView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     @extend_schema(request=CheckoutSerializer, responses={201: OrderReadSerializer})
     def post(self, request):
         serializer = CheckoutSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        order = create_order(user=request.user, **serializer.validated_data)
+        user = request.user if request.user.is_authenticated else None
+        guest_session_key = request.headers.get("X-Cart-Session") or ""
+        order = create_order(
+            user=user,
+            guest_session_key=guest_session_key,
+            **serializer.validated_data
+        )
         return Response(OrderReadSerializer(order).data, status=status.HTTP_201_CREATED)
 
 
@@ -416,18 +422,19 @@ class StaffOrderLineAdjustmentView(APIView):
 
 
 class OrderTrackingView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     @extend_schema(responses=OrderReadSerializer)
     def get(self, request, order_number):
         order = get_object_or_404(_order_queryset(), order_number=order_number)
-        if not _can_access_order(request.user, order):
-            raise PermissionDenied("You do not have access to this order.")
+        if order.user_id is not None:
+            if not request.user.is_authenticated or not _can_access_order(request.user, order):
+                raise PermissionDenied("You do not have access to this order.")
         return Response(OrderReadSerializer(order).data)
 
 
 class OrderReceiptView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     @extend_schema(responses={200: OpenApiTypes.BINARY})
     def get(self, request, order_number):

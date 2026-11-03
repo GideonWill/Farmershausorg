@@ -40,7 +40,7 @@ from apps.payments.services import (
 
 
 class PaymentInitiationView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     @extend_schema(
         request=PaymentInitiationSerializer,
@@ -70,7 +70,7 @@ class PaymentInitiationView(APIView):
 
 
 class PaymentSimulateSuccessView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     @extend_schema(responses={200: PaymentReadSerializer})
     def post(self, request, order_number):
@@ -81,7 +81,7 @@ class PaymentSimulateSuccessView(APIView):
         from apps.payments.models import BranchPaymentAccount, PaymentAttempt
 
         order = get_object_or_404(CustomerOrder, order_number=order_number)
-        if not request.user.is_superuser and order.user_id != request.user.pk:
+        if order.user_id is not None and not request.user.is_superuser and order.user_id != request.user.pk:
             raise PermissionDenied("You do not have access to this order.")
         if order.status != CustomerOrder.Status.AWAITING_PAYMENT:
             payment = getattr(order, "payment", None)
@@ -147,7 +147,7 @@ class PaymentSimulateSuccessView(APIView):
 
 
 class PaymentStatusView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     @extend_schema(responses=PaymentReadSerializer)
     def get(self, request, order_number):
@@ -155,16 +155,17 @@ class PaymentStatusView(APIView):
             Payment.objects.select_related("order").prefetch_related("attempts"),
             order__order_number=order_number,
         )
-        if (
-            not request.user.is_superuser
-            and payment.order.user_id != request.user.pk
-            and not BranchMembership.objects.filter(
-                user=request.user,
-                branch_id=payment.order.branch_id,
-                is_active=True,
-            ).exists()
-        ):
-            raise PermissionDenied("You do not have access to this payment.")
+        if payment.order.user_id is not None:
+            if not request.user.is_authenticated or (
+                not request.user.is_superuser
+                and payment.order.user_id != request.user.pk
+                and not BranchMembership.objects.filter(
+                    user=request.user,
+                    branch_id=payment.order.branch_id,
+                    is_active=True,
+                ).exists()
+            ):
+                raise PermissionDenied("You do not have access to this payment.")
         return Response(PaymentReadSerializer(payment).data)
 
 

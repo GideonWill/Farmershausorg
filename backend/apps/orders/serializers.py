@@ -18,6 +18,13 @@ class CheckoutSerializer(serializers.Serializer):
     slot_id = serializers.UUIDField(required=False)
     voucher_code = serializers.CharField(required=False, allow_blank=True, max_length=80)
     customer_note = serializers.CharField(required=False, allow_blank=True, max_length=1000)
+    recipient_name = serializers.CharField(required=False, allow_blank=True, max_length=150)
+    phone = serializers.CharField(required=False, allow_blank=True, max_length=50)
+    email = serializers.EmailField(required=False, allow_blank=True)
+    address_line_1 = serializers.CharField(required=False, allow_blank=True, max_length=255)
+    address_line_2 = serializers.CharField(required=False, allow_blank=True, max_length=255)
+    area = serializers.CharField(required=False, allow_blank=True, max_length=120)
+    directions = serializers.CharField(required=False, allow_blank=True, max_length=500)
 
 
 class OrderLineComponentSerializer(serializers.Serializer):

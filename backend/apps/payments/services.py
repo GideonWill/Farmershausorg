@@ -39,7 +39,7 @@ def create_payment_attempt(*, order, user, method, idempotency_key, phone="", ne
         raise ValidationError({"payment": "Online payment is not configured for this branch."})
     if not account.settlement_verified:
         raise ValidationError({"payment": "This branch's provider settlement setup is not verified."})
-    phone = phone or user.phone or ""
+    phone = phone or (getattr(user, "phone", None) or "") or (order.address_snapshot.get("phone") if hasattr(order, "address_snapshot") and isinstance(order.address_snapshot, dict) else "")
     if method == Payment.Method.MOBILE_MONEY:
         if not phone.strip():
             raise ValidationError({"phone": "A phone number is required for Mobile Money."})

@@ -100,13 +100,18 @@ def _calculate_voucher(voucher, user, branch, line_values, subtotal):
 
 @transaction.atomic
 def create_order(*, cart_id, user, branch_id, fulfillment_method, address_id=None,
-                 delivery_zone_id=None, slot_id=None, voucher_code="", customer_note=""):
-    cart = (
+                 delivery_zone_id=None, slot_id=None, voucher_code="", customer_note="",
+                 guest_session_key=None, recipient_name="", phone="", email="",
+                 address_line_1="", address_line_2="", area="", directions=""):
+    cart_qs = (
         Cart.objects.select_for_update()
         .select_related("branch")
-        .filter(pk=cart_id, user=user, status=Cart.Status.OPEN, branch_id=branch_id)
-        .first()
+        .filter(pk=cart_id, status=Cart.Status.OPEN, branch_id=branch_id)
     )
+    if user is not None:
+        cart = cart_qs.filter(user=user).first()
+    else:
+        cart = cart_qs.filter(user__isnull=True).first() or cart_qs.first()
     if not cart:
         raise ValidationError({"cart_id": "An open cart for this branch is required."})
     if not cart.branch.is_active:
@@ -128,13 +133,8 @@ def create_order(*, cart_id, user, branch_id, fulfillment_method, address_id=Non
     delivery_fee = 0
     address_data = {}
     if fulfillment_method == CustomerOrder.FulfillmentMethod.DELIVERY:
-        if not address_id or not delivery_zone_id:
-            raise ValidationError(
-                {"delivery": "A saved address and delivery zone are required for delivery."}
-            )
-        address = CustomerAddress.objects.filter(pk=address_id, user=user).first()
-        if not address:
-            raise ValidationError({"address_id": "Select one of your saved addresses."})
+        if not delivery_zone_id:
+            raise ValidationError({"delivery_zone_id": "Select an active zone for this branch."})
         delivery_zone = cart.branch.delivery_zones.filter(
             pk=delivery_zone_id,
             is_active=True,
@@ -142,9 +142,43 @@ def create_order(*, cart_id, user, branch_id, fulfillment_method, address_id=Non
         if not delivery_zone:
             raise ValidationError({"delivery_zone_id": "Select an active zone for this branch."})
         delivery_fee = delivery_zone.delivery_fee_minor
-        address_data = _address_snapshot(address)
-    elif delivery_zone_id:
-        raise ValidationError({"delivery_zone_id": "Pickup orders do not use delivery zones."})
+
+        if address_id and user is not None:
+            address = CustomerAddress.objects.filter(pk=address_id, user=user).first()
+            if not address:
+                raise ValidationError({"address_id": "Select one of your saved addresses."})
+            address_data = _address_snapshot(address)
+        elif recipient_name and phone and address_line_1:
+            address_data = {
+                "recipient_name": recipient_name.strip(),
+                "phone": phone.strip(),
+                "email": (email or "").strip(),
+                "address_line_1": address_line_1.strip(),
+                "address_line_2": (address_line_2 or "").strip(),
+                "area": (area or "").strip(),
+                "directions": (directions or "").strip(),
+                "latitude": None,
+                "longitude": None,
+            }
+        else:
+            raise ValidationError(
+                {"delivery": "A delivery address and recipient details are required for delivery."}
+            )
+    else:
+        if recipient_name and phone:
+            address_data = {
+                "recipient_name": recipient_name.strip(),
+                "phone": phone.strip(),
+                "email": (email or "").strip(),
+            }
+        elif user is not None:
+            address_data = {
+                "recipient_name": getattr(getattr(user, "profile", None), "display_name", "") or getattr(user, "phone", "Customer"),
+                "phone": getattr(user, "phone", ""),
+                "email": getattr(user, "email", ""),
+            }
+        else:
+            address_data = {"recipient_name": "Guest Customer", "phone": ""}
 
     slot = None
     if slot_id:
