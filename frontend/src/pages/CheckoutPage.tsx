@@ -17,6 +17,7 @@ import { clearLocalCart } from '../lib/cartManager'
 import mockCheckoutData from '../lib/mockCheckoutData.json'
 import { getAuthTokens, saveAuthTokens, clearAuthTokens } from '../lib/auth'
 import { savePlacedOrder, generateOrderNumber } from '../lib/orderStore'
+import { registerCustomerAccount, authenticateCustomer } from '../lib/customerStore'
 import type { CustomerOrder } from '../lib/api'
 import { notify } from '../lib/notifications'
 import { useStore } from '../stores/store'
@@ -322,18 +323,30 @@ export function CheckoutPage() {
     setIsSigningIn(true)
     setSigninError('')
     try {
-      const tokens = await api<{ access: string; refresh: string }>('/auth/token/', {
-        method: 'POST',
-        body: JSON.stringify({
-          identifier: signinIdentifier.trim(),
-          password: signinPassword,
-        }),
-      })
-      saveAuthTokens(tokens)
+      try {
+        const tokens = await api<{ access: string; refresh: string }>('/auth/token/', {
+          method: 'POST',
+          body: JSON.stringify({
+            identifier: signinIdentifier.trim(),
+            password: signinPassword,
+          }),
+        })
+        saveAuthTokens(tokens)
+      } catch {
+        // Fallback to local customer store
+        const authRes = authenticateCustomer(signinIdentifier.trim(), signinPassword)
+        if (!authRes.success || !authRes.customer) {
+          throw new Error(authRes.message || 'Invalid credentials. Please verify your phone/email and password.')
+        }
+        saveAuthTokens({
+          access: `client-token-${authRes.customer.id}`,
+          refresh: `client-refresh-${authRes.customer.id}`,
+        })
+      }
       setAuthenticated(true)
       void queryClient.invalidateQueries({ queryKey: ['me'] })
       void queryClient.invalidateQueries({ queryKey: ['addresses'] })
-      notify('Signed in successfully! Your cart and addresses are linked.', 'success')
+      notify('Signed in successfully! Your cart, favorites, and privileges are active.', 'success')
       setCheckoutMode('guest')
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Invalid credentials. Please check and try again.'
@@ -360,30 +373,54 @@ export function CheckoutPage() {
 
       // If user chose to register with this order
       if (!authenticated && (checkoutMode === 'signup' || createAccountWithOrder) && signupPassword) {
+        // Register customer into local customerStore
+        const newClient = registerCustomerAccount({
+          display_name: guestName.trim() || 'Valued Customer',
+          phone: guestPhone.trim(),
+          email: guestEmail.trim(),
+          password: signupPassword,
+          initialAddress: guestAddressLine1.trim()
+            ? {
+                recipient_name: guestName.trim() || 'Valued Customer',
+                phone: guestPhone.trim(),
+                address_line_1: guestAddressLine1.trim(),
+                address_line_2: guestAddressLine2.trim(),
+                area: guestArea.trim(),
+                directions: guestDirections.trim(),
+              }
+            : undefined,
+        })
+        saveAuthTokens({
+          access: `client-token-${newClient.id}`,
+          refresh: `client-refresh-${newClient.id}`,
+        })
+        setAuthenticated(true)
+
+        // Sync to backend if accessible
         try {
           await api('/auth/register/', {
             method: 'POST',
             body: JSON.stringify({
-              display_name: guestName.trim() || 'Valued Customer',
-              username: guestPhone.trim().replace(/\s+/g, ''),
-              phone: guestPhone.trim(),
-              email: guestEmail.trim() || undefined,
+              display_name: newClient.display_name,
+              username: newClient.phone.replace(/\s+/g, ''),
+              phone: newClient.phone,
+              email: newClient.email || undefined,
               password: signupPassword,
             }),
           })
           const tokens = await api<{ access: string; refresh: string }>('/auth/token/', {
             method: 'POST',
             body: JSON.stringify({
-              identifier: guestPhone.trim(),
+              identifier: newClient.phone,
               password: signupPassword,
             }),
           })
           saveAuthTokens(tokens)
-          setAuthenticated(true)
-          void queryClient.invalidateQueries({ queryKey: ['me'] })
         } catch (regErr: any) {
-          console.warn('Registration note during checkout:', regErr)
+          console.warn('Backend sync note during checkout:', regErr)
         }
+        void queryClient.invalidateQueries({ queryKey: ['me'] })
+        void queryClient.invalidateQueries({ queryKey: ['addresses'] })
       }
 
       const payload: Record<string, unknown> = {

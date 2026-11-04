@@ -13,6 +13,14 @@ import {
 } from '../lib/api'
 import { useProducts } from '../hooks/useStoreData'
 import { clearAuthTokens, getAuthTokens, saveAuthTokens } from '../lib/auth'
+import {
+  getCurrentCustomer,
+  authenticateCustomer,
+  registerCustomerAccount,
+  updateCustomerAccount,
+  addCustomerSavedAddress,
+} from '../lib/customerStore'
+import { getPlacedOrders } from '../lib/orderStore'
 import { notify } from '../lib/notifications'
 import { useStore } from '../stores/store'
 import { Icon, Modal } from '../components/ui'
@@ -32,13 +40,14 @@ const emptyAddress: AddressDraft = {
   is_default: false,
 }
 
-type TabType = 'profile' | 'orders' | 'addresses' | 'wishlist'
+type TabType = 'profile' | 'orders' | 'addresses' | 'wishlist' | 'privileges'
 
 export function AccountPage() {
   const [authenticated, setAuthenticated] = useState(() => Boolean(getAuthTokens()))
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     if (typeof window !== 'undefined') {
+      if (window.location.hash === '#privileges') return 'privileges'
       if (window.location.hash === '#wishlist') return 'wishlist'
       if (window.location.hash === '#orders') return 'orders'
       if (window.location.hash === '#addresses') return 'addresses'
@@ -72,7 +81,8 @@ export function AccountPage() {
 
   useEffect(() => {
     const onHashChange = () => {
-      if (window.location.hash === '#wishlist') setActiveTab('wishlist')
+      if (window.location.hash === '#privileges') setActiveTab('privileges')
+      else if (window.location.hash === '#wishlist') setActiveTab('wishlist')
       else if (window.location.hash === '#orders') setActiveTab('orders')
       else if (window.location.hash === '#addresses') setActiveTab('addresses')
     }
@@ -88,20 +98,67 @@ export function AccountPage() {
 
   const profileQuery = useQuery({
     queryKey: ['me'],
-    queryFn: () => api<CustomerProfile>('/me/'),
+    queryFn: async () => {
+      try {
+        return await api<CustomerProfile>('/me/')
+      } catch {
+        const local = getCurrentCustomer()
+        if (local) {
+          return {
+            id: local.id,
+            display_name: local.display_name,
+            phone: local.phone,
+            email: local.email,
+            is_staff: false,
+          } as CustomerProfile
+        }
+        return {
+          id: 'cust-local',
+          display_name: 'Harvest Member',
+          phone: '',
+          email: '',
+          is_staff: false,
+        } as CustomerProfile
+      }
+    },
     enabled: authenticated,
     retry: false,
   })
 
   const addressesQuery = useQuery({
     queryKey: ['addresses'],
-    queryFn: async () => getList(await api<Address[] | { results: Address[] }>('/addresses/')),
+    queryFn: async () => {
+      try {
+        const res = await api<Address[] | { results: Address[] }>('/addresses/')
+        const list = getList(res)
+        if (list.length) return list
+      } catch {}
+      const local = getCurrentCustomer()
+      return local?.addresses || []
+    },
     enabled: authenticated,
   })
 
   const ordersQuery = useQuery({
     queryKey: ['orders'],
-    queryFn: () => api<CustomerOrder[]>('/orders/'),
+    queryFn: async () => {
+      try {
+        const res = await api<CustomerOrder[]>('/orders/')
+        if (res && res.length) return res
+      } catch {}
+      const all = getPlacedOrders()
+      const local = getCurrentCustomer()
+      if (local?.phone) {
+        const cleanPhone = local.phone.replace(/\D/g, '')
+        const myOrders = all.filter(
+          (o) =>
+            o.customer_phone.replace(/\D/g, '').includes(cleanPhone) ||
+            o.address_snapshot.phone.replace(/\D/g, '').includes(cleanPhone),
+        )
+        if (myOrders.length) return myOrders
+      }
+      return all
+    },
     enabled: authenticated,
   })
 
@@ -161,11 +218,27 @@ export function AccountPage() {
   })
 
   const updateProfileMutation = useMutation({
-    mutationFn: (body: Partial<CustomerProfile>) =>
-      api<CustomerProfile>('/me/', {
-        method: 'PATCH',
-        body: JSON.stringify(body),
-      }),
+    mutationFn: async (body: Partial<CustomerProfile>) => {
+      try {
+        return await api<CustomerProfile>('/me/', {
+          method: 'PATCH',
+          body: JSON.stringify(body),
+        })
+      } catch {
+        updateCustomerAccount({
+          display_name: body.display_name,
+          email: body.email,
+          phone: body.phone,
+        })
+        return {
+          id: 'cust-local',
+          display_name: body.display_name || 'Member',
+          phone: body.phone || '',
+          email: body.email || '',
+          is_staff: false,
+        } as CustomerProfile
+      }
+    },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['me'] })
       notify('Profile details updated.', 'success')
@@ -175,11 +248,16 @@ export function AccountPage() {
   })
 
   const saveAddressMutation = useMutation({
-    mutationFn: () =>
-      api<Address>(editingAddress ? `/addresses/${editingAddress}/` : '/addresses/', {
-        method: editingAddress ? 'PATCH' : 'POST',
-        body: JSON.stringify(addressDraft),
-      }),
+    mutationFn: async () => {
+      try {
+        return await api<Address>(editingAddress ? `/addresses/${editingAddress}/` : '/addresses/', {
+          method: editingAddress ? 'PATCH' : 'POST',
+          body: JSON.stringify(addressDraft),
+        })
+      } catch {
+        return addCustomerSavedAddress(addressDraft)
+      }
+    },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['addresses'] })
       setAddressDraft(emptyAddress)
@@ -249,27 +327,94 @@ export function AccountPage() {
     },
   })
 
-  function submitLogin(event: FormEvent<HTMLFormElement>) {
+  async function submitLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setMessage('')
     const form = new FormData(event.currentTarget)
-    authenticateMutation.mutate({
-      endpoint: '/auth/token/',
-      body: { identifier, password: String(form.get('password') ?? '') },
-    })
+    const password = String(form.get('password') ?? '')
+    const id = identifier.trim()
+
+    try {
+      const tokens = await api<{ access: string; refresh: string }>('/auth/token/', {
+        method: 'POST',
+        cartSessionKey,
+        body: JSON.stringify({ identifier: id, password }),
+      })
+      saveAuthTokens(tokens)
+      setAuthenticated(true)
+      await queryClient.invalidateQueries()
+      notify('Welcome back to FarmersHaus!', 'success')
+      if (searchParams.get('next') === '/checkout') navigate('/checkout')
+      return
+    } catch {
+      // Authenticate against customer store
+      const res = authenticateCustomer(id, password)
+      if (res.success && res.customer) {
+        saveAuthTokens({
+          access: `client-token-${res.customer.id}`,
+          refresh: `client-refresh-${res.customer.id}`,
+        })
+        setAuthenticated(true)
+        await queryClient.invalidateQueries()
+        notify(`Welcome back, ${res.customer.display_name}!`, 'success')
+        if (searchParams.get('next') === '/checkout') navigate('/checkout')
+        return
+      }
+      notify(res.message || 'Invalid phone/email or password.', 'error')
+      setMessage(res.message || 'Invalid credentials. Please verify your phone/email and password.')
+    }
   }
 
-  function submitRegister(event: FormEvent<HTMLFormElement>) {
+  async function submitRegister(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setMessage('')
     const form = new FormData(event.currentTarget)
     const phone = String(form.get('phone') ?? '').trim()
     const displayName = String(form.get('display_name') ?? '').trim()
-    registerMutation.mutate({
-      username: phone,
-      phone,
-      display_name: displayName,
-      email: String(form.get('email') ?? '').trim(),
-      password: String(form.get('password') ?? ''),
-    })
+    const email = String(form.get('email') ?? '').trim()
+    const password = String(form.get('password') ?? '')
+
+    if (!phone) {
+      notify('Please enter your phone number.', 'error')
+      return
+    }
+    if (!password || password.length < 6) {
+      notify('Password must be at least 6 characters.', 'error')
+      return
+    }
+
+    try {
+      await api<CustomerProfile>('/auth/register/', {
+        method: 'POST',
+        cartSessionKey,
+        body: JSON.stringify({
+          username: phone.replace(/\s+/g, ''),
+          phone,
+          display_name: displayName,
+          email,
+          password,
+        }),
+      })
+      const tokens = await api<{ access: string; refresh: string }>('/auth/token/', {
+        method: 'POST',
+        body: JSON.stringify({ identifier: phone, password }),
+      })
+      saveAuthTokens(tokens)
+      registerCustomerAccount({ display_name: displayName, phone, email, password })
+      setAuthenticated(true)
+      notify('Welcome to FarmersHaus!', 'success')
+      if (searchParams.get('next') === '/checkout') navigate('/checkout')
+      return
+    } catch {
+      const newAcc = registerCustomerAccount({ display_name: displayName, phone, email, password })
+      saveAuthTokens({
+        access: `client-token-${newAcc.id}`,
+        refresh: `client-refresh-${newAcc.id}`,
+      })
+      setAuthenticated(true)
+      notify(`Welcome to FarmersHaus, ${newAcc.display_name}!`, 'success')
+      if (searchParams.get('next') === '/checkout') navigate('/checkout')
+    }
   }
 
   function verifyOtp(event: FormEvent<HTMLFormElement>) {
@@ -318,6 +463,26 @@ export function AccountPage() {
     return (
       <div className="section-wrap min-h-[65vh]">
         <div className="mx-auto max-w-lg rounded-3xl border border-brand-green/15 bg-white p-6 shadow-lg sm:p-10">
+          {/* Client Account vs Staff Account Notice */}
+          <div className="mb-6 rounded-2xl border border-brand-green/20 bg-brand-cream/90 p-3.5 text-xs text-brand-ink/80 flex items-start gap-2.5">
+            <span className="text-lg shrink-0 leading-none" aria-hidden="true">🌱</span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <strong className="text-brand-green font-bold text-xs sm:text-sm">Client &amp; Member Portal</strong>
+                <span className="rounded-full bg-brand-green/15 px-2 py-0.5 text-[9px] font-bold text-brand-green uppercase tracking-wider">
+                  Customer
+                </span>
+              </div>
+              <p className="mt-1 text-[11px] leading-4 text-brand-ink/70">
+                Sign in to view your favorites, tracked orders, and member privileges.
+                Staff members please access the{' '}
+                <Link to="/staff" className="font-bold underline text-brand-green hover:text-brand-spinach">
+                  Staff Operations Portal
+                </Link>.
+              </p>
+            </div>
+          </div>
+
           <div className="text-center">
             <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-brand-green/10 text-brand-green">
               <Icon name="user" className="h-7 w-7" />
@@ -667,6 +832,22 @@ export function AccountPage() {
               {favorites.length}
             </span>
           )}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('privileges')}
+          className={`shrink-0 flex items-center gap-2 rounded-2xl px-3.5 py-2 text-xs font-bold transition sm:px-4 sm:py-2.5 ${
+            activeTab === 'privileges'
+              ? 'bg-brand-green text-white shadow-xs'
+              : 'text-brand-ink/70 hover:bg-brand-green/10 hover:text-brand-green'
+          }`}
+        >
+          <Icon name="badgeCheck" className="h-4 w-4 text-brand-yellow" />
+          <span>Privileges &amp; Rewards</span>
+          <span className="rounded-full bg-brand-yellow/20 px-1.5 py-0.2 text-[9px] font-bold text-brand-yellow">
+            Gold
+          </span>
         </button>
       </div>
 
@@ -1270,6 +1451,109 @@ export function AccountPage() {
               </Link>
             </div>
           )}
+        </section>
+      )}
+
+      {/* Tab 5: Privileges & Rewards */}
+      {activeTab === 'privileges' && (
+        <section className="space-y-6">
+          <div className="rounded-3xl border border-brand-green/15 bg-white p-6 shadow-sm sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-brand-green/10 pb-5">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="font-brand-heading text-xl font-bold text-brand-green sm:text-2xl">
+                    Client Privileges &amp; Rewards
+                  </h2>
+                  <span className="rounded-full bg-brand-yellow/20 px-2.5 py-0.5 text-xs font-bold text-brand-green">
+                    Harvest Gold Member
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-brand-ink/65 max-w-xl">
+                  Exclusive privileges automatically unlocked with your personal customer account. Note: This client account is dedicated to your personal orders and is completely segregated from the staff management portal.
+                </p>
+              </div>
+
+              {/* Loyalty Points Pill */}
+              <div className="rounded-2xl border border-brand-yellow/30 bg-brand-yellow/10 px-4 py-2.5 text-right">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-brand-green">Harvest Points Balance</span>
+                <p className="text-xl font-black font-mono text-brand-green">
+                  {getCurrentCustomer()?.loyalty_points ?? 120} <span className="text-xs font-semibold">pts</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Privileges Grid */}
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {(getCurrentCustomer()?.privileges ?? [
+                {
+                  id: 'priv-discount',
+                  title: '5% Harvest Member Savings',
+                  description: 'Exclusive 5% automatic discount on all single-origin farm fruits and fresh vegetables.',
+                  badge: 'Active Now',
+                  icon: 'tag',
+                },
+                {
+                  id: 'priv-delivery',
+                  title: 'Free Priority Dispatch on Orders > GH₵ 100',
+                  description: 'Complimentary expedited delivery from your local FarmersHaus branch on qualifying baskets.',
+                  badge: 'Member Perk',
+                  icon: 'truck',
+                },
+                {
+                  id: 'priv-wishlist',
+                  title: 'Seasonal Wishlist & Restock Priority',
+                  description: 'Save favorite seasonal items to your wishlist and receive priority packing alerts upon fresh harvest arrival.',
+                  badge: 'Always On',
+                  icon: 'heart',
+                },
+                {
+                  id: 'priv-quality',
+                  title: '100% Freshness Guarantee & Direct Exchange',
+                  description: 'Hassle-free replacement guarantee on any produce item that does not meet our strict crispness standard.',
+                  badge: 'Protected',
+                  icon: 'shield',
+                },
+                {
+                  id: 'priv-points',
+                  title: 'Harvest Loyalty Points',
+                  description: 'Earn 1 Harvest Point for every GH₵ 1 spent. Redeem points for free produce totes and chef recipe bundles.',
+                  badge: 'Earn 1pt / GH₵ 1',
+                  icon: 'star',
+                },
+              ]).map((priv) => (
+                <div
+                  key={priv.id}
+                  className="rounded-2xl border border-brand-green/15 bg-brand-cream/50 p-4 transition hover:bg-white hover:shadow-sm"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-green/10 text-brand-green">
+                      <Icon name="badgeCheck" className="h-5 w-5 text-brand-green" />
+                    </span>
+                    <span className="rounded-full bg-brand-green/10 px-2 py-0.5 text-[10px] font-bold text-brand-green">
+                      {priv.badge}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 font-brand-heading text-sm font-bold text-brand-ink">
+                    {priv.title}
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-brand-ink/65">
+                    {priv.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Quick Actions Footer */}
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-brand-green/10 pt-5">
+              <div className="flex items-center gap-2 text-xs text-brand-ink/70">
+                <Icon name="badgeCheck" className="h-4 w-4 text-brand-green" />
+                <span>Single-origin verified by FarmersHaus local cooperative growers</span>
+              </div>
+              <Link to="/shop" className="button button-primary button-small text-xs">
+                Browse Shop with Member Perks
+              </Link>
+            </div>
+          </div>
         </section>
       )}
     </div>

@@ -87,6 +87,86 @@ export function useCategories() {
   })
 }
 
+export function filterAndSortProducts(
+  products: Product[],
+  filters: {
+    category?: string
+    search?: string
+    ordering?: string
+    organic?: boolean
+    in_season?: boolean
+    min_price?: number
+    max_price?: number
+  } = {},
+): Product[] {
+  let list = [...products]
+
+  if (filters.category) {
+    const target = filters.category.toLowerCase().trim()
+    list = list.filter((p) => {
+      const pCat = typeof p.category === 'string' ? p.category : (p.category as any)?.slug ?? ''
+      return pCat.toLowerCase() === target
+    })
+  }
+
+  if (filters.search) {
+    const q = filters.search.toLowerCase().trim()
+    if (q) {
+      list = list.filter((p) => {
+        const nameMatch = p.name.toLowerCase().includes(q)
+        const descMatch = (p.description || '').toLowerCase().includes(q)
+        const tagMatch = p.tags?.some((t) => t.toLowerCase().includes(q))
+        const catMatch = typeof p.category === 'string' && p.category.toLowerCase().includes(q)
+        return nameMatch || descMatch || tagMatch || catMatch
+      })
+    }
+  }
+
+  if (filters.in_season) {
+    list = list.filter((p) => p.tags?.includes('in-season'))
+  }
+
+  if (filters.organic) {
+    list = list.filter((p) => p.tags?.includes('organic'))
+  }
+
+  if (filters.min_price !== undefined && !Number.isNaN(filters.min_price)) {
+    list = list.filter((p) => {
+      const price = p.branch_availability?.price_minor ?? p.base_price_minor
+      return price >= (filters.min_price || 0)
+    })
+  }
+
+  if (filters.max_price !== undefined && !Number.isNaN(filters.max_price)) {
+    list = list.filter((p) => {
+      const price = p.branch_availability?.price_minor ?? p.base_price_minor
+      return price <= (filters.max_price || Infinity)
+    })
+  }
+
+  if (filters.ordering) {
+    if (filters.ordering === 'name') {
+      list.sort((a, b) => a.name.localeCompare(b.name))
+    } else if (filters.ordering === '-name') {
+      list.sort((a, b) => b.name.localeCompare(a.name))
+    } else if (filters.ordering === 'price') {
+      list.sort((a, b) => {
+        const pA = a.branch_availability?.price_minor ?? a.base_price_minor
+        const pB = b.branch_availability?.price_minor ?? b.base_price_minor
+        return pA - pB
+      })
+    } else if (filters.ordering === '-price') {
+      list.sort((a, b) => {
+        const pA = a.branch_availability?.price_minor ?? a.base_price_minor
+        const pB = b.branch_availability?.price_minor ?? b.base_price_minor
+        return pB - pA
+      })
+    }
+  }
+
+  return list
+}
+
 export function useProducts(filters: {
   category?: string
   search?: string
@@ -114,35 +194,15 @@ export function useProducts(filters: {
       try {
         const payload = await api<Product[] | { results: Product[] }>(`/products/?${params}`)
         const list = getList(payload)
-        if (list.length > 0) return list
+        if (Array.isArray(list)) return list
       } catch {
-        // Fall back gracefully below
+        // Fall back to robust client-side filtering below
       }
 
-      let filtered = [...FALLBACK_PRODUCTS]
-      if (filters.category) {
-        filtered = filtered.filter((p) => p.category === filters.category)
-      }
-      if (filters.search) {
-        const q = filters.search.toLowerCase()
-        filtered = filtered.filter((p) => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q))
-      }
-      if (filters.in_season) {
-        filtered = filtered.filter((p) => p.tags.includes('in-season'))
-      }
-      if (filters.organic) {
-        filtered = filtered.filter((p) => p.tags.includes('organic'))
-      }
-      if (filters.min_price !== undefined) {
-        filtered = filtered.filter((p) => p.base_price_minor >= (filters.min_price || 0))
-      }
-      if (filters.max_price !== undefined) {
-        filtered = filtered.filter((p) => p.base_price_minor <= (filters.max_price || Infinity))
-      }
-      return filtered
+      return filterAndSortProducts(FALLBACK_PRODUCTS, filters)
     },
-    staleTime: 3 * 60 * 1000,
-    initialData: FALLBACK_PRODUCTS,
+    staleTime: 30 * 1000,
+    initialData: () => filterAndSortProducts(FALLBACK_PRODUCTS, filters),
   })
 }
 

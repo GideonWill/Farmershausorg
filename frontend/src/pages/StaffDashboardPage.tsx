@@ -664,6 +664,12 @@ export function StaffDashboardPage() {
                   {login.isPending ? 'Logging in…' : 'Login'}
                 </button>
 
+                <p className="pt-2 text-center text-[11px] text-gray-400">
+                  Are you a customer?{' '}
+                  <Link to="/account" className="font-semibold text-emerald-800 underline">
+                    Customer Account &amp; Wishlist Portal
+                  </Link>
+                </p>
                 {/* Toggle to Sign Up */}
                 <p className="pt-3 text-center text-xs text-gray-500">
                   Don't have account?{' '}
