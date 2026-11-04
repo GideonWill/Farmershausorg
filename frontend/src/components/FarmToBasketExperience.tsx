@@ -3,12 +3,8 @@ import { Link } from 'react-router-dom'
 import { Icon } from './ui'
 
 const farmToBasketVideo = '/videos/farm-to-basket.mp4'
-// A clean poster frame generated from the first frame of the video.
-// Shows the dark-green hero background immediately while the video loads,
-// with zero conflicting text overlay. We re-use the shop-hero as it matches
-// the dark emerald brand palette; swap this for a dedicated still frame if
-// you later export one from the video at the correct aspect ratio.
-const HERO_POSTER = '/brand/farmershaus-shop-hero.webp'
+// Exact 720p first frame exported directly from the hero video
+const HERO_POSTER = '/videos/farm-to-basket-poster.webp'
 
 /** Detect users who have requested reduced data usage or are on a slow connection. */
 function shouldSkipVideo(): boolean {
