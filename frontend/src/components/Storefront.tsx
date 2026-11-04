@@ -13,9 +13,15 @@ import { useBaskets, useBranches, useCart, useSiteSettings } from '../hooks/useS
 import { useStore } from '../stores/store'
 import { Drawer, Icon, Modal } from './ui'
 import { SplashScreen } from './SplashScreen'
+import { SafeBoundary } from './ErrorBoundary'
 import { lazy } from 'react'
 const ShoppingAssistant = lazy(() =>
-  import('./ShoppingAssistant').then((m) => ({ default: m.ShoppingAssistant }))
+  import('./ShoppingAssistant')
+    .then((m) => ({ default: m.ShoppingAssistant }))
+    .catch((err) => {
+      console.warn('Shopping assistant dynamic import failed gracefully:', err)
+      return { default: () => null }
+    })
 )
 import { getProduceIcon } from '../lib/images'
 
@@ -904,9 +910,11 @@ export function Storefront() {
       </main>
       <Footer />
       <WhatsAppButton />
-      <Suspense fallback={null}>
-        <ShoppingAssistant />
-      </Suspense>
+      <SafeBoundary fallback={null}>
+        <Suspense fallback={null}>
+          <ShoppingAssistant />
+        </Suspense>
+      </SafeBoundary>
       <CartDrawer />
       <button className="sr-only" onClick={() => setCartDrawerOpen(true)}>Open cart {cart?.items.length ?? 0}</button>
       <div className="sr-only" aria-live="polite">{site?.contact.announcement_bar_text}</div>

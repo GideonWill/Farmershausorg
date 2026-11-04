@@ -96,9 +96,8 @@ export function FarmToBasketExperience() {
       <div className="farm-to-basket__media">
         <video
           ref={videoRef}
-          className={`farm-to-basket__video transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-90'}`}
+          className={'farm-to-basket__video'}
           src={farmToBasketVideo}
-          poster="/brand/farmershaus-healthy-life-poster.webp"
           autoPlay
           loop
           muted
