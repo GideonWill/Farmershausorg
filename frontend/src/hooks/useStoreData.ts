@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getAuthTokens } from '../lib/auth'
 import { api, getList, type BasketPackage, type Branch, type Cart, type Category, type Product, type SiteSettings } from '../lib/api'
 import { useStore } from '../stores/store'
@@ -268,12 +268,35 @@ export function useCart() {
   const branch = useResolvedBranch()
   const cartSessionKey = useStore((state) => state.cartSessionKey)
   const [hasToken, setHasToken] = useState(() => Boolean(getAuthTokens()?.access))
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     const onAuth = () => setHasToken(Boolean(getAuthTokens()?.access))
     window.addEventListener('farmershaus:auth-changed', onAuth)
     return () => window.removeEventListener('farmershaus:auth-changed', onAuth)
   }, [])
+
+  useEffect(() => {
+    const onCartUpdated = (event: Event) => {
+      const updated = (event as CustomEvent<Cart>).detail
+      if (updated) {
+        queryClient.setQueriesData({ queryKey: ['cart'] }, updated)
+      } else {
+        queryClient.setQueriesData({ queryKey: ['cart'] }, getLocalCart(branch?.id))
+      }
+    }
+    const onCartCleared = () => {
+      const empty = getLocalCart(branch?.id)
+      queryClient.setQueriesData({ queryKey: ['cart'] }, empty)
+      void queryClient.invalidateQueries({ queryKey: ['cart'] })
+    }
+    window.addEventListener('farmershaus:cart-updated', onCartUpdated)
+    window.addEventListener('farmershaus:cart-cleared', onCartCleared)
+    return () => {
+      window.removeEventListener('farmershaus:cart-updated', onCartUpdated)
+      window.removeEventListener('farmershaus:cart-cleared', onCartCleared)
+    }
+  }, [queryClient, branch?.id])
 
   return useQuery({
     queryKey: ['cart', branch?.id, cartSessionKey, hasToken ? 'auth' : 'guest'],

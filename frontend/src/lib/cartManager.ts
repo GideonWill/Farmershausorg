@@ -120,10 +120,22 @@ export function updateLocalCartItemQuantity(itemId: string, quantity?: number): 
   return cart
 }
 
-export function clearLocalCart(): Cart {
-  const cart = getLocalCart()
-  cart.items = []
-  cart.updated_at = new Date().toISOString()
-  saveLocalCart(cart)
-  return cart
+export function clearLocalCart(branchId?: string): Cart {
+  const empty: Cart = {
+    id: 'local-cart',
+    branch: branchId || DEFAULT_BRANCH.id,
+    status: 'active',
+    items: [],
+    updated_at: new Date().toISOString(),
+  }
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(empty))
+      window.dispatchEvent(new CustomEvent('farmershaus:cart-updated', { detail: empty }))
+      window.dispatchEvent(new CustomEvent('farmershaus:cart-cleared', { detail: empty }))
+    } catch {
+      // ignore
+    }
+  }
+  return empty
 }

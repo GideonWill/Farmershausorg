@@ -573,7 +573,27 @@ export function CheckoutPage() {
       ])
       clearTimeout(timer1)
       clearTimeout(timer2)
-      clearLocalCart()
+
+      // 1. Immediately wipe local storage and dispatch cart-cleared event
+      clearLocalCart(branch?.id)
+
+      // 2. Immediately zero out all React Query cart caches across all active components
+      queryClient.setQueriesData({ queryKey: ['cart'] }, () => ({
+        id: 'local-cart',
+        branch: branch?.id || '',
+        status: 'active',
+        items: [],
+        total_items: 0,
+        total_minor: 0,
+        updated_at: new Date().toISOString(),
+      }))
+      void queryClient.invalidateQueries({ queryKey: ['cart'] })
+
+      // 3. Clear remote backend cart if connected
+      if (branch?.id) {
+        api(`/cart/?branch=${branch.id}`, { method: 'DELETE', cartSessionKey }).catch(() => null)
+      }
+
       navigate(`/orders/${order.order_number}?success=true`)
     } catch (err: unknown) {
       clearTimeout(timer1)

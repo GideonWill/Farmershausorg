@@ -47,7 +47,16 @@ export function CartPage() {
   })
   const clearMutation = useMutation({
     mutationFn: async () => {
-      clearLocalCart()
+      clearLocalCart(branch?.id)
+      queryClient.setQueriesData({ queryKey: ['cart'] }, () => ({
+        id: 'local-cart',
+        branch: branch?.id || '',
+        status: 'active',
+        items: [],
+        total_items: 0,
+        total_minor: 0,
+        updated_at: new Date().toISOString(),
+      }))
       if (branch) {
         await api(`/cart/?branch=${branch.id}`, { method: 'DELETE', cartSessionKey }).catch(() => null)
       }
