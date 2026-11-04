@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -184,6 +184,7 @@ function BranchPicker({
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
+  const prevPathRef = useRef(pathname)
 
   useEffect(() => {
     if (hash) {
@@ -208,6 +209,15 @@ function ScrollManager() {
         }
       }
     } else {
+      const wasInShop = prevPathRef.current.startsWith('/shop')
+      const isInShop = pathname.startsWith('/shop')
+      prevPathRef.current = pathname
+
+      // Never reset to top when interacting with shop categories or filters
+      if (wasInShop && isInShop) {
+        return
+      }
+
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
     }
   }, [pathname, hash])
@@ -881,7 +891,7 @@ export function Storefront() {
         <Suspense fallback={<div className="section-wrap"><div className="skeleton min-h-64" aria-label="Loading page" /></div>}>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
-              key={location.pathname}
+              key={location.pathname.startsWith('/shop') ? '/shop' : location.pathname}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}

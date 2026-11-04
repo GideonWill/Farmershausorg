@@ -13,7 +13,8 @@ export function ShopPage() {
 
   const search = params.get('search') ?? ''
   const ordering = params.get('ordering') ?? ''
-  const category = routeCategory ?? params.get('category') ?? ''
+  const paramCategory = params.get('category')
+  const category = (paramCategory !== null ? paramCategory : routeCategory) ?? ''
   const isOrganic = params.get('organic') === 'true'
   const isInSeason = params.get('in_season') === 'true'
   const minPriceMinor = params.get('min_price') ? Number(params.get('min_price')) : undefined
@@ -56,20 +57,35 @@ export function ShopPage() {
     setParams(next)
   }
 
+  function scrollToProducts() {
+    const productsEl = document.getElementById('shop-products')
+    if (productsEl) {
+      productsEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   function handleCategoryChange(targetCategorySlug?: string) {
     const nextParams = new URLSearchParams(params)
-    nextParams.delete('category')
-    const queryString = nextParams.toString() ? `?${nextParams.toString()}` : ''
     if (targetCategorySlug) {
-      navigate(`/shop/category/${targetCategorySlug}${queryString}`)
+      nextParams.set('category', targetCategorySlug)
     } else {
-      navigate(`/shop${queryString}`)
+      nextParams.delete('category')
     }
+    const queryString = nextParams.toString() ? `?${nextParams.toString()}` : ''
+    navigate(`/shop${queryString}`, { replace: true, preventScrollReset: true })
+    
+    // Smoothly scroll down directly to products section below
+    requestAnimationFrame(() => {
+      setTimeout(scrollToProducts, 40)
+    })
   }
 
   function clearAllFilters() {
     setSearchInput('')
-    navigate('/shop')
+    navigate('/shop', { replace: true, preventScrollReset: true })
+    requestAnimationFrame(() => {
+      setTimeout(scrollToProducts, 40)
+    })
   }
 
   const hasActiveFilters = Boolean(
@@ -376,7 +392,7 @@ export function ShopPage() {
       </section>
 
       {/* Products Grid */}
-      <section id="shop-products" className="section-wrap pt-8">
+      <section id="shop-products" className="section-wrap pt-8 scroll-mt-24 sm:scroll-mt-28">
         {isLoading || !branch ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
