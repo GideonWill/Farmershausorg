@@ -1,7 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { initRoutePrefetching } from '../lib/prefetch'
 import { useLocation } from 'react-router-dom'
 import { Suspense } from 'react'
 import { api, money, type Branch, type CartValidation, type CustomerProfile, type Product } from '../lib/api'
@@ -851,6 +852,10 @@ function CartDrawer() {
 
 export function Storefront() {
   const { data: site } = useSiteSettings()
+  useEffect(() => {
+    const cleanup = initRoutePrefetching()
+    return cleanup
+  }, [])
   const { data: cart } = useCart()
   const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen)
   const location = useLocation()
@@ -874,9 +879,17 @@ export function Storefront() {
       <Header />
       <main>
         <Suspense fallback={<div className="section-wrap"><div className="skeleton min-h-64" aria-label="Loading page" /></div>}>
-          <motion.div key={location.pathname} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
-            <Outlet />
-          </motion.div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
         </Suspense>
       </main>
       <Footer />

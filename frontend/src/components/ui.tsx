@@ -154,26 +154,44 @@ export function LazyImage({
   src,
   alt,
   className = '',
+  priority = false,
 }: {
   src?: string
   alt: string
   className?: string
+  priority?: boolean
 }) {
   const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
   const image = !failed && src
+
+  // Automatically serve lightweight modern .webp for brand assets when available
+  const webpSrc = src && src.startsWith('/brand/') && !src.endsWith('.webp')
+    ? src.replace(/\.(png|jpg|jpeg)$/, '.webp')
+    : undefined
+
   return (
-    <div className={`image-wash ${className}`}>
+    <div className={`image-wash relative overflow-hidden bg-brand-cream/60 ${className}`}>
+      {/* Subtle shimmer skeleton placeholder while loading */}
+      {!loaded && !failed && (
+        <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-brand-cream via-white/40 to-brand-cream pointer-events-none" />
+      )}
       {image && (
-        <img
-          src={src}
-          alt={alt}
-          loading="lazy"
-          decoding="async"
-          onLoad={() => setLoaded(true)}
-          onError={() => setFailed(true)}
-          className={`h-full w-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-        />
+        <picture className="block h-full w-full">
+          {webpSrc && <source srcSet={webpSrc} type="image/webp" />}
+          <img
+            src={src}
+            alt={alt}
+            loading={priority ? 'eager' : 'lazy'}
+            decoding="async"
+            fetchPriority={priority ? 'high' : 'auto'}
+            onLoad={() => setLoaded(true)}
+            onError={() => setFailed(true)}
+            className={`h-full w-full object-cover transition-all duration-500 ease-out ${
+              loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02]'
+            }`}
+          />
+        </picture>
       )}
       {!image && (
         <div className="grid h-full w-full place-items-center text-4xl select-none" aria-label={alt} title={alt}>

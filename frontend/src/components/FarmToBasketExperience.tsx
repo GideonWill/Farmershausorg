@@ -55,21 +55,26 @@ export function FarmToBasketExperience() {
 
     if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) handleReady()
 
-    // IntersectionObserver to pause when off-screen and play when visible
+    // High-performance IntersectionObserver with rootMargin: pre-load only when near viewport, pause when off-screen
     let observer: IntersectionObserver | null = null
     if ('IntersectionObserver' in window) {
       observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            if (entry.isIntersecting && !prefersReducedMotion) {
-              startPlayback()
+            if (entry.isIntersecting) {
+              if (video.preload !== 'auto') {
+                video.preload = 'auto'
+              }
+              if (!prefersReducedMotion) {
+                startPlayback()
+              }
             } else {
               video.pause()
               setVideoState('paused')
             }
           }
         },
-        { threshold: 0.15 }
+        { rootMargin: '250px 0px', threshold: 0.1 }
       )
       observer.observe(video)
     } else {
@@ -105,11 +110,11 @@ export function FarmToBasketExperience() {
           ref={videoRef}
           className="farm-to-basket__video"
           src={farmToBasketVideo}
-          autoPlay={!prefersReducedMotion}
+          poster="/brand/farmershaus-healthy-life-poster.webp"
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="none"
           disablePictureInPicture
           aria-label="Farmers harvesting and washing produce before it is packed into a basket"
         />

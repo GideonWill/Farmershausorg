@@ -11,7 +11,7 @@ import { flyToCart } from '../lib/cartFlyEffect'
 
 type BasketFlight = { id: number; image: string; left: number; top: number; x: number; y: number }
 
-const TOTE_IMAGE = '/brand/farmershaus-produce-tote.png'
+const TOTE_IMAGE = '/brand/farmershaus-produce-tote.webp'
 
 import { addBasketToLocalCart, addProductToLocalCart } from '../lib/cartManager'
 

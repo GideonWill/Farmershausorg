@@ -124,7 +124,7 @@ export function ShopPage() {
         </div>
         <div className="shop-hero__image-wrap">
           <img
-            src="/brand/farmershaus-shop-hero.png"
+            src="/brand/farmershaus-shop-hero.webp" fetchPriority="high" loading="eager"
             alt="Shopping cart overflowing with freshly gathered harvest"
             className="shop-hero__image"
           />

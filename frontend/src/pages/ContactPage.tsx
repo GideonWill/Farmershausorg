@@ -85,7 +85,7 @@ export function ContactPage() {
       <section className="relative overflow-hidden bg-emerald-950 py-16 sm:py-24 text-center">
         {/* Background photo */}
         <img
-          src="/brand/contact-hero.jpg"
+          src="/brand/contact-hero.webp"
           alt="FarmersHaus organic farm landscape at sunset"
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
@@ -325,7 +325,7 @@ export function ContactPage() {
               {/* Decorative Wheat Stalks at Bottom Right */}
               <div className="pointer-events-none mt-6 flex justify-end lg:absolute lg:-bottom-12 lg:-right-8 lg:mt-0">
                 <img
-                  src="/brand/contact-wheat.png"
+                  src="/brand/contact-wheat.webp"
                   alt=""
                   aria-hidden="true"
                   className="w-36 select-none object-contain opacity-85 sm:w-48 lg:w-56"

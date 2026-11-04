@@ -55,7 +55,7 @@ export function HomePage() {
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="story-visual rounded-3xl shadow-xl overflow-hidden">
             <img
-              src="/brand/farmershaus-healthy-life-poster.png"
+              src="/brand/farmershaus-healthy-life-poster.webp"
               alt="Healthy life, live it well: a colorful composition of fresh fruit and vegetables"
               className="story-visual__poster"
               loading="lazy"
@@ -76,7 +76,7 @@ export function HomePage() {
             <Link to="/baskets" className="button button-yellow mt-7">Explore food baskets <Icon name="arrow" /></Link>
           </div>
           <div className="relative">
-            <LazyImage src="/brand/farmershaus-home-basket.png" alt="A basket filled with fresh FarmersHaus vegetables" className="home-basket-image aspect-square rounded-[2rem] shadow-2xl" />
+            <LazyImage src="/brand/farmershaus-home-basket.webp" alt="A basket filled with fresh FarmersHaus vegetables" className="home-basket-image aspect-square rounded-[2rem] shadow-2xl" />
             <span className="absolute -right-3 -top-3 rounded-full bg-brand-yellow px-4 py-2 text-xs font-bold uppercase tracking-wider text-brand-green">{baskets.length ? `${baskets.length} bundles` : 'Freshly curated'}</span>
           </div>
         </div>

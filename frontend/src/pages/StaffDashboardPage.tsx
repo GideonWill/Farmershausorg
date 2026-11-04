@@ -534,7 +534,7 @@ export function StaffDashboardPage() {
           {/* Header with Lush Calathea Botanical Leaves & Wave Mask */}
           <div className="relative h-44 sm:h-48 overflow-hidden bg-emerald-950">
             <img
-              src="/brand/staff-header-leaves.jpg"
+              src="/brand/staff-header-leaves.webp"
               alt="Lush botanical foliage"
               className="h-full w-full object-cover object-center"
             />
