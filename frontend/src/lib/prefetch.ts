@@ -64,3 +64,4 @@ export function initRoutePrefetching() {
     document.removeEventListener('touchstart', handlePointer)
   }
 }
+
