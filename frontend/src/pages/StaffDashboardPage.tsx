@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom'
 import { API_BASE_URL, api, downloadFile, money, type ApiOptions, type Branch, type CustomerOrder, type CustomerProfile, type OrderStatus } from '../lib/api'
 import { Icon, Modal } from '../components/ui'
 import { notify } from '../lib/notifications'
+import { openOrDownloadReceipt } from '../lib/receiptGenerator'
 import {
   getBranchInventory,
   updateBranchInventoryRow,
@@ -1398,12 +1399,12 @@ export function StaffDashboardPage() {
                   setReplacementIds={setReplacementIds}
                   isSaving={assignRider.isPending || adjustLine.isPending}
                   onPrint={() => window.print()}
-                  onReceipt={() =>
-                    void downloadDashboardFile(
+                  onReceipt={() => {
+                    downloadDashboardFile(
                       `/orders/${encodeURIComponent(selectedOrder.order_number)}/receipt.pdf`,
                       `farmershaus-${selectedOrder.order_number}-receipt.pdf`,
-                    )
-                  }
+                    ).catch(() => openOrDownloadReceipt(selectedOrder))
+                  }}
                   admin={profile.is_super_admin}
                   onCancel={() => {
                     if (window.confirm(`Cancel ${selectedOrder.order_number} and request a full refund?`)) {
@@ -1730,7 +1731,7 @@ function OrderDetail({
               className="button button-outline button-small inline-flex items-center gap-1.5 text-xs py-1.5"
               onClick={onReceipt}
             >
-              <span>📄 Download receipt PDF</span>
+              <span>📄 Download Receipt (PDF)</span>
             </button>
           )}
           {admin && !['cancelled', 'delivered'].includes(order.status) && (

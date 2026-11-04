@@ -7,6 +7,7 @@ import { notify } from '../lib/notifications'
 import { Icon } from '../components/ui'
 import { getProduceIcon } from '../lib/images'
 import { getOrderByNumber, savePlacedOrder } from '../lib/orderStore'
+import { openOrDownloadReceipt } from '../lib/receiptGenerator'
 
 const timeline: Array<{ status: OrderStatus; title: string; detail: string }> = [
   { status: 'confirmed', title: 'Order confirmed', detail: 'Payment received and your order is with the branch.' },
@@ -100,7 +101,20 @@ export function OrderPage() {
   })
 
   const receipt = useMutation({
-    mutationFn: () => downloadFile(`/orders/${orderNumber}/receipt.pdf`, `farmershaus-${orderNumber}-receipt.pdf`),
+    mutationFn: async () => {
+      try {
+        await downloadFile(`/orders/${orderNumber}/receipt.pdf`, `farmershaus-${orderNumber}-receipt.pdf`)
+        notify('Receipt PDF downloaded successfully.', 'success')
+      } catch {
+        // High-fidelity fallback to client-side official printable receipt
+        if (order) {
+          openOrDownloadReceipt(order)
+          notify('Official receipt ready! You can print or save as PDF.', 'success')
+        } else {
+          throw new Error('Order details not ready for receipt generation.')
+        }
+      }
+    },
     onError: (error) => notify(error instanceof Error ? error.message : 'Receipt could not be downloaded.', 'error'),
   })
 
@@ -177,7 +191,7 @@ export function OrderPage() {
                   onClick={() => receipt.mutate()}
                 >
                   <Icon name="arrow" className="h-4 w-4 rotate-90" />
-                  <span>{receipt.isPending ? 'Preparing receipt…' : 'Download PDF Receipt'}</span>
+                  <span>{receipt.isPending ? 'Preparing Receipt…' : 'Download Receipt (PDF)'}</span>
                 </button>
 
                 <Link
