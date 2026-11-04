@@ -14,15 +14,21 @@
   --color-brand-ink: #193d2d;
   --color-brand-cream: #fbf8ef;
   --color-brand-navy: #14206b;
-  --font-brand-heading: "Naveid Upright Variable", Georgia, serif;
-  --font-brand-subheading: "Footlong Office", Arial, sans-serif;
-  --font-brand-body: "Bw Modelica SS01", Arial, sans-serif;
+  --font-brand-heading: "Fraunces", Georgia, serif;
+  --font-brand-subheading: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-brand-body: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Fraunces", Georgia, serif;
+  --font-body: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 :root {
   font-family: var(--font-brand-body);
   color: var(--color-brand-ink);
   background: var(--color-brand-white);
+  font-size: 16px;
+  line-height: 1.6;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -37,11 +43,76 @@ html {
 }
 
 body {
+  font-family: var(--font-brand-body);
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem); /* Proportional 16px to 18px body scale */
+  line-height: 1.6;
+  font-weight: 400;
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
   max-width: 100vw;
   overflow-x: clip;
+}
+
+/* Headings (H1-H3, hero text, section titles): Fraunces (Google Fonts, weights 600 & 700), slightly tight letter spacing */
+h1,
+.h1,
+.hero-title,
+.hero-text {
+  font-family: var(--font-brand-heading);
+  font-weight: 700;
+  font-size: clamp(2rem, 3.5vw + 1rem, 4rem); /* Proportional scale: 32-40px on mobile, 48-64px on desktop */
+  line-height: 1.15;
+  letter-spacing: -0.025em; /* slightly tight letter spacing on large headings */
+}
+
+h2,
+.h2,
+.section-title,
+.section-heading {
+  font-family: var(--font-brand-heading);
+  font-weight: 700;
+  font-size: clamp(1.625rem, 2vw + 1rem, 2.5rem); /* Proportional scale: 26-30px on mobile, 36-40px on desktop */
+  line-height: 1.22;
+  letter-spacing: -0.02em; /* slightly tight letter spacing */
+}
+
+h3,
+.h3,
+.subsection-title {
+  font-family: var(--font-brand-heading);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 1vw + 0.95rem, 1.75rem); /* Proportional scale: 20-22px on mobile, 24-28px on desktop */
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+
+/* Product names: Fraunces (weights 600 & 700) with slight tight tracking */
+.product-name,
+.product-card-title,
+.product-card__title,
+.product-title {
+  font-family: var(--font-brand-heading);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+/* Body text, navigation, buttons, prices, product descriptions, form fields: Nunito (weights 400, 600, 700) */
+button,
+input,
+select,
+textarea,
+nav,
+.nav-link,
+.mobile-nav-link,
+.button,
+.price,
+.product-price,
+.product-description,
+.form-input,
+.form-label,
+.filter-chip {
+  font-family: var(--font-brand-body);
 }
 
 button,

@@ -765,7 +765,7 @@ function CartDrawer() {
               <div className="mx-5 mt-4 rounded-xl border border-brand-green/15 bg-brand-cream/70 px-3.5 py-2">
                 <p className="flex items-center gap-1.5 text-xs font-bold text-brand-green">
                   <Icon name="pin" className="h-3.5 w-3.5 shrink-0" />
-                  <span>Direct delivery from {branch.name.startsWith('FarmersHaus') ? branch.name : `FarmersHaus ${branch.name}`}</span>
+                  <span>Direct delivery from {branch.name.replace(/^(FarmersHaus\s*)+/i, 'FarmersHaus ')}</span>
                 </p>
                 <p className="mt-0.5 text-[10px] text-brand-ink/60">
                   All items packed &amp; dispatched together from this single local market.
@@ -783,7 +783,7 @@ function CartDrawer() {
                         {icon}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold">{name}</p>
+                        <p className="truncate text-sm font-semibold font-brand-heading product-name text-brand-ink">{name}</p>
                         <p className="mt-1 text-xs text-brand-ink/55">{money(price)} × {item.quantity}</p>
                         <div className="mt-2 flex items-center gap-2">
                           <button

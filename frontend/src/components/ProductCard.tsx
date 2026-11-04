@@ -54,7 +54,7 @@ export const ProductCard = memo(function ProductCard({ product }: { product: Pro
         <div>
           <div className="flex items-start justify-between gap-1.5 sm:gap-2">
             <div className="min-w-0 flex-1">
-              <Link to={`/product/${product.slug}`} className="line-clamp-1 font-semibold text-sm sm:text-base text-brand-ink hover:text-brand-green">{product.name}</Link>
+              <Link to={`/product/${product.slug}`} className="line-clamp-1 product-name font-brand-heading font-bold text-sm sm:text-base tracking-tight text-brand-ink hover:text-brand-green">{product.name}</Link>
               <p className="mt-0.5 text-[11px] sm:text-xs text-brand-ink/55">{product.unit}</p>
             </div>
             <span className="shrink-0 text-xs sm:text-sm font-bold text-brand-green">{money(product.branch_availability?.price_minor ?? product.base_price_minor)}</span>
