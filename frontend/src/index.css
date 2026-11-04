@@ -728,10 +728,15 @@ html {
   object-position: center;
 }
 
+.basket-page {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 .basket-hero {
   position: relative;
   display: grid;
-  min-height: 31rem;
+  min-height: 24rem;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.9fr);
   align-items: center;
   gap: 2rem;
@@ -739,7 +744,7 @@ html {
   background:
     radial-gradient(ellipse at 82% 55%, rgb(255 194 13 / 16%), transparent 34%),
     linear-gradient(120deg, #123f2c, #028940 62%, #006230);
-  padding: clamp(3rem, 7vw, 6rem) clamp(1.5rem, 7vw, 7rem);
+  padding: 0.75rem clamp(1.5rem, 7vw, 7rem) clamp(2rem, 4vw, 3.5rem);
   color: white;
 }
 
@@ -2847,7 +2852,7 @@ html {
     min-height: auto;
     grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.75fr);
     gap: 0.75rem;
-    padding: 3.5rem 1.5rem;
+    padding: 0.75rem 1.5rem 2.25rem;
   }
 
   .basket-hero__image-wrap {
@@ -2982,7 +2987,7 @@ html {
 
   .basket-hero {
     grid-template-columns: minmax(0, 1fr);
-    padding: 3rem 1.25rem 1.5rem;
+    padding: 0.5rem 1.25rem 1.5rem;
   }
 
   .basket-hero__image-wrap {
