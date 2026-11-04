@@ -267,8 +267,19 @@ export function BasketsPage() {
               <button onClick={() => setCategory('')} className={`filter-chip ${!category ? 'filter-chip-active' : ''}`}>All baskets</button>
               {categories.map((item) => <button key={item.id} onClick={() => setCategory(item.id)} className={`filter-chip ${category === item.id ? 'filter-chip-active' : ''}`}>{item.name}</button>)}
             </div>
-            {baskets.length === 0 && isLoading ? (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[1, 2, 3].map((item) => <div key={item} className="skeleton aspect-[1.2]" />)}</div>
+            {isLoading && baskets.length === 0 ? (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3, 4, 5, 6].map((item) => (
+                  <div key={item} className="basket-package-card skeleton-card">
+                    <div className="skeleton aspect-[1.2] rounded-2xl" />
+                    <div className="p-5 space-y-3">
+                      <div className="skeleton h-4 w-24 rounded" />
+                      <div className="skeleton h-6 w-40 rounded" />
+                      <div className="skeleton h-10 w-full rounded-xl" />
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : error && !baskets.length ? (
               <p className="bg-red-50 p-5 text-brand-tomato">{error.message}</p>
             ) : visibleBaskets.length ? (
@@ -287,7 +298,7 @@ export function BasketsPage() {
                     ))}
                   </div>
                 ) : <div className="basket-empty-state basket-empty-state--art">
-                  <img className="basket-empty-state__image" src={TOTE_IMAGE} alt="FarmersHaus tote filled with fresh fruit and vegetables" />
+                  <img className="basket-empty-state__image" src={TOTE_IMAGE} alt="FarmersHaus tote filled with fresh fruit and vegetables" loading="lazy" decoding="async" width="280" height="280" />
                   <div><h3 className="font-brand-heading text-2xl font-bold text-brand-green">{category ? 'No baskets in this category yet' : 'Ready-made baskets are coming soon'}</h3><p className="mt-2 text-sm text-brand-ink/60">You can still build a custom basket from available fresh produce.</p><button className="button button-primary mt-5" onClick={() => setMode('custom')}>Build your own <Icon name="arrow" /></button></div>
                 </div>}
           </>
@@ -331,7 +342,7 @@ export function BasketsPage() {
 
             <aside className="custom-basket-preview">
               <motion.div className="custom-basket-preview__tote" animate={basketPulse ? { scale: [1, 1.035, 1], rotate: [0, -1.5, 1.5, 0] } : undefined} transition={{ duration: 0.45 }}>
-                <img ref={toteTarget} src={TOTE_IMAGE} alt="Your FarmersHaus custom basket" />
+                <img ref={toteTarget} src={TOTE_IMAGE} alt="Your FarmersHaus custom basket" decoding="async" width="160" height="160" />
                 <span className="custom-basket-preview__count">{selectedCount}</span>
               </motion.div>
               <p className="eyebrow mt-5">Your basket so far</p>
@@ -412,7 +423,7 @@ function ReadyBasketCard({
             {expanded ? 'Tap to fold the items back into the bag' : 'Tap the bag to see what’s inside'}
             <Icon name="arrow" className={expanded ? 'rotate-180' : ''} />
           </span>
-          <p className="basket-package-price"><span>Basket total</span><strong>{money(basket.branch_availability.price_minor)}</strong></p>
+          <p className="basket-package-price"><span>Basket total</span><strong>{money(basket.branch_availability?.price_minor ?? basket.base_price_minor)}</strong></p>
         </div>
       </button>
       <AnimatePresence initial={false}>
@@ -453,7 +464,7 @@ function ReadyBasketCard({
               </motion.ul>
             ) : <p>Contents are being finalized.</p>}
             <p className="basket-package-price basket-package-price--expanded">
-              <span>Total basket price</span><strong>{money(basket.branch_availability.price_minor)}</strong>
+              <span>Total basket price</span><strong>{money(basket.branch_availability?.price_minor ?? basket.base_price_minor)}</strong>
             </p>
             <button type="button" className="basket-package-fold" onClick={onToggle}>
               Fold items back into the bag <Icon name="arrow" className="rotate-180" />
@@ -462,7 +473,7 @@ function ReadyBasketCard({
         )}
       </AnimatePresence>
       <div className="px-5 pb-5">
-        {basket.branch_availability.is_available
+        {basket.branch_availability?.is_available
           ? <button className="button button-primary w-full justify-center" disabled={isAdding} onClick={onAdd}>{isAdding ? 'Adding basket…' : 'Add ready-made basket'} <Icon name="plus" /></button>
           : <p className="basket-package-card__unavailable">{branchName ? `Currently unavailable at ${branchName}` : 'Choose a branch to check availability'}</p>}
       </div>

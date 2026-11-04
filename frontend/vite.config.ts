@@ -68,6 +68,10 @@ export default defineConfig({
     },
   },
   build: {
+    // Target modern browsers — allows smaller output with native ES modules
+    target: 'es2020',
+    // Minify with esbuild (default) is fastest; explicitly confirmed
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -92,5 +96,7 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 600,
+    // Write asset files with content-hash names (required for immutable CDN cache)
+    assetsInlineLimit: 4096,
   },
 })

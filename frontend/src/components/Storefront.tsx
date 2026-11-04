@@ -20,7 +20,7 @@ const ShoppingAssistant = lazy(() =>
     .then((m) => ({ default: m.ShoppingAssistant }))
     .catch((err) => {
       console.warn('Shopping assistant dynamic import failed gracefully:', err)
-      return { default: () => null }
+      return { default: (() => null) as unknown as () => React.ReactElement }
     })
 )
 import { getProduceIcon } from '../lib/images'
@@ -912,19 +912,22 @@ export function Storefront() {
       <ScrollManager />
       <Header />
       <main>
-        <Suspense fallback={<div className="section-wrap"><div className="skeleton min-h-64" aria-label="Loading page" /></div>}>
-          <AnimatePresence mode="sync" initial={false}>
-            <motion.div
-              key={location.pathname.startsWith('/shop') ? '/shop' : location.pathname}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.12, ease: 'easeOut' }}
-            >
+        {/* Fix: AnimatePresence wraps Suspense — exit fires on old page while new page mounts.
+            Suspense inside motion.div shows an inline skeleton instead of a blank screen.
+            This resolves the blank page bug on first navigation. */}
+        <AnimatePresence mode="sync" initial={false}>
+          <motion.div
+            key={location.pathname.startsWith('/shop') ? '/shop' : location.pathname}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.12, ease: 'easeOut' }}
+          >
+            <Suspense fallback={<div className="section-wrap"><div className="skeleton min-h-64" aria-label="Loading page" /></div>}>
               <Outlet />
-            </motion.div>
-          </AnimatePresence>
-        </Suspense>
+            </Suspense>
+          </motion.div>
+        </AnimatePresence>
       </main>
       <Footer />
       <WhatsAppButton />
