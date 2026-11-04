@@ -17,7 +17,15 @@ import { addBasketToLocalCart, addProductToLocalCart } from '../lib/cartManager'
 
 export function BasketsPage() {
   const { data: baskets = [], isLoading, error } = useBaskets()
-  const { data: products = [], isLoading: productsLoading, error: productsError } = useProducts()
+  const [mode, setMode] = useState<'ready' | 'custom'>('ready')
+  const [category, setCategory] = useState('')
+  const [expandedOffer, setExpandedOffer] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const [selectedItems, setSelectedItems] = useState<Record<string, number>>({})
+  const isCustomMode = mode === 'custom' || Object.keys(selectedItems).length > 0
+  const { data: products = [], isLoading: productsLoading, error: productsError } = useProducts({
+    enabled: isCustomMode,
+  })
   const branch = useStore((state) => state.branch)
   const cartSessionKey = useStore((state) => state.cartSessionKey)
   const queryClient = useQueryClient()
@@ -25,11 +33,6 @@ export function BasketsPage() {
   const toteTarget = useRef<HTMLImageElement>(null)
   const builderTarget = useRef<HTMLElement>(null)
   const flightSequence = useRef(0)
-  const [mode, setMode] = useState<'ready' | 'custom'>('ready')
-  const [category, setCategory] = useState('')
-  const [expandedOffer, setExpandedOffer] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [selectedItems, setSelectedItems] = useState<Record<string, number>>({})
   const [flight, setFlight] = useState<BasketFlight | null>(null)
   const [basketPulse, setBasketPulse] = useState(0)
   const { data: categories = [] } = useBasketCategories()
@@ -204,7 +207,7 @@ export function BasketsPage() {
         </div>
         <div className="basket-hero__image-wrap">
           <div className="basket-hero__image-glow" />
-          <img className="basket-hero__image" src={TOTE_IMAGE} alt="FarmersHaus tote filled with fresh fruit and vegetables" />
+          <img className="basket-hero__image" src={TOTE_IMAGE} alt="FarmersHaus tote filled with fresh fruit and vegetables" fetchPriority="high" decoding="async" width="400" height="400" />
           <span className="basket-hero__badge">FRESHLY GATHERED</span>
         </div>
       </section>
@@ -264,9 +267,11 @@ export function BasketsPage() {
               <button onClick={() => setCategory('')} className={`filter-chip ${!category ? 'filter-chip-active' : ''}`}>All baskets</button>
               {categories.map((item) => <button key={item.id} onClick={() => setCategory(item.id)} className={`filter-chip ${category === item.id ? 'filter-chip-active' : ''}`}>{item.name}</button>)}
             </div>
-            {isLoading ? <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[1, 2, 3].map((item) => <div key={item} className="skeleton aspect-[1.2]" />)}</div>
-              : error ? <p className="bg-red-50 p-5 text-brand-tomato">{error.message}</p>
-                : visibleBaskets.length ? (
+            {baskets.length === 0 && isLoading ? (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[1, 2, 3].map((item) => <div key={item} className="skeleton aspect-[1.2]" />)}</div>
+            ) : error && !baskets.length ? (
+              <p className="bg-red-50 p-5 text-brand-tomato">{error.message}</p>
+            ) : visibleBaskets.length ? (
                   <div className="basket-package-grid">
                     {visibleBaskets.map((basket) => (
                       <ReadyBasketCard
@@ -386,7 +391,7 @@ function ReadyBasketCard({
   const prefersReducedMotion = useReducedMotion()
 
   return (
-    <motion.article layout className="basket-package-card">
+    <article className="basket-package-card">
       <button
         type="button"
         className="basket-package-card__details"
@@ -396,7 +401,7 @@ function ReadyBasketCard({
         aria-label={`${expanded ? 'Fold' : 'Open'} ${basket.name} to ${expanded ? 'hide' : 'see'} its contents`}
       >
         <div className="basket-package-card__image">
-          <img className="basket-package-art" src={image} alt={`${basket.name} FarmersHaus produce tote`} />
+          <img className="basket-package-art" src={image} alt={`${basket.name} FarmersHaus produce tote`} loading="lazy" decoding="async" width="180" height="180" />
           {basket.is_placeholder && <span className="basket-package-card__tag">Preview package</span>}
         </div>
         <div className="p-5">
@@ -461,6 +466,6 @@ function ReadyBasketCard({
           ? <button className="button button-primary w-full justify-center" disabled={isAdding} onClick={onAdd}>{isAdding ? 'Adding basket…' : 'Add ready-made basket'} <Icon name="plus" /></button>
           : <p className="basket-package-card__unavailable">{branchName ? `Currently unavailable at ${branchName}` : 'Choose a branch to check availability'}</p>}
       </div>
-    </motion.article>
+    </article>
   )
 }

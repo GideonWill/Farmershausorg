@@ -25,7 +25,7 @@ const routePrefetchers: Record<string, () => Promise<unknown>> = {
 
 const prefetchedPaths = new Set<string>()
 
-export function prefetchRoute(href: string) {
+export function prefetchRoute(href: string, immediate = false) {
   if (!href || typeof window === 'undefined') return
   const path = href.split('?')[0].split('#')[0]
   if (prefetchedPaths.has(path)) return
@@ -33,16 +33,25 @@ export function prefetchRoute(href: string) {
 
   const prefetcher = routePrefetchers[path]
   if (prefetcher) {
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(() => void prefetcher(), { timeout: 1500 })
+    if (immediate) {
+      void prefetcher()
+    } else if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => void prefetcher(), { timeout: 1200 })
     } else {
-      setTimeout(() => void prefetcher(), 40)
+      setTimeout(() => void prefetcher(), 30)
     }
+  }
+
+  // Also pre-cache critical images associated with the target route
+  if (path === '/baskets') {
+    const img = new Image()
+    img.src = '/brand/farmershaus-produce-tote.webp'
   }
 }
 
 /**
  * Attaches a passive hover & touch listener to document to prefetch internal links
+ * and automatically warms up core high-traffic routes on idle.
  */
 export function initRoutePrefetching() {
   if (typeof window === 'undefined') return () => {}
@@ -52,16 +61,39 @@ export function initRoutePrefetching() {
     if (!target) return
     const href = target.getAttribute('href')
     if (href && href.startsWith('/') && !href.startsWith('//')) {
-      prefetchRoute(href)
+      // Touch or pointerdown indicates active navigation intent; fetch immediately!
+      const isTouch = event.type === 'touchstart' || event.type === 'pointerdown'
+      prefetchRoute(href, isTouch)
     }
   }
 
   document.addEventListener('mouseover', handlePointer, { passive: true })
   document.addEventListener('touchstart', handlePointer, { passive: true })
+  document.addEventListener('pointerdown', handlePointer, { passive: true })
+
+  // Warm up primary storefront routes immediately during initial idle
+  const idleWarmup = () => {
+    prefetchRoute('/baskets', false)
+    prefetchRoute('/shop', false)
+  }
+
+  let idleHandle: number | ReturnType<typeof setTimeout> | undefined
+  if ('requestIdleCallback' in window) {
+    idleHandle = window.requestIdleCallback(idleWarmup, { timeout: 1500 })
+  } else {
+    idleHandle = setTimeout(idleWarmup, 100)
+  }
 
   return () => {
     document.removeEventListener('mouseover', handlePointer)
     document.removeEventListener('touchstart', handlePointer)
+    document.removeEventListener('pointerdown', handlePointer)
+    if (idleHandle !== undefined) {
+      if ('cancelIdleCallback' in window && typeof idleHandle === 'number') {
+        window.cancelIdleCallback(idleHandle)
+      } else {
+        clearTimeout(idleHandle)
+      }
+    }
   }
 }
-

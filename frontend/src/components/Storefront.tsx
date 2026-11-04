@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
-import { initRoutePrefetching } from '../lib/prefetch'
+import { initRoutePrefetching, prefetchRoute } from '../lib/prefetch'
 import { useLocation } from 'react-router-dom'
 import { Suspense } from 'react'
 import { api, money, type Branch, type CartValidation, type CustomerProfile, type Product } from '../lib/api'
@@ -315,7 +315,19 @@ function Header() {
           <div className="flex items-center justify-between gap-1.5 sm:gap-3 lg:gap-6">
             {/* Left: Hamburger & Brand Logo */}
             <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-              <button className="icon-button lg:hidden" aria-label="Open menu" onClick={() => setMobileOpen(true)}>
+              <button
+                className="icon-button lg:hidden"
+                aria-label="Open menu"
+                onClick={() => {
+                  setMobileOpen(true)
+                  prefetchRoute('/baskets', true)
+                  prefetchRoute('/shop', true)
+                }}
+                onTouchStart={() => {
+                  prefetchRoute('/baskets', true)
+                  prefetchRoute('/shop', true)
+                }}
+              >
                 <Icon name="menu" />
               </button>
               <Link
@@ -332,7 +344,7 @@ function Header() {
               </Link>
               <nav className="hidden items-center gap-5 lg:flex ml-3">
                 <NavLink className="nav-link" to="/shop">Shop</NavLink>
-                <NavLink className="nav-link" to="/baskets">Food baskets</NavLink>
+                <NavLink className="nav-link" to="/baskets" onMouseEnter={() => prefetchRoute('/baskets', true)} onTouchStart={() => prefetchRoute('/baskets', true)}>Food baskets</NavLink>
                 <NavLink className="nav-link" to="/recipes">Recipes</NavLink>
                 <NavLink className="nav-link" to="/find-us">Find us</NavLink>
               </nav>
@@ -533,7 +545,13 @@ function Header() {
                 <span>Shop produce</span>
                 <Icon name="arrow" className="h-4 w-4 opacity-50" />
               </NavLink>
-              <NavLink onClick={() => setMobileOpen(false)} className="mobile-nav-link flex items-center justify-between" to="/baskets">
+              <NavLink
+                onClick={() => setMobileOpen(false)}
+                onTouchStart={() => prefetchRoute('/baskets', true)}
+                onMouseEnter={() => prefetchRoute('/baskets', true)}
+                className="mobile-nav-link flex items-center justify-between"
+                to="/baskets"
+              >
                 <span>Food baskets</span>
                 <Icon name="arrow" className="h-4 w-4 opacity-50" />
               </NavLink>
@@ -895,13 +913,13 @@ export function Storefront() {
       <Header />
       <main>
         <Suspense fallback={<div className="section-wrap"><div className="skeleton min-h-64" aria-label="Loading page" /></div>}>
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="sync" initial={false}>
             <motion.div
               key={location.pathname.startsWith('/shop') ? '/shop' : location.pathname}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.12, ease: 'easeOut' }}
             >
               <Outlet />
             </motion.div>

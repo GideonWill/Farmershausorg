@@ -175,6 +175,7 @@ export function useProducts(filters: {
   in_season?: boolean
   min_price?: number
   max_price?: number
+  enabled?: boolean
 } = {}) {
   const branch = useResolvedBranch()
   const params = new URLSearchParams()
@@ -201,6 +202,7 @@ export function useProducts(filters: {
 
       return filterAndSortProducts(FALLBACK_PRODUCTS, filters)
     },
+    enabled: filters.enabled ?? true,
     staleTime: 30 * 1000,
     initialData: () => filterAndSortProducts(FALLBACK_PRODUCTS, filters),
   })
@@ -240,8 +242,8 @@ export function useBaskets() {
         return FALLBACK_BASKETS
       }
     },
-    staleTime: 3 * 60 * 1000,
-    initialData: FALLBACK_BASKETS,
+    staleTime: 5 * 60 * 1000,
+    initialData: () => FALLBACK_BASKETS,
   })
 }
 
@@ -257,8 +259,8 @@ export function useBasketCategories() {
         return FALLBACK_BASKET_CATEGORIES
       }
     },
-    staleTime: 5 * 60 * 1000,
-    initialData: FALLBACK_BASKET_CATEGORIES,
+    staleTime: 10 * 60 * 1000,
+    initialData: () => FALLBACK_BASKET_CATEGORIES,
   })
 }
 
