@@ -321,3 +321,4 @@ export function openOrDownloadReceipt(order: CustomerOrder) {
     setTimeout(() => URL.revokeObjectURL(url), 2000)
   }
 }
+
