@@ -1,136 +1,113 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-const farmToBasketVideo = "/videos/farm-to-basket.mp4"
+const farmToBasketVideo = '/videos/farm-to-basket.mp4'
 import { Icon } from './ui'
-
-type VideoState = 'loading' | 'playing' | 'paused' | 'error'
 
 export function FarmToBasketExperience() {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [videoState, setVideoState] = useState<VideoState>('loading')
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
-
-  useEffect(() => {
-    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const handleMotionPreferenceChange = (event: MediaQueryListEvent) => setPrefersReducedMotion(event.matches)
-    motionPreference.addEventListener('change', handleMotionPreferenceChange)
-    return () => motionPreference.removeEventListener('change', handleMotionPreferenceChange)
-  }, [])
+  const [videoLoaded, setVideoLoaded] = useState(false)
 
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
-    const startPlayback = () => {
-      if (prefersReducedMotion) {
-        video.pause()
-        setVideoState('paused')
-        return
-      }
+    // Explicit iOS WebKit & Android mobile looping autoplay requirements
+    video.muted = true
+    video.defaultMuted = true
+    video.playsInline = true
+    video.loop = true
+    video.setAttribute('muted', '')
+    video.setAttribute('playsinline', '')
+    video.setAttribute('webkit-playsinline', '')
+    video.setAttribute('autoplay', '')
+
+    const tryPlay = () => {
       video.muted = true
-      void video.play().catch(() => {
-        setVideoState('paused')
-      })
+      const playPromise = video.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setVideoLoaded(true)
+          })
+          .catch(() => {
+            // Handled by touch interaction fallback
+          })
+      }
     }
+
+    tryPlay()
 
     const handleReady = () => {
-      if (!Number.isFinite(video.duration) || video.duration <= 0) {
-        setVideoState('error')
-        return
-      }
-      setVideoState('playing')
+      setVideoLoaded(true)
+      tryPlay()
     }
-    const handlePlaying = () => setVideoState('playing')
-    const handlePause = () => {
-      if (!video.ended) setVideoState('paused')
-    }
-    const handleError = () => setVideoState('error')
 
     video.addEventListener('loadeddata', handleReady)
-    video.addEventListener('playing', handlePlaying)
-    video.addEventListener('pause', handlePause)
-    video.addEventListener('error', handleError)
+    video.addEventListener('canplay', handleReady)
+    video.addEventListener('playing', () => setVideoLoaded(true))
 
-    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) handleReady()
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      handleReady()
+    }
 
-    // High-performance IntersectionObserver with rootMargin: pre-load only when near viewport, pause when off-screen
+    // Mobile gesture fallback (guarantees playback on first touch/scroll if iOS Low Power Mode was active)
+    const onGesture = () => {
+      if (video.paused) {
+        tryPlay()
+      }
+    }
+    window.addEventListener('touchstart', onGesture, { once: true, passive: true })
+    window.addEventListener('click', onGesture, { once: true, passive: true })
+    window.addEventListener('scroll', onGesture, { once: true, passive: true })
+
+    // Pause when off-screen to save CPU/GPU, resume when visible
     let observer: IntersectionObserver | null = null
     if ('IntersectionObserver' in window) {
       observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
             if (entry.isIntersecting) {
-              if (video.preload !== 'auto') {
-                video.preload = 'auto'
-              }
-              if (!prefersReducedMotion) {
-                startPlayback()
-              }
+              tryPlay()
             } else {
               video.pause()
-              setVideoState('paused')
             }
           }
         },
-        { rootMargin: '250px 0px', threshold: 0.1 }
+        { threshold: 0.05 }
       )
       observer.observe(video)
-    } else {
-      startPlayback()
     }
 
     return () => {
       if (observer) observer.disconnect()
       video.removeEventListener('loadeddata', handleReady)
-      video.removeEventListener('playing', handlePlaying)
-      video.removeEventListener('pause', handlePause)
-      video.removeEventListener('error', handleError)
-      video.pause()
+      video.removeEventListener('canplay', handleReady)
+      window.removeEventListener('touchstart', onGesture)
+      window.removeEventListener('click', onGesture)
+      window.removeEventListener('scroll', onGesture)
     }
-  }, [prefersReducedMotion])
-
-  function playVideo() {
-    const video = videoRef.current
-    if (!video) return
-    video.muted = true
-    void video.play().catch(() => setVideoState('paused'))
-  }
+  }, [])
 
   return (
     <section
       className="farm-to-basket relative isolate overflow-hidden"
       aria-label="Farm to basket freshness story"
-      aria-busy={videoState === 'loading'}
-      data-video-state={videoState}
     >
       <div className="farm-to-basket__media">
         <video
           ref={videoRef}
-          className="farm-to-basket__video"
+          className={`farm-to-basket__video transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-90'}`}
           src={farmToBasketVideo}
           poster="/brand/farmershaus-healthy-life-poster.webp"
+          autoPlay
           loop
           muted
           playsInline
-          preload="none"
+          preload="auto"
           disablePictureInPicture
           aria-label="Farmers harvesting and washing produce before it is packed into a basket"
         />
       </div>
-      {videoState === 'loading' && (
-        <div className="farm-to-basket__loading" role="status">
-          <span className="farm-to-basket__loading-mark" aria-hidden="true">FH</span>
-          <span>Preparing the freshness story…</span>
-        </div>
-      )}
-      {videoState === 'error' && (
-        <div className="farm-to-basket__error" role="status">
-          <p>The farm-to-basket video could not be loaded.</p>
-          <Link className="button button-yellow" to="/shop">Shop fresh produce <Icon name="arrow" /></Link>
-        </div>
-      )}
       <div className="farm-to-basket__scrim" aria-hidden="true" />
       <div className="farm-to-basket__intro">
         <p className="farm-to-basket__eyebrow">From the people who grow it</p>
@@ -140,12 +117,6 @@ export function FarmToBasketExperience() {
           SHOP FRESH PRODUCE <Icon name="arrow" />
         </Link>
       </div>
-      {videoState === 'paused' && (
-        <button className="farm-to-basket__play" onClick={playVideo}>
-          <span aria-hidden="true">▶</span>
-          Play the freshness story
-        </button>
-      )}
     </section>
   )
 }
