@@ -1498,7 +1498,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 32,
-    "imageUrl": "",
+    "imageUrl": "/products/white-yam.jpg",
     "tags": [
       "in-season"
     ],

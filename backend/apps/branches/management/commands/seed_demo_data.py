@@ -260,6 +260,8 @@ PRODUCT_IMAGES = {
     "ginger": ("/products/ginger.jpg", []),
     "irish-potato": ("/products/irish-potato.jpg", []),
     "turmeric": ("/products/turmeric.jpg", []),
+    "white-yam": ("/products/white-yam.jpg", []),
+    "yam": ("/products/white-yam.jpg", []),
 }
 
 
