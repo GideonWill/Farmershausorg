@@ -1,9 +1,7 @@
 import { useEffect, useState, useRef, type FormEvent } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { motion, AnimatePresence } from 'framer-motion'
 import { initRoutePrefetching, prefetchRoute } from '../lib/prefetch'
-import { useLocation } from 'react-router-dom'
 import { Suspense } from 'react'
 import { api, money, type Branch, type CartValidation, type CustomerProfile, type Product } from '../lib/api'
 import { notify } from '../lib/notifications'
@@ -892,7 +890,6 @@ export function Storefront() {
   }, [])
   const { data: cart } = useCart()
   const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen)
-  const location = useLocation()
   const [showSplash, setShowSplash] = useState(() => {
     if (typeof window === 'undefined') return false
 
@@ -911,23 +908,10 @@ export function Storefront() {
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <ScrollManager />
       <Header />
-      <main>
-        {/* Smooth fade transition without vertical displacement.
-            mode="wait" prevents stacking old and new page simultaneously in the DOM,
-            ensuring the hero section always mounts directly at the top without shifting downwards. */}
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={location.pathname.startsWith('/shop') ? '/shop' : location.pathname}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.12, ease: 'easeOut' }}
-          >
-            <Suspense fallback={null}>
-              <Outlet />
-            </Suspense>
-          </motion.div>
-        </AnimatePresence>
+      <main id="main-content">
+        <Suspense fallback={null}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
       <WhatsAppButton />

@@ -3,10 +3,19 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Storefront } from '../components/Storefront'
 import { RootErrorBoundary } from '../components/ErrorBoundary'
 
+import { HomePage } from '../pages/HomePage'
+import { ShopPage } from '../pages/ShopPage'
+import { BasketsPage } from '../pages/BasketsPage'
+import { RecipesPage } from '../pages/RecipesPage'
+import { FindUsPage } from '../pages/FindUsPage'
+import { ContactPage } from '../pages/ContactPage'
+import { CartPage } from '../pages/CartPage'
+import { InfoPage } from '../pages/InfoPage'
+import { ProductPage } from '../pages/ProductPage'
+import { NotFoundPage } from '../pages/NotFoundPage'
+
 /**
- * Resilient dynamic import wrapper that handles Vite chunk reload errors and transient network dropouts.
- * If fetching a dynamically imported chunk fails (e.g. after a redeployment), it attempts one automatic retry
- * before falling through to the RootErrorBoundary.
+ * Resilient dynamic import wrapper for heavier secondary pages.
  */
 function lazyWithRetry<T extends ComponentType<any>>(
   factory: () => Promise<{ default: T }>
@@ -17,7 +26,6 @@ function lazyWithRetry<T extends ComponentType<any>>(
     } catch (error) {
       console.warn('Initial dynamic import failed, retrying once...', error)
       try {
-        // Small delay to allow network recovery
         await new Promise((resolve) => setTimeout(resolve, 350))
         return await factory()
       } catch (retryError) {
@@ -28,22 +36,12 @@ function lazyWithRetry<T extends ComponentType<any>>(
   })
 }
 
-import { HomePage } from '../pages/HomePage'
-import { ShopPage } from '../pages/ShopPage'
-import { BasketsPage } from '../pages/BasketsPage'
-const ProductPage = lazyWithRetry(() => import('../pages/ProductPage').then((module) => ({ default: module.ProductPage })))
-const CartPage = lazyWithRetry(() => import('../pages/CartPage').then((module) => ({ default: module.CartPage })))
 const AccountPage = lazyWithRetry(() => import('../pages/AccountPage').then((module) => ({ default: module.AccountPage })))
 const CheckoutPage = lazyWithRetry(() => import('../pages/CheckoutPage').then((module) => ({ default: module.CheckoutPage })))
 const OrderPage = lazyWithRetry(() => import('../pages/OrderPage').then((module) => ({ default: module.OrderPage })))
-const FindUsPage = lazyWithRetry(() => import('../pages/FindUsPage').then((module) => ({ default: module.FindUsPage })))
-const RecipesPage = lazyWithRetry(() => import('../pages/RecipesPage').then((module) => ({ default: module.RecipesPage })))
-const InfoPage = lazyWithRetry(() => import('../pages/InfoPage').then((module) => ({ default: module.InfoPage })))
-const ContactPage = lazyWithRetry(() => import('../pages/ContactPage').then((module) => ({ default: module.ContactPage })))
-const NotFoundPage = lazyWithRetry(() => import('../pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })))
 const StaffDashboardPage = lazyWithRetry(() => import('../pages/StaffDashboardPage').then((module) => ({ default: module.StaffDashboardPage })))
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: '/staff',
     element: <StaffDashboardPage />,

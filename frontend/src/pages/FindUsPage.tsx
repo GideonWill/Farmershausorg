@@ -117,7 +117,7 @@ export function FindUsPage() {
                   <span className="flex items-center gap-2 font-bold text-brand-ink">{branch.name}{nearestId === branch.id && <span className="find-us-nearest">Nearest</span>}</span>
                   <span className="mt-1 block text-sm leading-5 text-brand-ink/60">{branch.address}</span>
                   <span className="mt-2 flex items-center gap-2 text-xs font-semibold"><span className={`h-2 w-2 rounded-full ${branch.is_open ? 'bg-brand-green' : 'bg-brand-tomato'}`} />{branch.is_open ? 'Open now' : 'Closed'}{branch.hours_are_placeholder && <span className="font-normal text-brand-ink/45">· hours being confirmed</span>}</span>
-                  <span className="mt-2 block text-xs text-brand-ink/55">{Object.entries(branch.opening_hours).map(([day, hours]) => hours ? `${day}: ${hours.open}–${hours.close}` : `${day}: Closed`).join(' · ') || 'Hours not listed'}</span>
+                  <span className="mt-2 block text-xs text-brand-ink/55">{Object.entries(branch.opening_hours ?? {}).map(([day, hours]) => hours ? `${day}: ${hours.open}–${hours.close}` : `${day}: Closed`).join(' · ') || 'Hours not listed'}</span>
                 </button>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button type="button" className="text-xs font-bold text-brand-green inline-flex items-center gap-1 cursor-pointer" onClick={() => chooseBranch(branch)}>
