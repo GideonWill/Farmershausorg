@@ -251,6 +251,11 @@ PRODUCT_IMAGES = {
     "garden-eggs": ("/products/garden-eggs.jpg", []),
     "lettuce": ("/products/lettuce.jpg", []),
     "okra": ("/products/okra.jpg", []),
+    "onions": ("/products/onions.jpg", []),
+    "sweet-corn": ("/products/sweet-corn.jpg", []),
+    "tomatoes": ("/products/tomatoes.jpg", []),
+    "cassava": ("/products/cassava.jpg", []),
+    "cocoyam": ("/products/cocoyam.jpg", []),
 }
 
 

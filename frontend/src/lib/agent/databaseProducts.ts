@@ -270,7 +270,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 40,
-    "imageUrl": "",
+    "imageUrl": "/products/cassava.jpg",
     "tags": [
       "organic"
     ],
@@ -425,7 +425,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 37,
-    "imageUrl": "",
+    "imageUrl": "/products/cocoyam.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 10,
@@ -972,7 +972,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 40,
-    "imageUrl": "",
+    "imageUrl": "/products/onions.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 7,
@@ -1363,7 +1363,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 52,
-    "imageUrl": "",
+    "imageUrl": "/products/sweet-corn.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 19,
@@ -1430,7 +1430,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 39,
-    "imageUrl": "",
+    "imageUrl": "/products/tomatoes.jpg",
     "tags": [
       "in-season"
     ],
