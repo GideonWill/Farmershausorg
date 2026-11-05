@@ -242,6 +242,11 @@ PRODUCT_IMAGES = {
     "remia-salad-dressing": ("/products/remia-salad-dressing.jpg", ["/products/remia-salad-dressing-promo.jpg"]),
     "spanish-black-olives": ("/products/spanish-black-olives.jpg", ["/products/spanish-olives-promo.jpg"]),
     "spanish-green-olives": ("/products/spanish-green-olives.jpg", ["/products/spanish-olives-promo.jpg"]),
+    "broccoli": ("/products/broccoli.jpg", []),
+    "cabbage": ("/products/cabbage.jpg", []),
+    "carrots": ("/products/carrots.jpg", []),
+    "cauliflower": ("/products/cauliflower.jpg", []),
+    "cucumber": ("/products/cucumber.jpg", []),
 }
 
 

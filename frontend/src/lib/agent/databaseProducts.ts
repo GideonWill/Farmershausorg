@@ -137,7 +137,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 33,
-    "imageUrl": "",
+    "imageUrl": "/products/broccoli.jpg",
     "tags": [
       "in-season"
     ],
@@ -204,7 +204,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 58,
-    "imageUrl": "",
+    "imageUrl": "/products/cabbage.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 16,
@@ -246,7 +246,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 37,
-    "imageUrl": "",
+    "imageUrl": "/products/carrots.jpg",
     "tags": [
       "in-season",
       "organic"
@@ -316,7 +316,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 45,
-    "imageUrl": "",
+    "imageUrl": "/products/cauliflower.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 16,
@@ -469,7 +469,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 46,
-    "imageUrl": "",
+    "imageUrl": "/products/cucumber.jpg",
     "tags": [
       "in-season"
     ],
