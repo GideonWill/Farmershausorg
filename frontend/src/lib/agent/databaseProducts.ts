@@ -560,7 +560,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 43,
-    "imageUrl": "",
+    "imageUrl": "/products/fresh-pepper.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 1,
@@ -581,7 +581,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 29,
-    "imageUrl": "",
+    "imageUrl": "/products/garden-eggs.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 7,
@@ -775,7 +775,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 42,
-    "imageUrl": "",
+    "imageUrl": "/products/lettuce.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 19,
@@ -949,7 +949,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 52,
-    "imageUrl": "",
+    "imageUrl": "/products/okra.jpg",
     "tags": [
       "organic"
     ],

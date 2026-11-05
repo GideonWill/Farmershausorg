@@ -247,6 +247,10 @@ PRODUCT_IMAGES = {
     "carrots": ("/products/carrots.jpg", []),
     "cauliflower": ("/products/cauliflower.jpg", []),
     "cucumber": ("/products/cucumber.jpg", []),
+    "fresh-pepper": ("/products/fresh-pepper.jpg", []),
+    "garden-eggs": ("/products/garden-eggs.jpg", []),
+    "lettuce": ("/products/lettuce.jpg", []),
+    "okra": ("/products/okra.jpg", []),
 }
 
 
