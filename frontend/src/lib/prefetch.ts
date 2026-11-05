@@ -5,9 +5,9 @@
  */
 
 const routePrefetchers: Record<string, () => Promise<unknown>> = {
-  '/': () => import('../pages/HomePage'),
-  '/shop': () => import('../pages/ShopPage'),
-  '/baskets': () => import('../pages/BasketsPage'),
+  '/': () => Promise.resolve(),
+  '/shop': () => Promise.resolve(),
+  '/baskets': () => Promise.resolve(),
   '/cart': () => import('../pages/CartPage'),
   '/checkout': () => import('../pages/CheckoutPage'),
   '/account': () => import('../pages/AccountPage'),

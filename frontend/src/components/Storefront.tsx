@@ -912,18 +912,18 @@ export function Storefront() {
       <ScrollManager />
       <Header />
       <main>
-        {/* Fix: AnimatePresence wraps Suspense — exit fires on old page while new page mounts.
-            Suspense inside motion.div shows an inline skeleton instead of a blank screen.
-            This resolves the blank page bug on first navigation. */}
-        <AnimatePresence mode="sync" initial={false}>
+        {/* Smooth fade transition without vertical displacement.
+            mode="wait" prevents stacking old and new page simultaneously in the DOM,
+            ensuring the hero section always mounts directly at the top without shifting downwards. */}
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={location.pathname.startsWith('/shop') ? '/shop' : location.pathname}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.12, ease: 'easeOut' }}
           >
-            <Suspense fallback={<div className="section-wrap"><div className="skeleton min-h-64" aria-label="Loading page" /></div>}>
+            <Suspense fallback={null}>
               <Outlet />
             </Suspense>
           </motion.div>

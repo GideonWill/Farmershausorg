@@ -28,10 +28,10 @@ function lazyWithRetry<T extends ComponentType<any>>(
   })
 }
 
-const HomePage = lazyWithRetry(() => import('../pages/HomePage').then((module) => ({ default: module.HomePage })))
-const ShopPage = lazyWithRetry(() => import('../pages/ShopPage').then((module) => ({ default: module.ShopPage })))
+import { HomePage } from '../pages/HomePage'
+import { ShopPage } from '../pages/ShopPage'
+import { BasketsPage } from '../pages/BasketsPage'
 const ProductPage = lazyWithRetry(() => import('../pages/ProductPage').then((module) => ({ default: module.ProductPage })))
-const BasketsPage = lazyWithRetry(() => import('../pages/BasketsPage').then((module) => ({ default: module.BasketsPage })))
 const CartPage = lazyWithRetry(() => import('../pages/CartPage').then((module) => ({ default: module.CartPage })))
 const AccountPage = lazyWithRetry(() => import('../pages/AccountPage').then((module) => ({ default: module.AccountPage })))
 const CheckoutPage = lazyWithRetry(() => import('../pages/CheckoutPage').then((module) => ({ default: module.CheckoutPage })))
