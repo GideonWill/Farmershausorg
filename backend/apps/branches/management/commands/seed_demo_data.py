@@ -267,6 +267,11 @@ PRODUCT_IMAGES = {
     "mint": ("/products/mint.jpg", []),
     "parsley": ("/products/parsley.jpg", []),
     "spinach": ("/products/spinach.jpg", []),
+    "spring-onion": ("/products/spring-onion.jpg", []),
+    "black-eyed-peas": ("/products/black-eyed-peas.jpg", []),
+    "brown-beans": ("/products/brown-beans.jpg", []),
+    "brown-rice": ("/products/brown-rice.jpg", []),
+    "lentils": ("/products/lentils.jpg", []),
 }
 
 

@@ -95,7 +95,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 52,
-    "imageUrl": "",
+    "imageUrl": "/products/black-eyed-peas.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 10,
@@ -160,7 +160,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 36,
-    "imageUrl": "",
+    "imageUrl": "/products/brown-beans.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 7,
@@ -181,7 +181,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 42,
-    "imageUrl": "",
+    "imageUrl": "/products/brown-rice.jpg",
     "tags": [
       "in-season"
     ],
@@ -751,7 +751,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 41,
-    "imageUrl": "",
+    "imageUrl": "/products/lentils.jpg",
     "tags": [
       "in-season",
       "organic"
@@ -1321,7 +1321,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 58,
-    "imageUrl": "",
+    "imageUrl": "/products/spring-onion.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 16,
