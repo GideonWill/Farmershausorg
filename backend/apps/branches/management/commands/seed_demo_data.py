@@ -276,6 +276,10 @@ PRODUCT_IMAGES = {
     "maize": ("/products/maize.jpg", []),
     "millet": ("/products/millet.jpg", []),
     "sorghum": ("/products/sorghum.jpg", []),
+    "sugarcane": ("/products/sugarcane.jpg", []),
+    "cane-sugar": ("/products/cane-sugar.jpg", []),
+    "cassava-flour": ("/products/cassava-flour.jpg", []),
+    "groundnut-oil": ("/products/groundnut-oil.jpg", []),
 }
 
 

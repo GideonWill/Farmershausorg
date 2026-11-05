@@ -225,7 +225,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 50,
-    "imageUrl": "",
+    "imageUrl": "/products/cane-sugar.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 16,
@@ -293,7 +293,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 46,
-    "imageUrl": "",
+    "imageUrl": "/products/cassava-flour.jpg",
     "tags": [
       "in-season"
     ],
@@ -665,7 +665,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 46,
-    "imageUrl": "",
+    "imageUrl": "/products/groundnut-oil.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 19,
