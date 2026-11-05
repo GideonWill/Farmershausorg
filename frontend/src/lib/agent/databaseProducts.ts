@@ -796,7 +796,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 33,
-    "imageUrl": "",
+    "imageUrl": "/products/local-rice.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 10,
@@ -817,7 +817,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 46,
-    "imageUrl": "",
+    "imageUrl": "/products/maize.jpg",
     "tags": [
       "in-season"
     ],
@@ -882,7 +882,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 37,
-    "imageUrl": "",
+    "imageUrl": "/products/millet.jpg",
     "tags": [
       "organic"
     ],
@@ -1235,7 +1235,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 52,
-    "imageUrl": "",
+    "imageUrl": "/products/sorghum.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 19,

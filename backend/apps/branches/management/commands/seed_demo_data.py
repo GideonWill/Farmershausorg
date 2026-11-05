@@ -272,6 +272,10 @@ PRODUCT_IMAGES = {
     "brown-beans": ("/products/brown-beans.jpg", []),
     "brown-rice": ("/products/brown-rice.jpg", []),
     "lentils": ("/products/lentils.jpg", []),
+    "local-rice": ("/products/local-rice.jpg", []),
+    "maize": ("/products/maize.jpg", []),
+    "millet": ("/products/millet.jpg", []),
+    "sorghum": ("/products/sorghum.jpg", []),
 }
 
 
