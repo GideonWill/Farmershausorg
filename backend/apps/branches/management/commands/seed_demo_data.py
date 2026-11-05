@@ -262,6 +262,11 @@ PRODUCT_IMAGES = {
     "turmeric": ("/products/turmeric.jpg", []),
     "white-yam": ("/products/white-yam.jpg", []),
     "yam": ("/products/white-yam.jpg", []),
+    "coriander": ("/products/coriander.jpg", []),
+    "kontomire": ("/products/kontomire.jpg", []),
+    "mint": ("/products/mint.jpg", []),
+    "parsley": ("/products/parsley.jpg", []),
+    "spinach": ("/products/spinach.jpg", []),
 }
 
 
