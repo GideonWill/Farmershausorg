@@ -602,7 +602,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 36,
-    "imageUrl": "",
+    "imageUrl": "/products/garlic.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 19,
@@ -623,7 +623,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 43,
-    "imageUrl": "",
+    "imageUrl": "/products/ginger.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 1,
@@ -686,7 +686,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 23,
-    "imageUrl": "",
+    "imageUrl": "/products/irish-potato.jpg",
     "tags": [],
     "branchStocks": {
       "dome": 7,
@@ -1453,7 +1453,7 @@ export const REAL_DATABASE_PRODUCTS: RealProduct[] = [
     "origin": "Ghana / Imported Partner",
     "isAvailable": true,
     "availableQuantity": 46,
-    "imageUrl": "",
+    "imageUrl": "/products/turmeric.jpg",
     "tags": [
       "in-season",
       "organic"

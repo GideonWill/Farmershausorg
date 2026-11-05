@@ -256,6 +256,10 @@ PRODUCT_IMAGES = {
     "tomatoes": ("/products/tomatoes.jpg", []),
     "cassava": ("/products/cassava.jpg", []),
     "cocoyam": ("/products/cocoyam.jpg", []),
+    "garlic": ("/products/garlic.jpg", []),
+    "ginger": ("/products/ginger.jpg", []),
+    "irish-potato": ("/products/irish-potato.jpg", []),
+    "turmeric": ("/products/turmeric.jpg", []),
 }
 
 
